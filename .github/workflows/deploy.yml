@@ -60,8 +60,8 @@ jobs:
       - name: Install nt-broker-ui and build
         run: |
           cd nt-broker-ui && npm ci && npm run build
-      - uses: actions/upload-pages-artifact@3
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: nt-broker-ui/dist
       - id: deploy
-        uses: actions/deploy-pages@4
+        uses: actions/deploy-pages@v4
