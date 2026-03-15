@@ -1,0 +1,43 @@
+{
+  "weights": {
+    "uxFunnel": 25,
+    "microcopy": 15,
+    "visualSystem": 15,
+    "interactionPolish": 10,
+    "accessibility": 10,
+    "sotDiscipline": 15,
+    "reliability": 10
+  },
+  "kpiThresholds": {
+    "ttfcP75SecondsMax": 120,
+    "generateToCopyRateMin": 0.65,
+    "templateAssistRateMin": 0.25,
+    "sessionRestoreRateMin": 0.1,
+    "sotCopyCoverageMin": 0.9,
+    "tokenizedColorCoverageMin": 0.92
+  },
+  "requiredUxEvents": [
+    "app_loaded",
+    "mode_selected",
+    "templates_opened_from_cta",
+    "template_used",
+    "generate_clicked",
+    "output_copied_first",
+    "output_copied",
+    "session_saved",
+    "session_copied",
+    "session_restored"
+  ],
+  "allowUnusedCopyKeys": [
+    "loadingLabel",
+    "badge",
+    "loadError404",
+    "loadErrorGeneric",
+    "baseFieldsGroupLabel",
+    "modalTemplatesTitle",
+    "btnClose",
+    "promptAnatomyAriaLabel",
+    "footerDebugLabel",
+    "whatsappLabel"
+  ]
+}
