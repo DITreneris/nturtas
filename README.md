@@ -36,7 +36,7 @@ Pirmą kartą: nukopijuokite šią kodo bazę į nturtas, įjunkite Pages iš Ac
 
 ## Roadmap
 
-Tolesnė UI/UX iteracijų eilė – [docs/roadmap.md](docs/roadmap.md). Detalės – [.cursor/plans/footer_ir_ux_iteration_plan.md](.cursor/plans/footer_ir_ux_iteration_plan.md).
+Tolesnė UI/UX iteracijų eilė – [docs/roadmap.md](docs/roadmap.md). Detalės – `.cursor/plans/footer_ir_ux_iteration_plan.md` (lokalus planas, ne repo).
 
 1. **Stabilumas** – defaultSot ≈ SOT; OBJEKTAS be šablono – aiškus pranešimas; copy-sot `exit(1)` be šaltinio.
 2. **Srauto aiškumas** – firstStepHint, generavimo be šablono pranešimas + CTA „Šablonai“, tema į header.
