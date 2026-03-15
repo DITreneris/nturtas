@@ -33,6 +33,22 @@ Formatas pagal [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), versija
 - **Stiliaus gidas:** `docs/STYLE_GUIDE.md` -- Fotocasa-inspired spalvų paletė, principai (solidūs paviršiai, aukštas kontrastas, rounded corners).
 - **docs/INDEX.md:** pridėtas style guide nuoroda.
 
+## [2.3.0] – 2026-03-15
+
+### Pridėta
+- **CTA į promptanatomy.app (low-hanging, subtiliai):**
+  - Footer: spusteliama nuoroda „Promptų anatomija“ (prie credit eilutės ir po copyright).
+  - Po sėkmingo kopijavimo: eilutė „Nori daugiau?“ + nuoroda į promptanatomy.app (rodoma ~2 s kartu su „Nukopijuota“).
+  - Output bloke: „Sužinok daugiau apie promptus:“ + nuoroda po mygtuko KOPIJUOTI.
+  - AI įrankių bloke: papildoma nuoroda „Mokykis promptų anatomijos →“.
+  - Šablonų sekcijos (TemplatesInline) pabaigoje: „Šablonai iš [Promptų anatomija].“
+- **SOT nauji copy laukai (LT/EN/ES):** `copySuccessCtaPrefix`, `outputLearnMorePrefix`, `aiToolLinksPromptAnatomyLabel`, `templatesSourcePrefix`.
+- **Docs:** `docs/STYLE_GUIDE.md` įtrauktas į repozitoriją (docs hygiene – INDEX.md nuoroda validi).
+- **CI:** `tests/premium-quality.test.js`, `tests/ux-kpi-thresholds.test.js`, `tests/premium-score-report.js`, `config/premium-score.json` įtraukti į repo, kad `npm run quality:premium` veiktų GitHub Actions.
+
+### Pakeista
+- **E2E:** footer testas tikrina Prompt Anatomy nuorodą footeryje; atskiras testas – community nuoroda po generate.
+
 ## [Nereleisuota]
 
 ### Pakeista
@@ -50,6 +66,7 @@ Formatas pagal [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), versija
   - `App.tsx`: footer tagline dabar skaitoma iš `copy.footerTagline` (fallback tik jei nėra rakto).
   - `App.tsx` + `style.css`: antriniai CTA vizualiai susilpninti ir aiškiau atskirti nuo primary; community CTA pažymėti external ikona.
 - **Release quality vartai:** root `package.json` test pipeline papildytas `quality:premium` (SOT copy coverage, tokenų disciplina, required UX event'ai, hardcoded copy rizikų check) ir optional KPI slenksčių vartais per `UX_EVENTS_FILE`.
+- **AI įrankių mygtukai (ChatGPT, Claude, Gemini):** perkelti į output-card, tiesiai po Kopijuoti mygtuko – atitinka FIRST_RUN_USER_JOURNEY_AUDIT §7 (output zonoje po pagrindiniu kopijavimo CTA).
 
 ### Pridėta
 - `config/premium-score.json`: premium vertinimo svoriai, KPI threshold'ai, privalomi UX event'ai ir leidžiamų copy išimčių sąrašas.

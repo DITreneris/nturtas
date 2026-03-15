@@ -706,6 +706,30 @@ function AppContent() {
                 {copy.outputCopyCtaLabel ?? dc?.outputCopyCtaLabel ?? ''} →
               </button>
 
+              {/* AI tool links – output zonoje po pagrindiniu kopijavimo CTA (FIRST_RUN_USER_JOURNEY_AUDIT §7) */}
+              {sot?.aiToolLinks && sot.aiToolLinks.length > 0 && (
+                <div className="ai-tool-links" style={{ marginTop: '1rem' }}>
+                  <span>{copy.aiToolLinksLabel ?? dc?.aiToolLinksLabel ?? ''}</span>
+                  {sot.aiToolLinks.map((link) => (
+                    <a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer" className="btn-ai-tool">
+                      <ExternalLink size={14} aria-hidden />
+                      {link.label}
+                    </a>
+                  ))}
+                  {copy.promptAnatomyUrl && (copy.aiToolLinksPromptAnatomyLabel ?? dc?.aiToolLinksPromptAnatomyLabel) && (
+                    <a
+                      href={copy.promptAnatomyUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={copy.promptAnatomyAriaLabel ?? dc?.promptAnatomyAriaLabel ?? ''}
+                      style={{ fontSize: '0.8125rem', color: 'var(--text-light)', textDecoration: 'underline', marginTop: '0.5rem', display: 'inline-block' }}
+                    >
+                      {copy.aiToolLinksPromptAnatomyLabel ?? dc?.aiToolLinksPromptAnatomyLabel ?? ''}
+                    </a>
+                  )}
+                </div>
+              )}
+
               {(copy.outputLearnMorePrefix ?? dc?.outputLearnMorePrefix) && copy.promptAnatomyUrl && (
                 <p style={{ margin: '0.75rem 0 0', fontSize: '0.8125rem', color: 'var(--text-light)', fontStyle: 'italic' }}>
                   {copy.outputLearnMorePrefix ?? dc?.outputLearnMorePrefix ?? ''}{' '}
@@ -746,30 +770,6 @@ function AppContent() {
               >
                 {copy.noTemplateCtaLabel ?? dc?.noTemplateCtaLabel ?? ''}
               </button>
-            </div>
-          )}
-
-          {/* AI tool links – always visible (CEO parity) */}
-          {sot?.aiToolLinks && sot.aiToolLinks.length > 0 && (
-            <div className="ai-tool-links" style={{ marginTop: '1rem' }}>
-              <span>{copy.aiToolLinksLabel ?? dc?.aiToolLinksLabel ?? ''}</span>
-              {sot.aiToolLinks.map((link) => (
-                <a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer" className="btn-ai-tool">
-                  <ExternalLink size={14} aria-hidden />
-                  {link.label}
-                </a>
-              ))}
-              {copy.promptAnatomyUrl && (copy.aiToolLinksPromptAnatomyLabel ?? dc?.aiToolLinksPromptAnatomyLabel) && (
-                <a
-                  href={copy.promptAnatomyUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={copy.promptAnatomyAriaLabel ?? dc?.promptAnatomyAriaLabel ?? ''}
-                  style={{ fontSize: '0.8125rem', color: 'var(--text-light)', textDecoration: 'underline', marginTop: '0.5rem', display: 'inline-block' }}
-                >
-                  {copy.aiToolLinksPromptAnatomyLabel ?? dc?.aiToolLinksPromptAnatomyLabel ?? ''}
-                </a>
-              )}
             </div>
           )}
 
