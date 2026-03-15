@@ -85,6 +85,7 @@ function AppContent() {
     const vars = sot.theme[theme]
     if (!vars) return
     const root = document.documentElement
+    root.classList.toggle('dark', theme === 'dark')
     Object.entries(vars).forEach(([key, value]) => {
       root.style.setProperty(key, value)
     })
@@ -260,10 +261,10 @@ function AppContent() {
             </a>
             <span className="badge-spinoff">{sot?.brand?.edition ?? dc?.badge ?? ''}</span>
           </div>
-          <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '0.5rem', color: '#fff' }}>
+          <h1 className="hero-title">
             {copy.heroTitle ?? dc?.heroTitle ?? ''}
           </h1>
-          <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '1.125rem', maxWidth: '42rem' }}>
+          <p className="hero-subtitle">
             {copy.heroSubtitle ?? dc?.heroSubtitle ?? ''}
           </p>
 
@@ -471,6 +472,15 @@ function AppContent() {
                 {emptyHint}
               </span>
             )}
+
+            <div className="form-cta-row">
+              <button type="button" className="cta-button" onClick={handleGenerate}>
+                {ctaLabel}
+              </button>
+              <button type="button" className="cta-button-outline form-cta-outline" onClick={() => setLibraryModalOpen(true)}>
+                {copy.heroCtaSecondary ?? dc?.heroCtaSecondary ?? ''}
+              </button>
+            </div>
           </div>
 
           {/* 6. Output card */}
@@ -582,7 +592,7 @@ function AppContent() {
             <h3 className="footer-brand">{copy.heroTitle ?? dc?.heroTitle ?? ''} ✨</h3>
             <p className="footer-tagline">{copy.heroCtaMeta ?? dc?.heroCtaMeta ?? ''}</p>
             <div className="footer-product-link">
-              {copy.footerCredit ?? sot?.brand?.edition ?? ''} El. paštas:{' '}
+              {copy.footerCredit ?? sot?.brand?.edition ?? ''} {copy.footerContactLabel ?? dc?.footerContactLabel ?? ''}{' '}
               <a href={`mailto:${copy.contactEmail ?? dc?.contactEmail ?? ''}`}>{copy.contactEmail ?? dc?.contactEmail ?? ''}</a>
             </div>
             {sot?.footerBadges && sot.footerBadges.length > 0 && (

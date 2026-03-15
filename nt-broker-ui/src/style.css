@@ -43,10 +43,9 @@ h1 {
 }
 
 #app {
-  max-width: 1280px;
   width: 100%;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0;
   overflow-x: hidden;
   box-sizing: border-box;
 }
@@ -231,7 +230,7 @@ select:focus-visible {
 
 .hero-card .step-number {
   background: #fff;
-  color: #1E4A8C;
+  color: var(--primary, #1E4A8C);
 }
 
 /* ──────────────────────────────────────────────
@@ -396,7 +395,7 @@ select:focus-visible {
    HERO CARD
    ══════════════════════════════════════════════ */
 .hero-card {
-  background: linear-gradient(135deg, #1E4A8C 0%, #153A70 55%, #0F2B5C 100%);
+  background: linear-gradient(135deg, var(--primary, #1E4A8C) 0%, var(--primary-hover, #153A70) 55%, var(--primary-hover, #0F2B5C) 100%);
   border-radius: 24px;
   padding: 36px 48px;
   color: #fff;
@@ -406,8 +405,23 @@ select:focus-visible {
   overflow: hidden;
 }
 
+.hero-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem;
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1.125rem;
+  max-width: 42rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
 .dark .hero-card {
-  background: linear-gradient(135deg, #0F1115 0%, #1A2744 55%, #0F1115 100%);
+  background: linear-gradient(135deg, var(--output-bg, #1A2744) 0%, var(--primary-hover, #3D6AD9) 30%, var(--output-bg, #1A2744) 100%);
 }
 
 /* ──────────────────────────────────────────────
@@ -445,8 +459,8 @@ select:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  background: rgba(184, 150, 46, 0.25);
-  border: 1px solid rgba(184, 150, 46, 0.4);
+  background: color-mix(in srgb, var(--accent-gold, #D4AF37) 25%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-gold, #D4AF37) 40%, transparent);
   border-radius: 9999px;
   padding: 0.375rem 0.875rem;
   font-size: 0.6875rem;
@@ -487,7 +501,7 @@ select:focus-visible {
   height: 24px;
   border-radius: 50%;
   background: #fff;
-  color: #1E4A8C;
+  color: var(--primary, #1E4A8C);
   font-weight: 800;
   font-size: 0.75rem;
   display: flex;
@@ -531,7 +545,7 @@ select:focus-visible {
   text-decoration: none;
 }
 .cta-button:hover {
-  background: var(--accent-gold-hover, #C49B2F);
+  background: var(--accent-gold-hover, #E5C86B);
   color: #1A1E24;
 }
 .cta-button:active {
@@ -617,6 +631,22 @@ select:focus-visible {
   border-radius: 16px;
   padding: 1.5rem;
   margin-bottom: 1rem;
+}
+
+.form-cta-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+.form-cta-outline {
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+.form-cta-outline:hover {
+  border-color: var(--primary) !important;
+  color: var(--primary) !important;
 }
 
 .form-card-header {
@@ -964,6 +994,6 @@ select:focus-visible {
   }
 
   #app {
-    padding: 1rem;
+    padding: 0;
   }
 }
