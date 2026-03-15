@@ -2,6 +2,24 @@
 
 Formatas pagal [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), versijavimas – [Semantic Versioning](https://semver.org/).
 
+## [2.1.0] – 2026-03-15
+
+### Pridėta
+- **Hero card dizainas:** gradient fonas, 2 badge'ai (Promptų anatomija + Spin-off), onboarding žingsniai hero viduje, CTA mygtukai hero viduje.
+- **Operacijų centras:** numeruota ikona, pavadinimas, subtitras -- kortelės stilius kaip mokytojas.
+- **Formos kortelė:** sekcijos header su ikona ir režimo pavadinimu, card container.
+- **Output kortelė:** badge header (SUGENERUOTA UŽKLAUSA + mode badge + copy btn), didelis KOPIJUOTI CTA mygtukas.
+- **Community CTA sekcija:** kortelė su antrašte, subtitru, WhatsApp + Promptų anatomija mygtukai.
+- **Footer kortelė:** brand, tagline, kontaktai, feature badges, copyright.
+- **SOT nauji laukai:** `communityTitle`, `communitySubtitle`, `communityCtaPrimary`, `communityCtaSecondary`, `privacyLabel`, `privacyUrl`, `outputBadgeLabel`, `outputCopyCtaLabel`, `footerBadges`.
+- **CSS:** `.hero-card`, `.ops-center`, `.form-card`, `.output-card`, `.community`, `.footer-card`, `.tag`, responsive, dark mode.
+- **Top bar:** navigacija su brand ir kalbos/temos mygtukais.
+
+### Pakeista
+- **App.tsx:** pilnas layout pertvarka -- hero, ops center, form card, output card, community, footer kortelės struktūra.
+- **E2E testai:** atnaujinti selektoriai (WhatsApp ir PA link perkelti iš footer į community).
+- **Unit testai:** atnaujintas WhatsApp link testas (footer → community).
+
 ## [Nereleisuota]
 
 ### Pataisyta

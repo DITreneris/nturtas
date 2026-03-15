@@ -161,12 +161,12 @@ describe('App', () => {
     expect(screen.getByText('Atidaryti Claude')).toBeTruthy()
   })
 
-  it('renders WhatsApp link in footer', async () => {
+  it('renders WhatsApp link in community section', async () => {
     render(<App />)
     await screen.findByRole('heading', { level: 1 }, { timeout: 3000 })
-    const footer = document.querySelector('footer')
-    expect(footer).toBeTruthy()
-    const whatsappLink = footer!.querySelector('a[href*="whatsapp"]')
+    const community = document.querySelector('.community')
+    expect(community).toBeTruthy()
+    const whatsappLink = community!.querySelector('a[href*="whatsapp"]')
     expect(whatsappLink).toBeTruthy()
     expect(whatsappLink!.textContent).toContain('WhatsApp')
   })

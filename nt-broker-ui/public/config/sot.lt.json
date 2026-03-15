@@ -87,7 +87,15 @@
     "whatsappLabel": "Prisijungti prie WhatsApp grupės",
     "skipToContentLabel": "Pereiti prie turinio",
     "footerTagline": "Promptas sukurtas. Nori daugiau?",
-    "footerCopyright": "© 2026 Promptų anatomija. Visos teisės saugomos."
+    "footerCopyright": "© 2026 Promptų anatomija. Visos teisės saugomos.",
+    "communityTitle": "Nori daugiau?\nPrisijunk prie WhatsApp grupės.",
+    "communitySubtitle": "Bendros diskusijos, patarimai ir naujienos apie NT rinką ir AI įrankius.",
+    "communityCtaPrimary": "Prisijungti prie WhatsApp grupės",
+    "communityCtaSecondary": "Promptų anatomija →",
+    "privacyLabel": "Privatumas",
+    "privacyUrl": "",
+    "outputBadgeLabel": "SUGENERUOTA UŽKLAUSA",
+    "outputCopyCtaLabel": "KOPIJUOTI UŽKLAUSĄ"
   },
   "showDebugInFooter": false,
   "modesOrder": ["OBJEKTAS", "SKELBIMAS", "KOMUNIKACIJA", "DERYBOS", "ANALIZE"],
@@ -284,6 +292,7 @@
     { "text": "Maksimalus įtraukimas ir aiški vertė", "icon": "check-circle" },
     { "text": "Pritaikyta NT brokerio kasdieniam darbui", "icon": "check-circle" }
   ],
+  "footerBadges": ["NT brokeris", "5 režimai", "Skelbimų kūrimas", "Derybos"],
   "aiToolLinks": [
     { "label": "Atidaryti ChatGPT", "url": "https://chat.openai.com/", "icon": "external-link" },
     { "label": "Atidaryti Claude", "url": "https://claude.ai/", "icon": "external-link" },

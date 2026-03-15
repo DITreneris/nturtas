@@ -77,7 +77,15 @@
     "whatsappLabel": "Join the WhatsApp group",
     "skipToContentLabel": "Skip to content",
     "footerTagline": "Prompt created. Want more?",
-    "footerCopyright": "© 2026 Prompt Anatomy. All rights reserved."
+    "footerCopyright": "© 2026 Prompt Anatomy. All rights reserved.",
+    "communityTitle": "Want more?\nJoin the WhatsApp group.",
+    "communitySubtitle": "Discussions, tips and news about the RE market and AI tools.",
+    "communityCtaPrimary": "Join the WhatsApp group",
+    "communityCtaSecondary": "Prompt Anatomy →",
+    "privacyLabel": "Privacy",
+    "privacyUrl": "",
+    "outputBadgeLabel": "GENERATED PROMPT",
+    "outputCopyCtaLabel": "COPY PROMPT"
   },
   "showDebugInFooter": false,
   "modesOrder": ["OBJEKTAS", "SKELBIMAS", "KOMUNIKACIJA", "DERYBOS", "ANALIZE"],
@@ -190,6 +198,7 @@
     { "text": "Maximum engagement and clear value", "icon": "check-circle" },
     { "text": "Tailored for RE broker daily workflow", "icon": "check-circle" }
   ],
+  "footerBadges": ["RE broker", "5 modes", "Listing creation", "Negotiations"],
   "aiToolLinks": [
     { "label": "Open ChatGPT", "url": "https://chat.openai.com/", "icon": "external-link" },
     { "label": "Open Claude", "url": "https://claude.ai/", "icon": "external-link" },

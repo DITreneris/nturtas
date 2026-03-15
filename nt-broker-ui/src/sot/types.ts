@@ -79,6 +79,14 @@ export interface SotCopy {
   skipToContentLabel?: string
   footerTagline?: string
   footerCopyright?: string
+  communityTitle?: string
+  communitySubtitle?: string
+  communityCtaPrimary?: string
+  communityCtaSecondary?: string
+  privacyLabel?: string
+  privacyUrl?: string
+  outputBadgeLabel?: string
+  outputCopyCtaLabel?: string
 }
 
 export interface SotTheme {
@@ -111,4 +119,5 @@ export interface Sot {
   libraryPrompts?: Array<{ id: string; title: string; desc: string; icon: string; prompt: string }>
   rules?: Array<{ text: string; icon: string }>
   aiToolLinks?: AiToolLink[]
+  footerBadges?: string[]
 }

@@ -77,7 +77,15 @@
     "whatsappLabel": "Unirse al grupo de WhatsApp",
     "skipToContentLabel": "Ir al contenido",
     "footerTagline": "Prompt creado. ¿Quieres más?",
-    "footerCopyright": "© 2026 Anatomía del prompt. Todos los derechos reservados."
+    "footerCopyright": "© 2026 Anatomía del prompt. Todos los derechos reservados.",
+    "communityTitle": "¿Quieres más?\nÚnete al grupo de WhatsApp.",
+    "communitySubtitle": "Discusiones, consejos y novedades sobre el mercado inmobiliario y herramientas de IA.",
+    "communityCtaPrimary": "Unirse al grupo de WhatsApp",
+    "communityCtaSecondary": "Anatomía del prompt →",
+    "privacyLabel": "Privacidad",
+    "privacyUrl": "",
+    "outputBadgeLabel": "PROMPT GENERADO",
+    "outputCopyCtaLabel": "COPIAR PROMPT"
   },
   "showDebugInFooter": false,
   "modesOrder": ["OBJEKTAS", "SKELBIMAS", "KOMUNIKACIJA", "DERYBOS", "ANALIZE"],
@@ -190,6 +198,7 @@
     { "text": "Máximo engagement y valor claro", "icon": "check-circle" },
     { "text": "Adaptado al flujo diario del corredor", "icon": "check-circle" }
   ],
+  "footerBadges": ["Corredor inmobiliario", "5 modos", "Creación de anuncios", "Negociaciones"],
   "aiToolLinks": [
     { "label": "Abrir ChatGPT", "url": "https://chat.openai.com/", "icon": "external-link" },
     { "label": "Abrir Claude", "url": "https://claude.ai/", "icon": "external-link" },

@@ -46,16 +46,16 @@ for (const vp of viewports) {
       expect(overflowPx).toBeLessThanOrEqual(2);
     });
 
-    test('footer has Prompt Anatomy link and contact email', async ({ page }) => {
+    test('footer has contact email and community has Prompt Anatomy link', async ({ page }) => {
       await page.goto('./?lang=lt', GOTO_OPTIONS);
       const footer = page.locator('footer');
       await expect(footer).toBeVisible();
-      const promptLink = footer.locator('a[href="https://www.promptanatomy.app/"]');
-      await expect(promptLink).toBeVisible();
-      await expect(promptLink).toContainText(/Promptų anatomija|Prompt anatomy|Anatomía del prompt/i);
       const mailtoLink = footer.locator('a[href^="mailto:"]');
       await expect(mailtoLink).toHaveAttribute('href', 'mailto:info@promptanatomy.app');
       await expect(mailtoLink).toContainText('info@promptanatomy.app');
+      const community = page.locator('.community');
+      const promptLink = community.locator('a[href="https://www.promptanatomy.app/"]');
+      await expect(promptLink).toBeVisible();
     });
 
     test('onboarding steps are visible', async ({ page }) => {
@@ -96,10 +96,11 @@ for (const vp of viewports) {
       await expect(page.getByText('NT brokerio centras')).toBeVisible();
     });
 
-    test('footer has WhatsApp link', async ({ page }) => {
+    test('community section has WhatsApp link', async ({ page }) => {
       await page.goto('./?lang=lt', GOTO_OPTIONS);
-      const footer = page.locator('footer');
-      const whatsappLink = footer.locator('a[href*="whatsapp"]');
+      const community = page.locator('.community');
+      await expect(community).toBeVisible();
+      const whatsappLink = community.locator('a[href*="whatsapp"]');
       await expect(whatsappLink).toBeVisible();
     });
 
