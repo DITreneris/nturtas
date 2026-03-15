@@ -144,6 +144,10 @@ function AppContent() {
     <div
       style={{
         minHeight: '100vh',
+        width: '100%',
+        maxWidth: '100%',
+        overflowX: 'hidden',
+        boxSizing: 'border-box',
         background: 'var(--surface-0)',
         color: 'var(--text)',
         fontFamily: "'Inter', system-ui, sans-serif",
