@@ -1,0 +1,109 @@
+{
+  "brand": {
+    "productName": "DI Operating System for RE Broker",
+    "edition": "Spin-off No. 7",
+    "positioning": "Professional RE prompts, listings and client communication in 30–60 sec."
+  },
+  "colors": {
+    "charcoal": "#0F1115",
+    "graphite": "#1C1F26",
+    "deepBlue": "#2D5BB8",
+    "navy": "#153A70",
+    "gold": "#C9A227",
+    "lightGold": "#E5C86B",
+    "steelGrey": "#5C6370",
+    "textPrimary": "#F2F4F7",
+    "textSecondary": "#8B92A0",
+    "backgroundLight": "#F0F4FA",
+    "primaryLight": "#1E4A8C",
+    "accentLight": "#B8962E",
+    "textDark": "#1A1E24",
+    "panelsLight": "#FFFFFF"
+  },
+  "cta": {
+    "primary": { "background": "#1E4A8C", "text": "#F9FAFB", "hoverBackground": "#153A70" },
+    "secondary": { "border": "#2D5BB8", "text": "#1E4A8C" },
+    "accent": { "background": "#C9A227", "hoverBackground": "#E5C86B" }
+  },
+  "copy": {
+    "promptAnatomyUrl": "https://www.promptanatomy.app/",
+    "loadingLabel": "Loading...",
+    "heroTitle": "DI Operating System for RE Broker",
+    "heroSubtitle": "Generate professional RE prompts, listings and client communication in 30–60 sec.",
+    "heroCtaPrimary": "Generate prompt",
+    "heroCtaSecondary": "View templates",
+    "heroCtaMeta": "Save up to 5 hours per week. Built for brokers.",
+    "badge": "DI Operating System",
+    "copyErrorLabel": "Error:",
+    "copyRetryLabel": "Retry",
+    "copySuccess": "Copied",
+    "copyFailed": "Copy failed",
+    "btnCopy": "Copy",
+    "rulesAriaLabel": "Rules",
+    "themeToggleLabelLight": "Switch to dark mode",
+    "themeToggleLabelDark": "Switch to light mode",
+    "promptAnatomyLinkText": "Prompt anatomy →",
+    "promptAnatomyAriaLabel": "Prompt anatomy – opens in new tab",
+    "inputBlockLabel": "INPUT (filled)",
+    "footerDebugLabel": "Theme: {{theme}}. SOT loaded – modes, copy and colors from config/sot.json.",
+    "modalTemplatesTitle": "Templates",
+    "btnUse": "Use",
+    "btnClose": "Close",
+    "selectPlaceholder": "Select",
+    "loadError404": "Config not found (404). Using default.",
+    "loadErrorGeneric": "Failed to load configuration. Using default.",
+    "activeModeLabel": "Active mode:",
+    "contactEmail": "info@promptanatomy.app",
+    "footerContactLabel": "Contact:",
+    "footerCredit": "Spin-off No. 7 from Prompt Anatomy."
+  },
+  "showDebugInFooter": true,
+  "modesOrder": ["OBJEKTAS", "SKELBIMAS", "KOMUNIKACIJA", "DERYBOS", "ANALIZE"],
+  "modes": {
+    "OBJEKTAS": { "id": "objektas", "label": "Property", "desc": "Property analysis and value", "formId": "form-objektas", "icon": "building-2", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "privalumai", "auditorija", "tonas"] },
+    "SKELBIMAS": { "id": "skelbimas", "label": "Listing", "desc": "RE listing creation", "formId": "form-skelbimas", "icon": "sparkles", "libraryPromptId": "skelbimas_nt", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "privalumai", "auditorija", "tonas", "platforma", "strategija", "ilgis"] },
+    "KOMUNIKACIJA": { "id": "komunikacija", "label": "Communication", "desc": "Client responses", "formId": "form-komunikacija", "icon": "message-square", "libraryPromptId": "komunikacija_pirkėjas", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "privalumai", "auditorija", "tonas", "klientoTipas", "situacija", "zinute", "ctaTipas"] },
+    "DERYBOS": { "id": "derybos", "label": "Negotiation", "desc": "Negotiation strategy", "formId": "form-derybos", "icon": "handshake", "libraryPromptId": "derybu_strategija", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "privalumai", "auditorija", "tonas", "siulomaKaina", "kontekstas", "derybuTikslas"] },
+    "ANALIZE": { "id": "analize", "label": "Analysis", "desc": "Market analysis and content", "formId": "form-analize", "icon": "bar-chart-3", "libraryPromptId": "rinkos_analize", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "privalumai", "auditorija", "tonas", "tema", "turinioTipas"] }
+  },
+  "fieldMeta": {
+    "objektoTipas": { "label": "Property type", "type": "text", "placeholder": "e.g. flat, house" },
+    "lokacija": { "label": "Location / address", "type": "text", "placeholder": "City, area" },
+    "plotas": { "label": "Area (m²)", "type": "text", "placeholder": "m²" },
+    "kambariai": { "label": "Rooms", "type": "text", "placeholder": "e.g. 3" },
+    "kaina": { "label": "Price (€)", "type": "text", "placeholder": "€" },
+    "bukle": { "label": "Condition", "type": "text", "placeholder": "e.g. new, well maintained" },
+    "privalumai": { "label": "Advantages", "type": "textarea", "placeholder": "USP, advantages" },
+    "auditorija": { "label": "Audience", "type": "text", "placeholder": "Target audience" },
+    "tonas": { "label": "Tone", "type": "select", "placeholder": "Select", "options": ["premium", "neutral", "friendly"] },
+    "platforma": { "label": "Platform", "type": "text", "placeholder": "e.g. listing sites" },
+    "strategija": { "label": "Strategy", "type": "text", "placeholder": "Emotional / rational" },
+    "ilgis": { "label": "Length", "type": "text", "placeholder": "Short / medium" },
+    "klientoTipas": { "label": "Client type", "type": "text", "placeholder": "Buyer / seller" },
+    "situacija": { "label": "Situation", "type": "text", "placeholder": "Price inquiry, follow-up..." },
+    "zinute": { "label": "Message", "type": "textarea", "placeholder": "Client message or context" },
+    "ctaTipas": { "label": "CTA type", "type": "text", "placeholder": "Meeting, call" },
+    "siulomaKaina": { "label": "Proposed price (€)", "type": "text", "placeholder": "€" },
+    "kontekstas": { "label": "Context", "type": "textarea", "placeholder": "Negotiation context" },
+    "derybuTikslas": { "label": "Negotiation goal", "type": "text", "placeholder": "Defend price / compromise" },
+    "tema": { "label": "Topic", "type": "text", "placeholder": "Market topic" },
+    "turinioTipas": { "label": "Content type", "type": "text", "placeholder": "Expert / review / forecast" }
+  },
+  "theme": {
+    "light": { "--primary": "#1E4A8C", "--primary-hover": "#153A70", "--primary-light": "#2D5BB8", "--accent-gold": "#B8962E", "--accent-gold-hover": "#C9A227", "--surface-0": "linear-gradient(180deg, #F0F4FA 0%, #E6ECF4 50%, #E0E8F0 100%)", "--surface-1": "linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)", "--text": "#1A1E24", "--text-light": "#5C6370", "--border": "#DDE2E8", "--output-bg": "#1E4A8C" },
+    "dark": { "--primary": "#4E7AEE", "--primary-hover": "#3D6AD9", "--primary-light": "#6B92F5", "--accent-gold": "#D4AF37", "--accent-gold-hover": "#E5C86B", "--surface-0": "linear-gradient(180deg, #0F1115 0%, #13171E 50%, #0D0F13 100%)", "--surface-1": "linear-gradient(180deg, #1C1F26 0%, #232830 100%)", "--text": "#F2F4F7", "--text-light": "#8B92A0", "--border": "#2E3544", "--output-bg": "#1A2744" }
+  },
+  "libraryPrompts": [
+    { "id": "skelbimas_nt", "title": "RE listing template", "desc": "For portals and social channels", "icon": "sparkles", "prompt": "Role: RE market analyst and top-tier RE broker (15y experience). Goal: Create listing from property data – emotional or rational angle. Tone: premium. INPUT: Property, location, price, area/rooms, advantages, audience. OUTPUT: Hook, main copy, 3-5 USP, CTA. Quality: accurate language, no sales fluff." },
+    { "id": "komunikacija_pirkėjas", "title": "Client communication", "desc": "Responses to buyers and sellers", "icon": "message-square", "prompt": "Role: RE broker assistant. Prepare response to client (buyer/seller) by situation. OUTPUT: Short, professional response – value, clarity, CTA. Tone by context. Accurate language." },
+    { "id": "derybu_strategija", "title": "Negotiation argumentation", "desc": "Goal, price, context", "icon": "handshake", "prompt": "Role: Negotiation strategist. Form arguments for goal: defend price / compromise / close deal. INPUT: Initial price, proposed price, market context. OUTPUT: 3-5 strong arguments. Accurate language, no aggression." },
+    { "id": "rinkos_analize", "title": "Market analysis / content", "desc": "Expert content by topic", "icon": "bar-chart-3", "prompt": "Role: RE market analyst. Create expert content (overview, insights) on given topic. OUTPUT: Structured content – facts, trends, conclusions. Accurate language, value for reader." }
+  ],
+  "rules": [
+    { "text": "Accurate language; no sales fluff, only value", "icon": "check-circle" },
+    { "text": "Maximum engagement and clear USP", "icon": "check-circle" },
+    { "text": "Role: RE market analyst and top-tier RE broker", "icon": "check-circle" },
+    { "text": "One mode – one goal; clarity over complexity", "icon": "check-circle" },
+    { "text": "Result fits broker workflow in 30–60 sec.", "icon": "check-circle" }
+  ]
+}

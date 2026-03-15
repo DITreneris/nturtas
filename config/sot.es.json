@@ -1,0 +1,109 @@
+{
+  "brand": {
+    "productName": "Sistema operativa DI para corredor inmobiliario",
+    "edition": "Spin-off N.º 7",
+    "positioning": "Prompts inmobiliarios profesionales, anuncios y comunicación con clientes en 30–60 seg."
+  },
+  "colors": {
+    "charcoal": "#0F1115",
+    "graphite": "#1C1F26",
+    "deepBlue": "#2D5BB8",
+    "navy": "#153A70",
+    "gold": "#C9A227",
+    "lightGold": "#E5C86B",
+    "steelGrey": "#5C6370",
+    "textPrimary": "#F2F4F7",
+    "textSecondary": "#8B92A0",
+    "backgroundLight": "#F0F4FA",
+    "primaryLight": "#1E4A8C",
+    "accentLight": "#B8962E",
+    "textDark": "#1A1E24",
+    "panelsLight": "#FFFFFF"
+  },
+  "cta": {
+    "primary": { "background": "#1E4A8C", "text": "#F9FAFB", "hoverBackground": "#153A70" },
+    "secondary": { "border": "#2D5BB8", "text": "#1E4A8C" },
+    "accent": { "background": "#C9A227", "hoverBackground": "#E5C86B" }
+  },
+  "copy": {
+    "promptAnatomyUrl": "https://www.promptanatomy.app/",
+    "loadingLabel": "Cargando...",
+    "heroTitle": "Sistema operativa DI para corredor inmobiliario",
+    "heroSubtitle": "Genera prompts inmobiliarios, anuncios y comunicación con clientes en 30–60 seg.",
+    "heroCtaPrimary": "Generar prompt",
+    "heroCtaSecondary": "Ver plantillas",
+    "heroCtaMeta": "Ahorra hasta 5 h por semana. Creado para corredores.",
+    "badge": "Sistema operativa DI",
+    "copyErrorLabel": "Error:",
+    "copyRetryLabel": "Reintentar",
+    "copySuccess": "Copiado",
+    "copyFailed": "Error al copiar",
+    "btnCopy": "Copiar",
+    "rulesAriaLabel": "Reglas",
+    "themeToggleLabelLight": "Cambiar a modo oscuro",
+    "themeToggleLabelDark": "Cambiar a modo claro",
+    "promptAnatomyLinkText": "Anatomía del prompt →",
+    "promptAnatomyAriaLabel": "Anatomía del prompt – se abre en nueva pestaña",
+    "inputBlockLabel": "INPUT (completado)",
+    "footerDebugLabel": "Tema: {{theme}}. SOT cargado – modos, copy y colores desde config/sot.json.",
+    "modalTemplatesTitle": "Plantillas",
+    "btnUse": "Usar",
+    "btnClose": "Cerrar",
+    "selectPlaceholder": "Seleccionar",
+    "loadError404": "Config no encontrado (404). Se usa el predeterminado.",
+    "loadErrorGeneric": "Error al cargar la configuración. Se usa el predeterminado.",
+    "activeModeLabel": "Modo activo:",
+    "contactEmail": "info@promptanatomy.app",
+    "footerContactLabel": "Contacto:",
+    "footerCredit": "Spin-off N.º 7 de Anatomía del prompt."
+  },
+  "showDebugInFooter": true,
+  "modesOrder": ["OBJEKTAS", "SKELBIMAS", "KOMUNIKACIJA", "DERYBOS", "ANALIZE"],
+  "modes": {
+    "OBJEKTAS": { "id": "objektas", "label": "Inmueble", "desc": "Análisis y valor del inmueble", "formId": "form-objektas", "icon": "building-2", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "privalumai", "auditorija", "tonas"] },
+    "SKELBIMAS": { "id": "skelbimas", "label": "Anuncio", "desc": "Creación de anuncio inmobiliario", "formId": "form-skelbimas", "icon": "sparkles", "libraryPromptId": "skelbimas_nt", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "privalumai", "auditorija", "tonas", "platforma", "strategija", "ilgis"] },
+    "KOMUNIKACIJA": { "id": "komunikacija", "label": "Comunicación", "desc": "Respuestas a clientes", "formId": "form-komunikacija", "icon": "message-square", "libraryPromptId": "komunikacija_pirkėjas", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "privalumai", "auditorija", "tonas", "klientoTipas", "situacija", "zinute", "ctaTipas"] },
+    "DERYBOS": { "id": "derybos", "label": "Negociación", "desc": "Estrategia de negociación", "formId": "form-derybos", "icon": "handshake", "libraryPromptId": "derybu_strategija", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "privalumai", "auditorija", "tonas", "siulomaKaina", "kontekstas", "derybuTikslas"] },
+    "ANALIZE": { "id": "analize", "label": "Análisis", "desc": "Análisis de mercado y contenido", "formId": "form-analize", "icon": "bar-chart-3", "libraryPromptId": "rinkos_analize", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "privalumai", "auditorija", "tonas", "tema", "turinioTipas"] }
+  },
+  "fieldMeta": {
+    "objektoTipas": { "label": "Tipo de inmueble", "type": "text", "placeholder": "ej. piso, casa" },
+    "lokacija": { "label": "Ubicación / dirección", "type": "text", "placeholder": "Ciudad, zona" },
+    "plotas": { "label": "Superficie (m²)", "type": "text", "placeholder": "m²" },
+    "kambariai": { "label": "Habitaciones", "type": "text", "placeholder": "ej. 3" },
+    "kaina": { "label": "Precio (€)", "type": "text", "placeholder": "€" },
+    "bukle": { "label": "Estado", "type": "text", "placeholder": "ej. nuevo, bien mantenido" },
+    "privalumai": { "label": "Ventajas", "type": "textarea", "placeholder": "USP, ventajas" },
+    "auditorija": { "label": "Público", "type": "text", "placeholder": "Público objetivo" },
+    "tonas": { "label": "Tono", "type": "select", "placeholder": "Seleccionar", "options": ["premium", "neutral", "cercano"] },
+    "platforma": { "label": "Plataforma", "type": "text", "placeholder": "ej. portales" },
+    "strategija": { "label": "Estrategia", "type": "text", "placeholder": "Emocional / racional" },
+    "ilgis": { "label": "Longitud", "type": "text", "placeholder": "Corto / medio" },
+    "klientoTipas": { "label": "Tipo de cliente", "type": "text", "placeholder": "Comprador / vendedor" },
+    "situacija": { "label": "Situación", "type": "text", "placeholder": "Consulta precio, seguimiento..." },
+    "zinute": { "label": "Mensaje", "type": "textarea", "placeholder": "Mensaje o contexto del cliente" },
+    "ctaTipas": { "label": "Tipo de CTA", "type": "text", "placeholder": "Reunión, llamada" },
+    "siulomaKaina": { "label": "Precio propuesto (€)", "type": "text", "placeholder": "€" },
+    "kontekstas": { "label": "Contexto", "type": "textarea", "placeholder": "Contexto de negociación" },
+    "derybuTikslas": { "label": "Objetivo de negociación", "type": "text", "placeholder": "Defender precio / compromiso" },
+    "tema": { "label": "Tema", "type": "text", "placeholder": "Tema de mercado" },
+    "turinioTipas": { "label": "Tipo de contenido", "type": "text", "placeholder": "Experto / reseña / pronóstico" }
+  },
+  "theme": {
+    "light": { "--primary": "#1E4A8C", "--primary-hover": "#153A70", "--primary-light": "#2D5BB8", "--accent-gold": "#B8962E", "--accent-gold-hover": "#C9A227", "--surface-0": "linear-gradient(180deg, #F0F4FA 0%, #E6ECF4 50%, #E0E8F0 100%)", "--surface-1": "linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)", "--text": "#1A1E24", "--text-light": "#5C6370", "--border": "#DDE2E8", "--output-bg": "#1E4A8C" },
+    "dark": { "--primary": "#4E7AEE", "--primary-hover": "#3D6AD9", "--primary-light": "#6B92F5", "--accent-gold": "#D4AF37", "--accent-gold-hover": "#E5C86B", "--surface-0": "linear-gradient(180deg, #0F1115 0%, #13171E 50%, #0D0F13 100%)", "--surface-1": "linear-gradient(180deg, #1C1F26 0%, #232830 100%)", "--text": "#F2F4F7", "--text-light": "#8B92A0", "--border": "#2E3544", "--output-bg": "#1A2744" }
+  },
+  "libraryPrompts": [
+    { "id": "skelbimas_nt", "title": "Plantilla de anuncio inmobiliario", "desc": "Para portales y redes", "icon": "sparkles", "prompt": "Rol: analista de mercado inmobiliario y corredor de alto nivel. Objetivo: crear anuncio a partir de datos del inmueble. OUTPUT: gancho, texto principal, 3-5 USP, CTA. Lengua precisa, sin ruido comercial." },
+    { "id": "komunikacija_pirkėjas", "title": "Comunicación con clientes", "desc": "Respuestas a compradores y vendedores", "icon": "message-square", "prompt": "Rol: asistente del corredor. Preparar respuesta al cliente según situación. OUTPUT: respuesta breve y profesional, CTA. Lengua precisa." },
+    { "id": "derybu_strategija", "title": "Argumentación de negociación", "desc": "Objetivo, precio, contexto", "icon": "handshake", "prompt": "Rol: estratega de negociación. Formular argumentos. OUTPUT: 3-5 argumentos sólidos. Lengua precisa, sin agresividad." },
+    { "id": "rinkos_analize", "title": "Análisis de mercado / contenido", "desc": "Contenido experto por tema", "icon": "bar-chart-3", "prompt": "Rol: analista de mercado. Crear contenido experto sobre el tema. OUTPUT: contenido estructurado, conclusiones. Lengua precisa." }
+  ],
+  "rules": [
+    { "text": "Lengua precisa; sin ruido comercial, solo valor", "icon": "check-circle" },
+    { "text": "Máximo engagement y USP claros", "icon": "check-circle" },
+    { "text": "Rol: analista de mercado y corredor de alto nivel", "icon": "check-circle" },
+    { "text": "Un modo – un objetivo; claridad ante complejidad", "icon": "check-circle" },
+    { "text": "Resultado listo para el corredor en 30–60 seg.", "icon": "check-circle" }
+  ]
+}

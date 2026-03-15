@@ -9,7 +9,7 @@ module.exports = defineConfig({
   fullyParallel: false,
   reporter: 'list',
   use: {
-    baseURL: 'http://127.0.0.1:3000',
+    baseURL: process.env.BASE_URL || 'http://127.0.0.1:4173/nturtas/',
     trace: 'retain-on-failure'
   },
   projects: [

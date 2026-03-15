@@ -1,28 +1,37 @@
-# Cursor rules - DI Pamoku Kurejas (Edu MVP)
+# Cursor rules – DI Operacinė Sistema NT Brokeriui (SOT)
 
 ## Projektas
-- Statinė HTML aplikacija (`index.html` + `privatumas.html`).
-- Pagrindinė logika: `generator.js` (generatorius) ir `copy.js` (kopijavimas).
-- Stiliai: `style.css` (įskaitant dark mode).
+
+- **Produktas:** DI Operacinė Sistema NT Brokeriui (Spin-off Nr. 7) – profesionalūs NT promptai, skelbimai ir klientų komunikacija per 30–60 sek.
+- **SOT (vienintelis tiesos šaltinis):** `config/sot.json` – brand, copy, režimai (modes), spalvos/theme, libraryPrompts, rules. Root ir `nt-broker-ui/public/config/sot.json` (build) turi būti suderinti.
+- **Aplikacija:** `nt-broker-ui` – React + Vite. Copy, režimai, tema skaitomi iš SOT (SotProvider, useSot); nehardkoduoti tekstai ar režimų struktūra, kuri apibrėžta SOT.
+- **Legacy (root):** `index.html`, `generator.js`, `copy.js`, `style.css` – gali būti naudojami kaip atsarginis/statinių puslapių variantas; aktyvus produktas – nt-broker-ui.
 
 ## Kalba ir tonas (vartotojui matomas tekstas)
-- Kreipinys: **Tu**.
-- Tekstas: **lakoniškai**, mažiau yra geriau.
+
+- Tekstai ir taisyklės – iš SOT (`copy`, `rules`). Bendri principai: **tiksli lietuvių kalba**, jokio „salesy“ triukšmo, tik vertė; maksimalus įtraukimas ir aiškūs USP; rezultatas per 30–60 sek.
+- Kreipinys: **Tu**. Tekstas: **lakoniškai**, mažiau yra geriau.
 
 ## Saugumas
+
 - Nekomituoti jokių secretų / raktų / tokenų.
-- Production kode: **be `console.log`** ir be jautrių duomenų log’inimo.
+- Production kode: **be `console.log`** ir be jautrių duomenų log'inimo.
 
 ## Kokybė
+
 - A11y: semantika, `aria-*` tik kur reikia, aiškus `:focus-visible`.
-- Kopijavimas: turi veikti ir su `navigator.clipboard`, ir su fallback.
+- Kopijavimas (jei taikoma): turi veikti su `navigator.clipboard` ir fallback.
+- UI turi atitikti SOT: režimai (Objektas, Skelbimas, Komunikacija, Derybos, Analizė), copy ir theme – iš sot.json.
 
 ## Prieš merge / deploy
-- `npm test` praeina
-- Jei keistas UX/flow: `npm run test:smoke` ir `npm run test:a11y`
-- Jei keistas kritinis srautas: `npm run test:e2e`
+
+- `npm test` praeina (root ir/arba nt-broker-ui).
+- Jei keistas UX/flow: `npm run test:smoke` ir `npm run test:a11y` (jei konfigūruota).
+- Jei keistas kritinis srautas: `npm run test:e2e` (jei konfigūruota).
+- nt-broker-ui: `cd nt-broker-ui && npm run build` sėkmingas.
 
 ## Dokumentacija
-- Aktyvios dokumentacijos tiesos saltinis: `docs/INDEX.md`.
-- Jei keiti UX / flow / funkcijas: atnaujink tik aktyvius failus, nurodytus `docs/INDEX.md`.
-- Neversk atnaujinti archyviniu failu, jei jie nebuvo grazinti i aktyvia zona.
+
+- Aktyvių dokumentų tiesos šaltinis: **`docs/INDEX.md`**.
+- Jei keiti UX / flow / funkcijas / copy ar režimus: atnaujink SOT (`config/sot.json`) arba aktyvius failus iš `docs/INDEX.md`.
+- Neversk atnaujinti archyvinių failų, jei jie nebuvo grąžinti į aktyvią zoną.

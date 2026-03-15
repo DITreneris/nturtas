@@ -1,26 +1,20 @@
 {
-  "name": "di-operacinis-centras",
+  "name": "nt-broker",
   "version": "1.0.0",
   "private": true,
-  "description": "DI Pamoku Kurejas - edukacinis DI uzklausu generatorius mokytojams",
+  "description": "DI Operacinė Sistema NT Brokeriui – profesionalūs NT promptai, skelbimai ir klientų komunikacija",
   "scripts": {
-    "test": "npm run test:docs && node tests/structure.test.js && npm run lint:html && npm run lint:js",
+    "test": "npm run test:docs && npm run test:ui",
     "test:docs": "node tests/docs-hygiene.test.js",
-    "test:structure": "node tests/structure.test.js",
-    "test:smoke": "start-server-and-test \"serve . -l 3000\" http://127.0.0.1:3000/ \"playwright test tests/e2e/smoke.spec.js\"",
-    "test:e2e": "start-server-and-test \"serve . -l 3000\" http://127.0.0.1:3000/ \"playwright test tests/e2e/core-flow.spec.js\"",
-    "test:mixed": "npm run test && npm run test:smoke && npm run test:e2e && npm run test:a11y",
-    "test:a11y": "start-server-and-test \"serve . -l 3000\" http://127.0.0.1:3000/ \"pa11y http://127.0.0.1:3000/ --config .pa11yrc.json && pa11y http://127.0.0.1:3000/privatumas.html --config .pa11yrc.json\"",
-    "lint:html": "npx html-validator-cli --file index.html && npx html-validator-cli --file privatumas.html",
+    "test:ui": "cd nt-broker-ui && npm run copy-sot && npm run build && npm run test",
+    "test:e2e": "start-server-and-test \"cd nt-broker-ui && npm run build && npx vite preview --port 4173\" \"http://127.0.0.1:4173/nturtas/\" \"cross-env BASE_URL=http://127.0.0.1:4173/nturtas/ npx playwright test tests/e2e/nt-broker-ui.spec.js\"",
+    "test:mixed": "npm run test && npm run test:e2e",
     "lint:js": "eslint . --ext .js"
   },
   "devDependencies": {
     "@playwright/test": "^1.53.2",
+    "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
-    "html-validator-cli": "^7.0.0",
-    "pa11y": "^6.2.3",
-    "serve": "^14.2.1",
-    "start-server-and-test": "^2.0.11",
-    "wait-on": "^8.0.1"
+    "start-server-and-test": "^2.0.11"
   }
 }

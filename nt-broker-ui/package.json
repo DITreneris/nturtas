@@ -1,0 +1,31 @@
+{
+  "name": "nt-broker-ui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "copy-sot": "node scripts/copy-sot.cjs",
+    "dev": "vite",
+    "prebuild": "node scripts/copy-sot.cjs",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.0.1",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.4",
+    "jsdom": "^25.0.1",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.1",
+    "vitest": "^2.1.6"
+  },
+  "dependencies": {
+    "lucide-react": "^0.577.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  }
+}

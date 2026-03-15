@@ -1,5 +1,5 @@
-# GitHub Pages deploy - DI Pamoku Kurejas (statine HTML)
-# Reikalavimas: Repo Settings -> Pages -> Build and deployment: GitHub Actions
+# GitHub Pages deploy – nt-broker-ui (nturtas)
+# Repo Settings → Pages → Build and deployment: GitHub Actions
 
 name: Deploy to GitHub Pages
 
@@ -26,29 +26,37 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: npm ci
-      - run: npx playwright install --with-deps chromium
-      - name: Run full quality gates
+      - name: Install root dependencies
+        run: npm ci
+      - name: Install nt-broker-ui dependencies
+        run: cd nt-broker-ui && npm ci
+      - name: Install Playwright
+        run: npx playwright install --with-deps chromium
+      - name: Quality gates
         run: npm run test:mixed
         env:
           CI: true
+          BASE_URL: http://127.0.0.1:4173/nturtas/
 
   deploy:
     needs: test
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - name: Prepare Pages artifact
-        run: |
-          mkdir -p _site/config
-          cp index.html privatumas.html style.css generator.js copy.js favicon.svg _site/
-          cp config/sot.json _site/config/sot.json
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/setup-node@v4
         with:
-          path: _site
+          node-version: '20'
+      - name: Install root dependencies
+        run: npm ci
+      - name: Install nt-broker-ui and build
+        run: |
+          cd nt-broker-ui && npm ci && npm run build
+      - uses: actions/upload-pages-artifact@3
+        with:
+          path: nt-broker-ui/dist
       - id: deploy
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@4
