@@ -39,6 +39,7 @@ jobs:
         env:
           CI: true
           BASE_URL: http://127.0.0.1:4173/nturtas/
+          WAIT_ON_TIMEOUT: 60000
 
   deploy:
     needs: test
