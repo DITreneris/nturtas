@@ -1,12 +1,25 @@
 export type Locale = 'lt' | 'en' | 'es'
 
+export interface FieldGroup {
+  label: string
+  fields: string[]
+  collapsible?: boolean
+  defaultCollapsed?: boolean
+}
+
 export interface SotMode {
   id: string
   label: string
   desc: string
+  longDesc?: string
+  ctaLabel?: string
+  outputTitle?: string
+  outputHint?: string
   formId: string
   icon: string
+  accentColor?: string
   fields: string[]
+  fieldGroups?: FieldGroup[]
   libraryPromptId?: string
 }
 
@@ -15,6 +28,7 @@ export interface FieldMetaItem {
   type?: 'text' | 'textarea' | 'select'
   placeholder?: string
   options?: string[]
+  recommended?: boolean
 }
 
 export interface SotCopy {
@@ -48,6 +62,23 @@ export interface SotCopy {
   contactEmail?: string
   footerContactLabel?: string
   footerCredit?: string
+  firstStepHint?: string
+  outputDefaultTitle?: string
+  outputDefaultHint?: string
+  onboardingSteps?: string[]
+  fieldProgressLabel?: string
+  baseFieldsGroupLabel?: string
+  rulesTitle?: string
+  emptyGenerateHint?: string
+  aiToolLinksLabel?: string
+  charCountLabel?: string
+  operationCenterLabel?: string
+  operationCenterSubLabel?: string
+  whatsappLabel?: string
+  whatsappUrl?: string
+  skipToContentLabel?: string
+  footerTagline?: string
+  footerCopyright?: string
 }
 
 export interface SotTheme {
@@ -59,6 +90,12 @@ export interface SotCta {
   primary?: { background?: string; text?: string; hoverBackground?: string }
   secondary?: { border?: string; text?: string }
   accent?: { background?: string; hoverBackground?: string }
+}
+
+export interface AiToolLink {
+  label: string
+  url: string
+  icon: string
 }
 
 export interface Sot {
@@ -73,4 +110,5 @@ export interface Sot {
   theme?: SotTheme
   libraryPrompts?: Array<{ id: string; title: string; desc: string; icon: string; prompt: string }>
   rules?: Array<{ text: string; icon: string }>
+  aiToolLinks?: AiToolLink[]
 }

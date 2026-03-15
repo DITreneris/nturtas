@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import {
   Building2,
   Sparkles,
@@ -8,8 +8,12 @@ import {
   Rocket,
   CheckCircle,
   Check,
+  ChevronDown,
+  ChevronUp,
+  ExternalLink,
 } from 'lucide-react'
 import { SotProvider, useSot } from './sot/SotContext'
+import { defaultSot } from './sot/defaultSot'
 import { ModeForm } from './components/ModeForm'
 import { LibraryPromptsModal } from './components/LibraryPromptsModal'
 
@@ -28,6 +32,8 @@ const LOCALES: Array<{ code: 'lt' | 'en' | 'es'; label: string }> = [
   { code: 'es', label: 'ES' },
 ]
 
+const dc = defaultSot.copy
+
 function AppContent() {
   const { sot, loading, error, retryLoad, locale, setLocale } = useSot()
   const [activeMode, setActiveMode] = useState<string>('skelbimas')
@@ -36,6 +42,17 @@ function AppContent() {
   const [generatedPrompt, setGeneratedPrompt] = useState<string | null>(null)
   const [copyFeedback, setCopyFeedback] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
   const [libraryModalOpen, setLibraryModalOpen] = useState(false)
+  const [rulesExpanded, setRulesExpanded] = useState(true)
+  const [emptyHint, setEmptyHint] = useState<string | null>(null)
+  const emptyHintTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const copyFeedbackTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(emptyHintTimer.current)
+      clearTimeout(copyFeedbackTimer.current)
+    }
+  }, [])
 
   const modesList = useMemo(() => {
     if (!sot?.modes) return []
@@ -81,7 +98,7 @@ function AppContent() {
   }, [locale, sot?.copy?.heroTitle])
 
   if (loading) {
-    const loadingLabel = sot?.copy?.loadingLabel ?? 'Kraunama...'
+    const loadingLabel = sot?.copy?.loadingLabel ?? dc?.loadingLabel ?? ''
     return (
       <div
         style={{ padding: '2rem', textAlign: 'center' }}
@@ -110,14 +127,23 @@ function AppContent() {
       setCopyFeedback(null)
       return
     }
-    const fields = currentMode?.fields ?? []
-    const inputLines = fields
+    const allFields = currentMode?.fieldGroups
+      ? currentMode.fieldGroups.flatMap((g) => g.fields)
+      : currentMode?.fields ?? []
+    const inputLines = allFields
       .map((f) => {
         const v = formValues[f]?.trim()
         return v ? `${f}: ${v}` : null
       })
       .filter(Boolean) as string[]
-    const inputBlockLabel = copy.inputBlockLabel ?? 'INPUT (užpildyta)'
+
+    if (inputLines.length === 0 && copy.emptyGenerateHint) {
+      setEmptyHint(copy.emptyGenerateHint)
+      clearTimeout(emptyHintTimer.current)
+      emptyHintTimer.current = setTimeout(() => setEmptyHint(null), 4000)
+    }
+
+    const inputBlockLabel = copy.inputBlockLabel ?? dc?.inputBlockLabel ?? ''
     const inputBlock =
       inputLines.length > 0
         ? `\n\n${inputBlockLabel}:\n${inputLines.join('\n')}`
@@ -133,12 +159,17 @@ function AppContent() {
     if (!generatedPrompt) return
     try {
       await navigator.clipboard.writeText(generatedPrompt)
-      setCopyFeedback({ message: copy.copySuccess ?? 'Nukopijuota', type: 'success' })
-      setTimeout(() => setCopyFeedback(null), 2000)
+      setCopyFeedback({ message: copy.copySuccess ?? dc?.copySuccess ?? '', type: 'success' })
+      clearTimeout(copyFeedbackTimer.current)
+      copyFeedbackTimer.current = setTimeout(() => setCopyFeedback(null), 2000)
     } catch {
-      setCopyFeedback({ message: copy.copyFailed ?? 'Kopijuoti nepavyko', type: 'error' })
+      setCopyFeedback({ message: copy.copyFailed ?? dc?.copyFailed ?? '', type: 'error' })
     }
   }
+
+  const outputTitle = currentMode?.outputTitle ?? copy.outputDefaultTitle ?? ''
+  const outputHint = currentMode?.outputHint ?? copy.outputDefaultHint ?? ''
+  const ctaLabel = currentMode?.ctaLabel ?? copy.heroCtaPrimary ?? dc?.heroCtaPrimary ?? ''
 
   return (
     <div
@@ -153,6 +184,9 @@ function AppContent() {
         fontFamily: "'Inter', system-ui, sans-serif",
       }}
     >
+      <a href="#main-content" className="skip-to-content">
+        {copy.skipToContentLabel ?? dc?.skipToContentLabel ?? ''}
+      </a>
       {error && (
         <div
           role="alert"
@@ -165,7 +199,7 @@ function AppContent() {
             fontSize: '0.875rem',
           }}
         >
-          {copy.copyErrorLabel ?? 'Klaida:'} {error}
+          {copy.copyErrorLabel ?? dc?.copyErrorLabel ?? ''} {error}
           <button
             type="button"
             className="btn-ghost"
@@ -177,7 +211,7 @@ function AppContent() {
               fontWeight: 600,
             }}
           >
-            {copy.copyRetryLabel ?? 'Bandyti dar kartą'}
+            {copy.copyRetryLabel ?? dc?.copyRetryLabel ?? ''}
           </button>
         </div>
       )}
@@ -189,26 +223,42 @@ function AppContent() {
         }}
       >
         <div style={{ maxWidth: '72rem', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-          <div style={{ display: 'flex', gap: '0.5rem', alignSelf: 'flex-end' }} role="group" aria-label="Language selection">
-            {LOCALES.map(({ code, label }) => (
-              <button
-                key={code}
-                type="button"
-                className={locale === code ? 'btn-primary' : 'btn-ghost'}
-                onClick={() => setLocale(code)}
-                aria-label={code === 'lt' ? 'Lietuvių' : code === 'en' ? 'English' : 'Español'}
-                aria-pressed={locale === code}
-                style={{
-                  padding: '0.25rem 0.5rem',
-                  fontSize: '0.75rem',
-                  fontWeight: locale === code ? 700 : 500,
-                  borderRadius: '0.375rem',
-                  cursor: 'pointer',
-                }}
-              >
-                {label}
-              </button>
-            ))}
+          <div style={{ display: 'flex', gap: '0.5rem', alignSelf: 'flex-end', alignItems: 'center', flexWrap: 'wrap' }}>
+            <div role="group" aria-label="Language selection" style={{ display: 'flex', gap: '0.5rem' }}>
+              {LOCALES.map(({ code, label }) => (
+                <button
+                  key={code}
+                  type="button"
+                  className={locale === code ? 'btn-primary' : 'btn-ghost'}
+                  onClick={() => setLocale(code)}
+                  aria-label={code === 'lt' ? 'Lietuvių' : code === 'en' ? 'English' : 'Español'}
+                  aria-pressed={locale === code}
+                  style={{
+                    padding: '0.25rem 0.5rem',
+                    fontSize: '0.75rem',
+                    fontWeight: locale === code ? 700 : 500,
+                    borderRadius: '0.375rem',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            <button
+              type="button"
+              className="btn-ghost"
+              onClick={() => setTheme((t) => (t === 'light' ? 'dark' : 'light'))}
+              aria-label={theme === 'light' ? (copy.themeToggleLabelLight ?? dc?.themeToggleLabelLight ?? '') : (copy.themeToggleLabelDark ?? dc?.themeToggleLabelDark ?? '')}
+              style={{
+                padding: '0.25rem 0.5rem',
+                fontSize: '0.75rem',
+                cursor: 'pointer',
+                borderRadius: '0.375rem',
+              }}
+            >
+              {theme === 'light' ? (copy.themeToggleLabelLight ?? dc?.themeToggleLabelLight ?? '') : (copy.themeToggleLabelDark ?? dc?.themeToggleLabelDark ?? '')}
+            </button>
           </div>
           <div style={{ textAlign: 'center', width: '100%' }}>
           <span
@@ -226,17 +276,22 @@ function AppContent() {
             }}
           >
             <Rocket size={14} />
-            {copy.badge ?? 'DI Operacinė Sistema'}
+            {copy.badge ?? dc?.badge ?? ''}
           </span>
           <h1 style={{ fontSize: '1.875rem', fontWeight: 800, marginBottom: '0.5rem' }}>
-            {copy.heroTitle ?? 'DI Operacinė Sistema NT Brokeriui'}
+            {copy.heroTitle ?? dc?.heroTitle ?? ''}
           </h1>
           <p style={{ color: 'var(--text-light)', fontSize: '1.125rem', maxWidth: '42rem', margin: '0 auto' }}>
-            {copy.heroSubtitle ?? 'Generuok profesionalius NT promptus, skelbimus ir klientų komunikaciją per 30–60 sek.'}
+            {copy.heroSubtitle ?? dc?.heroSubtitle ?? ''}
           </p>
           </div>
         </div>
       </header>
+
+      <div className="operation-center-label">
+        <strong>{copy.operationCenterLabel ?? dc?.operationCenterLabel ?? ''}</strong>
+        <span>{copy.operationCenterSubLabel ?? dc?.operationCenterSubLabel ?? ''}</span>
+      </div>
 
       <nav
         style={{
@@ -260,6 +315,7 @@ function AppContent() {
             {modesList.map((mode) => {
               const isActive = activeMode === mode.id
               const Icon = mode.Icon
+              const bgColor = isActive && mode.accentColor ? mode.accentColor : undefined
               return (
                 <button
                   key={mode.id}
@@ -269,18 +325,25 @@ function AppContent() {
                   onClick={() => setActiveMode(mode.id)}
                   style={{
                     display: 'flex',
+                    flexDirection: 'column',
                     alignItems: 'center',
-                    gap: '0.5rem',
+                    gap: '0.125rem',
                     padding: '0.75rem 1.5rem',
                     borderRadius: '0.75rem',
                     fontWeight: 700,
                     fontSize: '0.875rem',
                     cursor: 'pointer',
                     boxShadow: isActive ? 'var(--shadow-sm, 0 4px 6px -1px rgba(0,0,0,0.1))' : 'none',
+                    ...(bgColor ? { background: bgColor } : {}),
                   }}
                 >
-                  <Icon size={16} />
-                  {mode.label}
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Icon size={16} />
+                    {mode.label}
+                  </span>
+                  <span style={{ fontSize: '0.625rem', fontWeight: 400, opacity: 0.8 }}>
+                    {mode.desc}
+                  </span>
                 </button>
               )
             })}
@@ -288,58 +351,112 @@ function AppContent() {
         </div>
       </nav>
 
-      <main style={{ maxWidth: '72rem', margin: '0 auto', padding: '1rem' }}>
+      <main id="main-content" style={{ maxWidth: '72rem', margin: '0 auto', padding: '1rem' }}>
+        {/* Onboarding steps */}
+        {copy.onboardingSteps && copy.onboardingSteps.length > 0 && (
+          <div className="onboarding-steps" style={{ marginTop: '1rem' }}>
+            {copy.onboardingSteps.map((step, i) => (
+              <div key={step} className="onboarding-step">
+                <span className="step-number">{i + 1}</span>
+                <span>{step}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Mode context */}
         <div style={{ marginTop: '1rem' }}>
           <p style={{ color: 'var(--text-light)', fontSize: '0.875rem' }}>
-            {copy.activeModeLabel ?? 'Aktyvus režimas:'} <strong>{currentMode?.label ?? activeMode}</strong>
-            {currentMode?.desc ? ` – ${currentMode.desc}` : ''}
+            {copy.activeModeLabel ?? dc?.activeModeLabel ?? ''}{' '}
+            <strong style={{ color: currentMode?.accentColor }}>{currentMode?.label ?? activeMode}</strong>
           </p>
-          <p style={{ marginTop: '0.5rem', fontSize: '0.875rem' }}>
-            {copy.heroCtaMeta ?? 'Sutaupyk iki 5 val. per savaitę. Sukurta brokeriams.'}
+          {currentMode?.longDesc && (
+            <p style={{ marginTop: '0.5rem', fontSize: '0.875rem', lineHeight: 1.6 }}>
+              {currentMode.longDesc}
+            </p>
+          )}
+          <p style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: 'var(--text-light)' }}>
+            {copy.heroCtaMeta ?? dc?.heroCtaMeta ?? ''}
           </p>
         </div>
 
-        {currentMode && currentMode.fields.length > 0 && (
+        {/* Rules -- "Ką gausite" */}
+        {sot?.rules && sot.rules.length > 0 && (
+          <div style={{ marginTop: '1.5rem' }}>
+            <button
+              type="button"
+              className="btn-ghost"
+              onClick={() => setRulesExpanded((e) => !e)}
+              aria-expanded={rulesExpanded}
+              aria-controls="rules-list"
+              id="rules-toggle"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.375rem 0.5rem',
+                fontSize: '0.875rem',
+                color: 'var(--text-light)',
+                cursor: 'pointer',
+                fontWeight: 600,
+                border: 'none',
+                background: 'transparent',
+              }}
+            >
+              {rulesExpanded ? <ChevronUp size={18} aria-hidden /> : <ChevronDown size={18} aria-hidden />}
+              {copy.rulesTitle ?? copy.rulesAriaLabel ?? dc?.rulesTitle ?? ''} ({sot.rules.length})
+            </button>
+            {rulesExpanded && (
+              <ul
+                id="rules-list"
+                role="region"
+                aria-labelledby="rules-toggle"
+                style={{
+                  marginTop: '0.5rem',
+                  paddingLeft: '1.25rem',
+                  color: 'var(--text-light)',
+                  fontSize: '0.875rem',
+                  listStyle: 'none',
+                }}
+              >
+                {sot.rules.map((rule) => (
+                  <li
+                    key={rule.text}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      marginBottom: '0.375rem',
+                    }}
+                  >
+                    <CheckCircle size={16} style={{ flexShrink: 0, color: 'var(--success)' }} aria-hidden />
+                    {rule.text}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+
+        {/* Form */}
+        {currentMode && (currentMode.fieldGroups?.length || currentMode.fields.length > 0) && (
           <ModeForm
             formId={currentMode.formId}
             fields={currentMode.fields}
+            fieldGroups={currentMode.fieldGroups}
             fieldMeta={sot?.fieldMeta}
             values={formValues}
             onChange={(fieldId, value) =>
               setFormValues((prev) => ({ ...prev, [fieldId]: value }))
             }
             selectPlaceholder={copy.selectPlaceholder}
+            accentColor={currentMode.accentColor}
+            fieldProgressLabel={copy.fieldProgressLabel}
           />
         )}
 
-        {sot?.rules && sot.rules.length > 0 && (
-          <ul
-            style={{
-              marginTop: '1.5rem',
-              paddingLeft: '1.25rem',
-              color: 'var(--text-light)',
-              fontSize: '0.875rem',
-              listStyle: 'none',
-            }}
-            aria-label={copy.rulesAriaLabel ?? 'Taisyklės'}
-          >
-            {sot.rules.map((rule, i) => (
-              <li
-                key={i}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  marginBottom: '0.375rem',
-                }}
-              >
-                <CheckCircle size={16} style={{ flexShrink: 0 }} aria-hidden />
-                {rule.text}
-              </li>
-            ))}
-          </ul>
-        )}
-        <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+        {/* CTA buttons */}
+        <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
           <button
             type="button"
             className="btn-primary"
@@ -350,9 +467,10 @@ function AppContent() {
               borderRadius: '0.75rem',
               fontWeight: 700,
               cursor: 'pointer',
+              ...(currentMode?.accentColor ? { background: currentMode.accentColor } : {}),
             }}
           >
-            {copy.heroCtaPrimary ?? 'Generuoti promptą'}
+            {ctaLabel}
           </button>
           <button
             type="button"
@@ -366,10 +484,24 @@ function AppContent() {
               cursor: 'pointer',
             }}
           >
-            {copy.heroCtaSecondary ?? 'Peržiūrėti šablonus'}
+            {copy.heroCtaSecondary ?? dc?.heroCtaSecondary ?? ''}
           </button>
+          {emptyHint && (
+            <span
+              role="status"
+              aria-live="polite"
+              style={{
+                fontSize: '0.8125rem',
+                color: 'var(--accent-gold)',
+                fontStyle: 'italic',
+              }}
+            >
+              {emptyHint}
+            </span>
+          )}
         </div>
 
+        {/* Output */}
         {generatedPrompt !== null && (
           <div
             style={{
@@ -382,18 +514,24 @@ function AppContent() {
               boxShadow: 'var(--shadow-md, none)',
             }}
           >
-            <pre
-              style={{
-                margin: 0,
-                whiteSpace: 'pre-wrap',
-                wordBreak: 'break-word',
-                maxHeight: '20rem',
-                overflowY: 'auto',
-              }}
-            >
-              {generatedPrompt}
-            </pre>
-            <div style={{ marginTop: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            {outputTitle && (
+              <h3 style={{ margin: '0 0 0.25rem', fontSize: '1rem', fontWeight: 700 }}>
+                {outputTitle}
+              </h3>
+            )}
+            {outputHint && (
+              <p className="output-context">
+                {outputHint}
+              </p>
+            )}
+            <textarea
+              className="editable-output"
+              value={generatedPrompt}
+              onChange={(e) => setGeneratedPrompt(e.target.value)}
+              rows={10}
+              aria-label={outputTitle}
+            />
+            <div style={{ marginTop: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
               <button
                 type="button"
                 className="btn-output-copy"
@@ -408,7 +546,7 @@ function AppContent() {
                   fontWeight: 600,
                 }}
               >
-                {copy.btnCopy ?? 'Kopijuoti'}
+                {copy.btnCopy ?? dc?.btnCopy ?? ''}
               </button>
               {copyFeedback && (
                 <span
@@ -428,7 +566,21 @@ function AppContent() {
                   {copyFeedback.message}
                 </span>
               )}
+              <span className="char-count" aria-live="polite">
+                {(copy.charCountLabel ?? dc?.charCountLabel ?? '{{count}}').replace('{{count}}', String(generatedPrompt.length))}
+              </span>
             </div>
+            {sot?.aiToolLinks && sot.aiToolLinks.length > 0 && (
+              <div className="ai-tool-links">
+                <span>{copy.aiToolLinksLabel ?? dc?.aiToolLinksLabel ?? ''}</span>
+                {sot.aiToolLinks.map((link) => (
+                  <a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer" className="btn-ai-tool">
+                    <ExternalLink size={14} aria-hidden />
+                    {link.label}
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
@@ -462,19 +614,32 @@ function AppContent() {
         >
           {sot?.showDebugInFooter !== false && (
             <p style={{ margin: 0, marginBottom: '0.75rem', fontSize: '0.75rem' }}>
-              {(copy.footerDebugLabel ?? 'Tema: {{theme}}. SOT pakrautas – režimai, copy ir spalvos valdomi iš config/sot.json.').replace('{{theme}}', theme)}
+              {(copy.footerDebugLabel ?? dc?.footerDebugLabel ?? '').replace('{{theme}}', theme)}
             </p>
           )}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem 1.25rem', alignItems: 'center' }}>
+          {copy.footerTagline && (
+            <p className="footer-tagline">{copy.footerTagline}</p>
+          )}
+          <div className="footer-links">
+            {copy.whatsappUrl && (
+              <a
+                href={copy.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: 'var(--primary)', textDecoration: 'underline' }}
+              >
+                {copy.whatsappLabel ?? dc?.whatsappLabel ?? ''}
+              </a>
+            )}
             {copy.promptAnatomyUrl && (
               <a
                 href={copy.promptAnatomyUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ color: 'var(--primary)', textDecoration: 'underline' }}
-                aria-label={copy.promptAnatomyAriaLabel ?? 'Promptų anatomija – atidaroma naujame lange'}
+                aria-label={copy.promptAnatomyAriaLabel ?? dc?.promptAnatomyAriaLabel ?? ''}
               >
-                {copy.promptAnatomyLinkText ?? 'Promptų anatomija →'}
+                {copy.promptAnatomyLinkText ?? dc?.promptAnatomyLinkText ?? ''}
               </a>
             )}
             {copy.contactEmail && (
@@ -495,20 +660,9 @@ function AppContent() {
               </span>
             )}
           </div>
-          <button
-            type="button"
-            className="btn-ghost"
-            onClick={() => setTheme((t) => (t === 'light' ? 'dark' : 'light'))}
-            aria-label={theme === 'light' ? (copy.themeToggleLabelLight ?? 'Perjungti į tamsų režimą') : (copy.themeToggleLabelDark ?? 'Perjungti į šviesų režimą')}
-            style={{
-              marginTop: '0.75rem',
-              padding: '0.5rem 1rem',
-              fontSize: '0.875rem',
-              cursor: 'pointer',
-            }}
-          >
-            {theme === 'light' ? (copy.themeToggleLabelLight ?? 'Perjungti į tamsų režimą') : (copy.themeToggleLabelDark ?? 'Perjungti į šviesų režimą')}
-          </button>
+          {copy.footerCopyright && (
+            <p className="footer-copyright">{copy.footerCopyright}</p>
+          )}
         </footer>
       </main>
     </div>

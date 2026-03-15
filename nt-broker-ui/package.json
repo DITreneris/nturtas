@@ -1,7 +1,7 @@
 {
   "name": "nt-broker-ui",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "copy-sot": "node scripts/copy-sot.cjs",

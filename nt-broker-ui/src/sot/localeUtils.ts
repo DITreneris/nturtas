@@ -41,6 +41,7 @@ export function getInitialLocale(): Locale {
 }
 
 export function persistLocale(locale: Locale): void {
+  if (typeof window === 'undefined') return
   try {
     localStorage.setItem(LOCALE_STORAGE_KEY, locale)
   } catch {

@@ -1,8 +1,8 @@
 {
   "brand": {
-    "productName": "DI Operacinė Sistema NT Brokeriui",
+    "productName": "NT Brokerio Asistentas",
     "edition": "Spin-off Nr. 7",
-    "positioning": "Profesionalūs NT promptai, skelbimai ir klientų komunikacija per 30–60 sek."
+    "positioning": "Sukurk profesionalų skelbimą, klientų atsakymą ar derybų strategiją per 60 sek. su AI pagalba."
   },
   "colors": {
     "charcoal": "#0F1115",
@@ -38,100 +38,175 @@
   "copy": {
     "promptAnatomyUrl": "https://www.promptanatomy.app/",
     "loadingLabel": "Kraunama...",
-    "heroTitle": "DI Operacinė Sistema NT Brokeriui",
-    "heroSubtitle": "Generuok profesionalius NT promptus, skelbimus ir klientų komunikaciją per 30–60 sek.",
-    "heroCtaPrimary": "Generuoti promptą",
-    "heroCtaSecondary": "Peržiūrėti šablonus",
+    "heroTitle": "NT Brokerio Asistentas",
+    "heroSubtitle": "Sukurk profesionalų skelbimą, klientų atsakymą ar derybų strategiją per 60 sek. su AI pagalba.",
+    "heroCtaPrimary": "Generuoti",
+    "heroCtaSecondary": "Šablonų biblioteka",
     "heroCtaMeta": "Sutaupyk iki 5 val. per savaitę. Sukurta brokeriams.",
-    "badge": "DI Operacinė Sistema",
+    "badge": "NT Brokerio Asistentas",
     "copyErrorLabel": "Klaida:",
     "copyRetryLabel": "Bandyti dar kartą",
     "copySuccess": "Nukopijuota",
     "copyFailed": "Kopijuoti nepavyko",
     "btnCopy": "Kopijuoti",
-    "rulesAriaLabel": "Taisyklės",
+    "rulesAriaLabel": "Ką gausite",
     "themeToggleLabelLight": "Perjungti į tamsų režimą",
     "themeToggleLabelDark": "Perjungti į šviesų režimą",
     "promptAnatomyLinkText": "Promptų anatomija →",
     "promptAnatomyAriaLabel": "Promptų anatomija – atidaroma naujame lange",
     "inputBlockLabel": "INPUT (užpildyta)",
     "footerDebugLabel": "Tema: {{theme}}. SOT pakrautas – režimai, copy ir spalvos valdomi iš config/sot.json.",
-    "modalTemplatesTitle": "Šablonai",
+    "modalTemplatesTitle": "Šablonų biblioteka",
     "btnUse": "Naudoti",
     "btnClose": "Uždaryti",
     "selectPlaceholder": "Pasirinkite",
     "loadError404": "Config nerastas (404). Naudojamas numatytasis nustatymas.",
-    "loadErrorGeneric": "Nepavyko užkrauti konfigūracijos. Naudojamas numatytasis nustatymas."
+    "loadErrorGeneric": "Nepavyko užkrauti konfigūracijos. Naudojamas numatytasis nustatymas.",
+    "activeModeLabel": "Aktyvus režimas:",
+    "contactEmail": "info@promptanatomy.app",
+    "footerContactLabel": "Kontaktai:",
+    "footerCredit": "Spin-off Nr. 7 iš Promptų anatomijos.",
+    "firstStepHint": "Pasirink režimą ir užpildyk bent 1–2 laukus – rezultatas priklausys nuo įvesties.",
+    "outputDefaultTitle": "Tavo sugeneruotas AI prompt",
+    "outputDefaultHint": "Kopijuok šį tekstą ir įklijuok į ChatGPT, Claude ar kitą AI įrankį – gausite paruoštą rezultatą.",
+    "onboardingSteps": [
+      "Pasirink režimą viršuje",
+      "Užpildyk pagrindinius laukus",
+      "Spustelk mygtuką – gausite AI prompt",
+      "Kopijuok prompt ir įklijuok į ChatGPT"
+    ],
+    "fieldProgressLabel": "{{filled}}/{{total}} laukų užpildyta",
+    "baseFieldsGroupLabel": "Objekto duomenys",
+    "rulesTitle": "Ką gausite",
+    "emptyGenerateHint": "Pridėk bent lokaciją ir kainą – rezultatas bus tikslesnis.",
+    "aiToolLinksLabel": "Nori išbandyti užklausą? Pasirink įrankį:",
+    "charCountLabel": "Simbolių: {{count}}",
+    "operationCenterLabel": "NT brokerio centras",
+    "operationCenterSubLabel": "Pasirink režimą, užpildyk laukus ir gauk paruoštą užklausą",
+    "whatsappUrl": "https://chat.whatsapp.com/It49fzTl1n90huRCoWWkwu?mode=gi_t",
+    "whatsappLabel": "Prisijungti prie WhatsApp grupės",
+    "skipToContentLabel": "Pereiti prie turinio",
+    "footerTagline": "Promptas sukurtas. Nori daugiau?",
+    "footerCopyright": "© 2026 Promptų anatomija. Visos teisės saugomos."
   },
+  "showDebugInFooter": false,
   "modesOrder": ["OBJEKTAS", "SKELBIMAS", "KOMUNIKACIJA", "DERYBOS", "ANALIZE"],
   "modes": {
     "OBJEKTAS": {
       "id": "objektas",
       "label": "Objektas",
       "desc": "Objekto analizė ir vertė",
+      "longDesc": "Analizuok NT objekto vertę, stipriąsias puses ir tikslinę auditoriją. AI parengs objekto vertinimo prompt.",
+      "ctaLabel": "Analizuoti objektą",
+      "outputTitle": "Objekto analizės prompt",
+      "outputHint": "Kopijuok šį prompt ir įklijuok į ChatGPT – gausite objekto analizę su vertės argumentais.",
+      "accentColor": "#0891b2",
       "formId": "form-objektas",
       "icon": "building-2",
-      "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "privalumai", "auditorija", "tonas"]
+      "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas"],
+      "fieldGroups": [
+        { "label": "Objekto duomenys", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas"] }
+      ]
     },
     "SKELBIMAS": {
       "id": "skelbimas",
       "label": "Skelbimas",
       "desc": "NT skelbimo kūrimas",
+      "longDesc": "Sukurk profesionalų skelbimą NT portalams (Aruodas, skelbimai.lt) arba socialiniams tinklams. AI suformuos hook, USP ir CTA.",
+      "ctaLabel": "Sukurti skelbimą",
+      "outputTitle": "Skelbimo prompt",
+      "outputHint": "Kopijuok šį prompt ir įklijuok į ChatGPT – gausite paruoštą skelbimo tekstą.",
+      "accentColor": "#2563eb",
       "formId": "form-skelbimas",
       "icon": "sparkles",
       "libraryPromptId": "skelbimas_nt",
-      "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "privalumai", "auditorija", "tonas", "platforma", "strategija", "ilgis"]
+      "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas", "platforma", "strategija", "ilgis"],
+      "fieldGroups": [
+        { "label": "Skelbimo nustatymai", "fields": ["platforma", "strategija", "ilgis"] },
+        { "label": "Objekto duomenys", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas"], "collapsible": true, "defaultCollapsed": false }
+      ]
     },
     "KOMUNIKACIJA": {
       "id": "komunikacija",
       "label": "Komunikacija",
       "desc": "Klientų atsakymai",
+      "longDesc": "Parengk profesionalų atsakymą klientui – pirkėjui ar pardavėjui. AI suformuos žinutę su vertės pasiūlymu ir CTA.",
+      "ctaLabel": "Parengti atsakymą",
+      "outputTitle": "Komunikacijos prompt",
+      "outputHint": "Kopijuok šį prompt ir įklijuok į ChatGPT – gausite paruoštą atsakymą klientui.",
+      "accentColor": "#7c3aed",
       "formId": "form-komunikacija",
       "icon": "message-square",
       "libraryPromptId": "komunikacija_pirkėjas",
-      "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "privalumai", "auditorija", "tonas", "klientoTipas", "situacija", "zinute", "ctaTipas"]
+      "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas", "klientoTipas", "situacija", "zinute", "ctaTipas"],
+      "fieldGroups": [
+        { "label": "Komunikacijos kontekstas", "fields": ["klientoTipas", "situacija", "zinute", "ctaTipas"] },
+        { "label": "Objekto duomenys", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas"], "collapsible": true, "defaultCollapsed": false }
+      ]
     },
     "DERYBOS": {
       "id": "derybos",
       "label": "Derybos",
       "desc": "Derybų strategija",
+      "longDesc": "Parenk derybų strategiją ir argumentus – ginti kainą, ieškoti kompromiso ar uždaryti sandorį. AI suformuos argumentaciją.",
+      "ctaLabel": "Parengti strategiją",
+      "outputTitle": "Derybų prompt",
+      "outputHint": "Kopijuok šį prompt ir įklijuok į ChatGPT – gausite derybų strategiją su argumentais.",
+      "accentColor": "#dc2626",
       "formId": "form-derybos",
       "icon": "handshake",
       "libraryPromptId": "derybu_strategija",
-      "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "privalumai", "auditorija", "tonas", "siulomaKaina", "kontekstas", "derybuTikslas"]
+      "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas", "siulomaKaina", "kontekstas", "derybuTikslas"],
+      "fieldGroups": [
+        { "label": "Derybų kontekstas", "fields": ["siulomaKaina", "kontekstas", "derybuTikslas"] },
+        { "label": "Objekto duomenys", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas"], "collapsible": true, "defaultCollapsed": false }
+      ]
     },
     "ANALIZE": {
       "id": "analize",
       "label": "Analizė",
       "desc": "Rinkos analizė ir turinys",
+      "longDesc": "Sukurk ekspertinį NT rinkos turinį – apžvalgą, prognozę ar analizę nurodyta tema. AI suformuos struktūruotą turinį.",
+      "ctaLabel": "Generuoti analizę",
+      "outputTitle": "Analizės prompt",
+      "outputHint": "Kopijuok šį prompt ir įklijuok į ChatGPT – gausite ekspertinį rinkos turinį.",
+      "accentColor": "#059669",
       "formId": "form-analize",
       "icon": "bar-chart-3",
       "libraryPromptId": "rinkos_analize",
-      "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "privalumai", "auditorija", "tonas", "tema", "turinioTipas"]
+      "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas", "tema", "turinioTipas"],
+      "fieldGroups": [
+        { "label": "Analizės nustatymai", "fields": ["tema", "turinioTipas"] },
+        { "label": "Objekto duomenys", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas"], "collapsible": true, "defaultCollapsed": false }
+      ]
     }
   },
   "fieldMeta": {
-    "objektoTipas": { "label": "Objekto tipas", "type": "text", "placeholder": "Pvz. butas, namas" },
-    "lokacija": { "label": "Lokacija / adresas", "type": "text", "placeholder": "Miestas, rajonas" },
-    "plotas": { "label": "Plotas (m²)", "type": "text", "placeholder": "m²" },
-    "kambariai": { "label": "Kambarių sk.", "type": "text", "placeholder": "Pvz. 3" },
-    "kaina": { "label": "Kaina (€)", "type": "text", "placeholder": "€" },
-    "bukle": { "label": "Būklė", "type": "text", "placeholder": "Pvz. nauja, gerai išlaikyta" },
+    "objektoTipas": { "label": "Objekto tipas", "type": "select", "placeholder": "Pasirinkite", "options": ["Butas", "Namas", "Kotedžas", "Komercinės patalpos", "Sklypas", "Garažas"], "recommended": true },
+    "lokacija": { "label": "Lokacija / adresas", "type": "text", "placeholder": "Miestas, rajonas", "recommended": true },
+    "plotas": { "label": "Plotas (m²)", "type": "select", "placeholder": "Pasirinkite", "options": ["iki 50 m²", "iki 75 m²", "iki 100 m²", "iki 150 m²", "iki 200 m²", "200+ m²"] },
+    "kambariai": { "label": "Kambarių sk.", "type": "select", "placeholder": "Pasirinkite", "options": ["1", "2", "3", "4", "5", "6+"] },
+    "kaina": { "label": "Kaina (€)", "type": "select", "placeholder": "Pasirinkite", "options": ["iki 50 000 €", "iki 75 000 €", "iki 100 000 €", "iki 150 000 €", "iki 200 000 €", "200 000+ €"], "recommended": true },
+    "bukle": { "label": "Būklė", "type": "select", "placeholder": "Pasirinkite", "options": ["Nauja statyba", "Renovuotas", "Geros būklės", "Vidutinės būklės", "Reikia remonto"] },
+    "statybosMetai": { "label": "Statybos metai", "type": "select", "placeholder": "Pasirinkite", "options": ["Iki 1940", "1941–1960", "1961–1990", "1991–2000", "2001–2010", "2011–2020", "2021+"] },
+    "aukstas": { "label": "Aukštas", "type": "select", "placeholder": "Pasirinkite", "options": ["1", "2", "3", "4", "5", "6–10", "10+", "Palėpė"] },
+    "sildymas": { "label": "Šildymas", "type": "select", "placeholder": "Pasirinkite", "options": ["Centrinis", "Dujinis", "Elektrinis", "Kietojo kuro", "Šilumos siurblys"] },
+    "irengimas": { "label": "Įrengimas", "type": "select", "placeholder": "Pasirinkite", "options": ["Pilnai įrengtas", "Dalinė apdaila", "Neįrengtas"] },
     "privalumai": { "label": "Privalumai", "type": "textarea", "placeholder": "USP, privalumai" },
-    "auditorija": { "label": "Auditorija", "type": "text", "placeholder": "Tikslinė auditorija" },
+    "auditorija": { "label": "Auditorija", "type": "select", "placeholder": "Pasirinkite", "options": ["Jauna šeima", "Investuotojas", "Pirmas būstas", "Pensininkai", "Verslininkai"] },
     "tonas": { "label": "Tonas", "type": "select", "placeholder": "Pasirinkite", "options": ["premium", "neutralus", "draugiškas"] },
-    "platforma": { "label": "Platforma", "type": "text", "placeholder": "Pvz. Aruodas, skelbimai.lt" },
-    "strategija": { "label": "Strategija", "type": "text", "placeholder": "Emocinis / racionalus" },
-    "ilgis": { "label": "Ilgis", "type": "text", "placeholder": "Trumpas / vidutinis" },
-    "klientoTipas": { "label": "Kliento tipas", "type": "text", "placeholder": "Pirkėjas / pardavėjas" },
-    "situacija": { "label": "Situacija", "type": "text", "placeholder": "Domisi kaina, follow-up..." },
+    "platforma": { "label": "Platforma", "type": "select", "placeholder": "Pasirinkite", "options": ["Aruodas", "Skelbimai.lt", "Facebook", "Instagram", "LinkedIn"] },
+    "strategija": { "label": "Strategija", "type": "select", "placeholder": "Pasirinkite", "options": ["Emocinis", "Racionalus", "Mišrus"] },
+    "ilgis": { "label": "Ilgis", "type": "select", "placeholder": "Pasirinkite", "options": ["Trumpas", "Vidutinis", "Ilgas"] },
+    "klientoTipas": { "label": "Kliento tipas", "type": "select", "placeholder": "Pasirinkite", "options": ["Pirkėjas", "Pardavėjas", "Nuomininkas"] },
+    "situacija": { "label": "Situacija", "type": "select", "placeholder": "Pasirinkite", "options": ["Domisi kaina", "Follow-up po apžiūros", "Neatsako", "Pasiūlymo teikimas", "Pirmas kontaktas"] },
     "zinute": { "label": "Žinutė", "type": "textarea", "placeholder": "Kliento žinutė ar kontekstas" },
-    "ctaTipas": { "label": "CTA tipas", "type": "text", "placeholder": "Susitikimas, skambutis" },
+    "ctaTipas": { "label": "CTA tipas", "type": "select", "placeholder": "Pasirinkite", "options": ["Susitikimas", "Skambutis", "El. paštas", "Apžiūra"] },
     "siulomaKaina": { "label": "Siūloma kaina (€)", "type": "text", "placeholder": "€" },
     "kontekstas": { "label": "Kontekstas", "type": "textarea", "placeholder": "Derybų kontekstas" },
-    "derybuTikslas": { "label": "Derybų tikslas", "type": "text", "placeholder": "Ginti kainą / kompromisas" },
+    "derybuTikslas": { "label": "Derybų tikslas", "type": "select", "placeholder": "Pasirinkite", "options": ["Ginti kainą", "Kompromisas", "Uždaryti sandorį"] },
     "tema": { "label": "Tema", "type": "text", "placeholder": "Rinkos tema" },
-    "turinioTipas": { "label": "Turinio tipas", "type": "text", "placeholder": "Ekspertinis / apžvalga / prognozė" }
+    "turinioTipas": { "label": "Turinio tipas", "type": "select", "placeholder": "Pasirinkite", "options": ["Ekspertinis", "Apžvalga", "Prognozė"] }
   },
   "theme": {
     "light": {
@@ -145,7 +220,13 @@
       "--text": "#1A1E24",
       "--text-light": "#5C6370",
       "--border": "#DDE2E8",
-      "--output-bg": "#1E4A8C"
+      "--output-bg": "#1E4A8C",
+      "--success": "#0d9488",
+      "--error": "#dc2626",
+      "--error-bg": "#fef2f2",
+      "--shadow-sm": "0 1px 2px 0 rgba(0,0,0,0.05)",
+      "--shadow-md": "0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1)",
+      "--shadow-lg": "0 25px 50px -12px rgba(0,0,0,0.25)"
     },
     "dark": {
       "--primary": "#4E7AEE",
@@ -158,7 +239,13 @@
       "--text": "#F2F4F7",
       "--text-light": "#8B92A0",
       "--border": "#2E3544",
-      "--output-bg": "#1A2744"
+      "--output-bg": "#1A2744",
+      "--success": "#2dd4bf",
+      "--error": "#f87171",
+      "--error-bg": "#450a0a",
+      "--shadow-sm": "0 1px 3px 0 rgba(0,0,0,0.2)",
+      "--shadow-md": "0 4px 6px -1px rgba(0,0,0,0.2), 0 2px 4px -2px rgba(0,0,0,0.15)",
+      "--shadow-lg": "0 25px 50px -12px rgba(0,0,0,0.4)"
     }
   },
   "libraryPrompts": [
@@ -192,10 +279,14 @@
     }
   ],
   "rules": [
-    { "text": "Tiksli lietuvių kalba; jokio „salesy“ triukšmo, tik vertė", "icon": "check-circle" },
-    { "text": "Maksimalus įtraukimas ir aiškūs USP", "icon": "check-circle" },
-    { "text": "Rolė: NT rinkos analitikas ir aukščiausio lygio NT brokeris", "icon": "check-circle" },
-    { "text": "Vienas režimas – vienas tikslas; aiškumas prieš sudėtingumą", "icon": "check-circle" },
-    { "text": "Rezultatas pritaikomas brokerio darbui per 30–60 sek.", "icon": "check-circle" }
+    { "text": "Profesionali, tiksli lietuvių kalba", "icon": "check-circle" },
+    { "text": "Paruošta naudoti per 30–60 sek.", "icon": "check-circle" },
+    { "text": "Maksimalus įtraukimas ir aiški vertė", "icon": "check-circle" },
+    { "text": "Pritaikyta NT brokerio kasdieniam darbui", "icon": "check-circle" }
+  ],
+  "aiToolLinks": [
+    { "label": "Atidaryti ChatGPT", "url": "https://chat.openai.com/", "icon": "external-link" },
+    { "label": "Atidaryti Claude", "url": "https://claude.ai/", "icon": "external-link" },
+    { "label": "Atidaryti Gemini", "url": "https://gemini.google.com/", "icon": "external-link" }
   ]
 }

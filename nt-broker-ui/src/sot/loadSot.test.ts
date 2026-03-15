@@ -41,7 +41,7 @@ describe('loadSot', () => {
       ok: false,
       status: 500,
     })
-    await expect(loadSot('lt')).rejects.toThrow(/Klaida 500/)
+    await expect(loadSot('lt')).rejects.toThrow(/Nepavyko užkrauti konfigūracijos/)
   })
 
   it('rejects with generic message on network error', async () => {

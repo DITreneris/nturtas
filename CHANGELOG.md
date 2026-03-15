@@ -4,7 +4,55 @@ Formatas pagal [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), versija
 
 ## [Nereleisuota]
 
+### Pataisyta
+- **defaultSot.ts -- pilnas fallback:** pridėti `libraryPrompts` (4 šablonai), `rules` (4 taisyklės), `colors` ir `cta` sekcijos iš `config/sot.json`; jei SOT nepasikrauna, vartotojas mato pilną UI, ne tuščias sekcijas.
+- **Hardkoduoti LT fallback'ai pašalinti:** ~25 vietos `App.tsx` ir 6 vietos `LibraryPromptsModal.tsx` -- visi `?? 'Kopijuoti'` tipo fallback'ai pakeisti `defaultSot.copy` nuorodomis; EN/ES vartotojai nebematys lietuviškų tekstų jei konfigūracija nepasikraus.
+- **Modal focus trap (WCAG 2.1 AA):** `LibraryPromptsModal` -- Tab/Shift+Tab ciklas tarp focusable elementų; auto-focus atidarius; fokuso grąžinimas į trigger elementą uždarant.
+- **setTimeout cleanup:** `App.tsx` ir `LibraryPromptsModal.tsx` -- `useRef` + `clearTimeout` vietoj nevaldomų `setTimeout`; pašalinta state update ant unmounted komponento rizika.
+- **loadSot.ts error handling:** sukurta `SotLoadError` klasė su `instanceof` tikrinimu vietoj trapio string prefix matching; non-404 klaidos pranešimas naudoja locale-aware `errors.generic` vietoj hardkoduoto LT.
+- **main.tsx:** `document.getElementById('app')!` pakeistas null check su aiškiu error.
+- **isValidSot stiprinimas:** pridėti `modesOrder` (Array.isArray) ir `fieldMeta` (typeof object) tikrinimai.
+- **localeUtils.ts SSR guard:** `persistLocale` apgaubtas `typeof window === 'undefined'` guard analogiškai kitoms funkcijoms.
+- **loadSot.test.ts:** atnaujintas testas 500 klaidos scenarijui (tikrina `errors.generic`, ne hardkoduotą `Klaida 500`).
+
+### Pašalinta
+- **Dead CSS:** `.logo`, `.logo.vanilla`, `.card`, `.read-the-docs` (Vite template likučiai); `text-align: center` iš `#app`; `.read-the-docs` iš light mode media query.
+- **Dead failas:** `typescript.svg` (Vite template, neimportuotas).
+- **Dead tipai:** `SotCopy.recommendedFieldsHint` ir `SotCopy.modeFieldsGroupLabel` (nenaudojami).
+- **Nereikalingas `typeof console` check:** `loadSot.ts` supaprastintas iki tiesioginio `console.warn(...)`.
+
+### Pakeista
+- **Array keys:** `App.tsx` onboardingSteps ir rules sąrašuose `key={i}` pakeisti į content-derived keys (`key={step}`, `key={rule.text}`).
+- **Dokumentacija sinchronizuota su kodu:**
+  - `docs/roadmap.md` -- 5 įgyvendinti items perkelti į „Įgyvendinta"; likę: forma/rezultatas, poliravimas.
+  - `README.md` -- roadmap sekcija sinchronizuota su roadmap.md.
+  - `docs/INDEX.md` -- SOT build path atnaujintas (locale-based failai); pridėtas `localeUtils.ts`; `LT_EN_UI_UX_REPORT.md` klasifikuotas kaip archyvas.
+  - `CHANGELOG.md` -- sujungti dubliuoti `### Pakeista`; `[Nereleisuota]` išleista kaip `[2.0.0]`.
+- **`nt-broker-ui/package.json`:** versija `0.0.0` → `2.0.0`.
+- **`LT_EN_UI_UX_REPORT.md`:** perkeltas iš root į `docs/archive/` (kito projekto dokumentas).
+
+---
+
+## [2.0.0] – 2026-03-15
+
 ### Prideta
+- **Pilnas UX upgrade (P1+P2+P3) iš seserinių produktų analizės:**
+  - **AI įrankių nuorodos:** Naujas `aiToolLinks` masyvas SOT root (ChatGPT, Claude, Gemini); po output generavimo rodomi mygtukai su nuorodomis; SOT copy `aiToolLinksLabel`.
+  - **Redaguojamas output:** `<pre>` pakeistas į `<textarea>` su klase `.editable-output`; vartotojas gali redaguoti sugeneruotą prompt prieš kopijavimą.
+  - **Simbolių skaitliukas:** Po output, šalia Copy mygtuko, rodomas simbolių skaičius; SOT copy `charCountLabel` su `{{count}}` placeholder.
+  - **Operacinis centras:** Nauja sekcija tarp header ir nav – „NT brokerio centras" su sub-etikete; SOT copy `operationCenterLabel`, `operationCenterSubLabel`.
+  - **Skip-to-content (a11y):** Pirmas elementas App viduje – nerodoma vizualiai, matoma su Tab focus; SOT copy `skipToContentLabel`; `id="main-content"` ant main elemento.
+  - **Footer praturtinimas:** `footerTagline` (bold viršutinė eilutė), WhatsApp nuoroda (`whatsappUrl`, `whatsappLabel`), `footerCopyright` apatinė eilutė; naujos CSS klasės `.footer-tagline`, `.footer-links`, `.footer-copyright`.
+  - **Laukų konvertavimas į select:** 12 text laukų (objektoTipas, kambariai, būklė, platforma, strategija, ilgis, klientoTipas, situacija, ctaTipas, derybuTikslas, auditorija, turinioTipas) konvertuoti į select su SOT options.
+  - **Nauji laukai:** `statybosMetai`, `aukštas`, `šildymas`, `įrengimas` – visi select su options; įtraukti į visų režimų „Objekto duomenys" fieldGroups.
+  - **types.ts:** `AiToolLink` interface; `SotCopy` papildyta 9 naujais laukais; `Sot.aiToolLinks`.
+  - **defaultSot.ts:** Sinchronizuota su sot.json – nauji fieldMeta, fieldGroups, aiToolLinks, copy raktai.
+  - **i18n:** Visi nauji laukai, options ir copy raktai lokalizuoti EN (`sot.en.json`) ir ES (`sot.es.json`).
+  - **style.css:** Naujos klasės: `.skip-to-content`, `.operation-center-label`, `.editable-output`, `.char-count`, `.ai-tool-links`, `.btn-ai-tool`, `.footer-tagline`, `.footer-links`, `.footer-copyright`.
+  - **index.html:** Title atnaujintas į „NT Brokerio Asistentas".
+  - **Testai:** 6 nauji unit testai App.test.tsx (AI links, editable output, char count, operation center, skip-to-content, WhatsApp footer); 4 nauji defaultSot testai (nauji laukai, aiToolLinks, copy raktai, select konversijos); 6 nauji E2E testai.
+
+### Pakeista
 - **i18n (daugiakalbis UI):** Kalbos tipas `Locale = 'lt' | 'en' | 'es'`; locale nustatymas pagal `?lang=` → localStorage (`nt_broker_lang`) → `navigator.language` → fallback `lt`. Atskiri SOT failai `config/sot.lt.json`, `config/sot.en.json`, `config/sot.es.json`; `loadSot(locale)` krauna atitinkamą failą. Kalbos perjungiklis (LT | EN | ES) header'yje; `document.documentElement.lang` ir `document.title` atnaujinami pagal locale. Pilnas EN ir ES turinys (copy, modes, fieldMeta, libraryPrompts, rules) – `config/sot.en.json`, `config/sot.es.json`. Klaidos loadSot pagal locale – `LOAD_ERROR_STRINGS` lt/en/es.
 - **SOT copy išplėtimas (Fazė 1):** Visi UI tekstai iš SOT: `copyErrorLabel`, `copyRetryLabel`, `copySuccess`, `copyFailed`, `btnCopy`, `rulesAriaLabel`, `themeToggleLabelLight`/`Dark`, `promptAnatomyLinkText`/`promptAnatomyAriaLabel`, `inputBlockLabel`, `footerDebugLabel`, `modalTemplatesTitle`, `btnUse`, `btnClose`, `selectPlaceholder`, `loadError404`, `loadErrorGeneric`. `fieldMeta` – laukas `options?: string[]` (select opcijoms, pvz. tonas).
 - **localeUtils.ts:** `getInitialLocale()`, `persistLocale(locale)` (localStorage + URL query), `LOCALE_STORAGE_KEY`.
@@ -30,8 +78,12 @@ Formatas pagal [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), versija
   - **LibraryPromptsModal:** copy feedback state (copyFeedbackItemId, copyFeedbackType), 2 s inline „Nukopijuota“/copyFailed; copy prop `copySuccess`, `copyFailed`.
   - **Tipografika:** Inter (Google Fonts) – index.html link, :root ir App fontFamily.
 - **Tradicinis footer ir Prompt Anatomy / kontaktai:** Semantinis `<footer>` main pabaigoje su border-top, nuoroda į https://www.promptanatomy.app/, kontaktai (mailto: info@promptanatomy.app), pasteikė (Spin-off Nr. 7); tema toggle ir debug (sąlyginai) – footeryje. SOT copy: `contactEmail`, `footerContactLabel`, `footerCredit` (LT/EN/ES) – config/sot.json, sot.en.json, sot.es.json; types (SotCopy) ir defaultSot atnaujinti. E2E testas „footer has Prompt Anatomy link and contact email“. docs/PREMIUM_UX_UI_DEEP_DIVE.md ir planas atnaujinti.
+- **Plotas ir kaina – scrollable select (LT, EN, ES):** `fieldMeta.plotas` ir `fieldMeta.kaina` – `type: "select"` su fiksuotais intervalais (plotas: iki 50/75/100/150/200 m², 200+ m²; kaina: iki 50k/75k/100k/150k/200k €, 200k+ €). Option tekstai lokalizuoti – config/sot.json (LT), sot.en.json (EN), sot.es.json (ES); defaultSot fallback su LT options.
+- **firstStepHint:** SOT copy `firstStepHint` (LT/EN/ES) – viena eilutė virš formos, pvz. „Pasirink režimą ir užpildyk bent 1–2 laukus“; tipas SotCopy.firstStepHint; rodoma App virš formos (italic, text-light).
+- **Sutraukiamos taisyklės:** Rules blokas – mygtukas „Taisyklės (N)“ su ChevronDown/ChevronUp, `aria-expanded`; sąrašas rodomas tik atidarius (numatyta – sutraukta). Sumažina vizualų triukšmą (roadmap Poliravimas).
 
-### Pakeista
+- **Tema į header:** Tema (šviesus/tamsus) toggle perkeltas iš footeriaus į header – šalia kalbos perjungiklio (LT | EN | ES); footer liko be temos mygtuko (roadmap Srauto aiškumas).
+- **Deploy į nturtas (GitHub Pages) pavyko.** CI pataisymai: horizontalus overflow mobilėj – `html`, `body`, `#app` ir root App konteineris su `overflow-x: hidden` / `width: 100%`; E2E naudoja `?lang=lt`, kad CI matytų lietuvišką copy; GitHub Pages actions – `actions/upload-pages-artifact@v3`, `actions/deploy-pages@v4` (versijos su `v` prefix).
 - **App:** režimų sąrašas pagal `modesOrder` (fallback į Object.keys); klaidos bloke mygtukas „Bandyti dar kartą“ (retryLoad); režimų mygtukai ir CTA su `data-testid` (mode-{id}, cta-generate, cta-templates); integruota ModeForm, generavimo handleris, išvesties blokas, LibraryPromptsModal. **i18n:** visi tekstai (klaida, retry, copy feedback, btnCopy, rules aria-label, tema, prompt anatomy, footer, inputBlockLabel) – iš `sot.copy`; kalbos perjungiklis (LT | EN | ES) header'yje; `useEffect` nustato `document.documentElement.lang` ir `document.title` pagal locale.
 - **SotContext:** teikia `locale` ir `setLocale`; `load(locale)` – SOT kraunamas pagal locale; pradinis locale iš `getInitialLocale()`.
 - **loadSot:** priima `locale: Locale`; krauna `config/sot.${locale}.json`; klaidos iš `LOAD_ERROR_STRINGS[locale]`.

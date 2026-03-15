@@ -5,7 +5,6 @@ const viewports = [
   { name: 'tablet', width: 768, height: 1024 },
 ];
 
-/** E2E uses LT locale so CI (navigator.language=en) still sees Lithuanian copy. */
 const GOTO_OPTIONS = { waitUntil: 'load' };
 
 for (const vp of viewports) {
@@ -14,17 +13,18 @@ for (const vp of viewports) {
 
     test('app loads and shows SOT copy and mode tabs', async ({ page }) => {
       await page.goto('/?lang=lt', GOTO_OPTIONS);
-      await expect(page.getByRole('heading', { level: 1 })).toContainText(/DI Operacinė Sistema NT Brokeriui/i);
-      await expect(page.getByText(/Generuok profesionalius NT promptus/i)).toBeVisible();
+      await expect(page.getByRole('heading', { level: 1 })).toContainText(/NT Brokerio Asistentas/i);
+      await expect(page.getByText(/Sukurk profesionalų skelbimą/i)).toBeVisible();
       await expect(page.getByTestId('mode-objektas')).toBeVisible();
       await expect(page.getByTestId('mode-skelbimas')).toBeVisible();
       await expect(page.getByTestId('cta-generate')).toBeVisible();
     });
 
-    test('mode tabs switch and theme toggle works', async ({ page }) => {
+    test('mode tabs switch and show mode-specific CTA', async ({ page }) => {
       await page.goto('/?lang=lt', GOTO_OPTIONS);
       await page.getByTestId('mode-derybos').click();
       await expect(page.getByText(/Derybų strategija/i)).toBeVisible();
+      await expect(page.getByTestId('cta-generate')).toContainText(/Parengti strategiją/i);
       await page.getByRole('button', { name: /Perjungti į tamsų režimą/i }).click();
       await expect(page.getByRole('button', { name: /Perjungti į šviesų režimą/i })).toBeVisible();
     });
@@ -33,7 +33,7 @@ for (const vp of viewports) {
       await page.goto('/?lang=lt', GOTO_OPTIONS);
       await page.getByTestId('cta-templates').click();
       await expect(page.getByRole('dialog')).toBeVisible();
-      await expect(page.getByText('Šablonai')).toBeVisible();
+      await expect(page.getByText(/Šablonų biblioteka/i)).toBeVisible();
     });
 
     test('no horizontal overflow on mobile', async ({ page }) => {
@@ -55,6 +55,57 @@ for (const vp of viewports) {
       const mailtoLink = footer.locator('a[href^="mailto:"]');
       await expect(mailtoLink).toHaveAttribute('href', 'mailto:info@promptanatomy.app');
       await expect(mailtoLink).toContainText('info@promptanatomy.app');
+    });
+
+    test('onboarding steps are visible', async ({ page }) => {
+      await page.goto('/?lang=lt', GOTO_OPTIONS);
+      await expect(page.getByText(/Pasirink režimą viršuje/i)).toBeVisible();
+      await expect(page.getByText(/Kopijuok prompt ir įklijuok/i)).toBeVisible();
+    });
+
+    test('field groups render with section headers', async ({ page }) => {
+      await page.goto('/?lang=lt', GOTO_OPTIONS);
+      await expect(page.getByText('Skelbimo nustatymai')).toBeVisible();
+      await expect(page.getByText('Objekto duomenys')).toBeVisible();
+    });
+
+    test('output shows context hint after generate', async ({ page }) => {
+      await page.goto('/?lang=lt', GOTO_OPTIONS);
+      await page.getByTestId('cta-generate').click();
+      await expect(page.getByText(/Kopijuok šį prompt ir įklijuok/i)).toBeVisible();
+    });
+
+    test('AI tool links visible after generate', async ({ page }) => {
+      await page.goto('/?lang=lt', GOTO_OPTIONS);
+      await page.getByTestId('cta-generate').click();
+      await expect(page.getByText('Atidaryti ChatGPT')).toBeVisible();
+    });
+
+    test('output is editable textarea', async ({ page }) => {
+      await page.goto('/?lang=lt', GOTO_OPTIONS);
+      await page.getByTestId('cta-generate').click();
+      const textarea = page.locator('.editable-output');
+      await expect(textarea).toBeVisible();
+      await textarea.fill('Custom edited text');
+      await expect(textarea).toHaveValue('Custom edited text');
+    });
+
+    test('operation center label visible', async ({ page }) => {
+      await page.goto('/?lang=lt', GOTO_OPTIONS);
+      await expect(page.getByText('NT brokerio centras')).toBeVisible();
+    });
+
+    test('footer has WhatsApp link', async ({ page }) => {
+      await page.goto('/?lang=lt', GOTO_OPTIONS);
+      const footer = page.locator('footer');
+      const whatsappLink = footer.locator('a[href*="whatsapp"]');
+      await expect(whatsappLink).toBeVisible();
+    });
+
+    test('skip-to-content link exists', async ({ page }) => {
+      await page.goto('/?lang=lt', GOTO_OPTIONS);
+      const skipLink = page.locator('a[href="#main-content"]');
+      await expect(skipLink).toHaveCount(1);
     });
   });
 }

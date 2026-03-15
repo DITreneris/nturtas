@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Sparkles, MessageSquare, Handshake, BarChart3 } from 'lucide-react'
+import { defaultSot } from '../sot/defaultSot'
 
 type IconComponent = React.ComponentType<{ className?: string; size?: number }>
 const ICON_MAP: Record<string, IconComponent> = {
@@ -44,47 +45,81 @@ export function LibraryPromptsModal({
   copy: copyProp,
 }: LibraryPromptsModalProps) {
   const copy = copyProp ?? {}
-  const modalTitle = copy.modalTemplatesTitle ?? 'Šablonai'
-  const btnCopyText = copy.btnCopy ?? 'Kopijuoti'
-  const btnUseText = copy.btnUse ?? 'Naudoti'
-  const btnCloseText = copy.btnClose ?? 'Uždaryti'
-  const copySuccessText = copy.copySuccess ?? 'Nukopijuota'
-  const copyFailedText = copy.copyFailed ?? 'Kopijuoti nepavyko'
+  const dc = defaultSot.copy
+  const modalTitle = copy.modalTemplatesTitle ?? dc?.modalTemplatesTitle ?? ''
+  const btnCopyText = copy.btnCopy ?? dc?.btnCopy ?? ''
+  const btnUseText = copy.btnUse ?? dc?.btnUse ?? ''
+  const btnCloseText = copy.btnClose ?? dc?.btnClose ?? ''
+  const copySuccessText = copy.copySuccess ?? dc?.copySuccess ?? ''
+  const copyFailedText = copy.copyFailed ?? dc?.copyFailed ?? ''
   const overlayRef = useRef<HTMLDivElement>(null)
+  const dialogRef = useRef<HTMLDivElement>(null)
+  const previousFocusRef = useRef<HTMLElement | null>(null)
   const [copyFeedbackItemId, setCopyFeedbackItemId] = useState<string | null>(null)
   const [copyFeedbackType, setCopyFeedbackType] = useState<'success' | 'error' | null>(null)
+  const feedbackTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
+
+  const getFocusableElements = useCallback(() => {
+    if (!dialogRef.current) return []
+    return Array.from(
+      dialogRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+    ).filter((el) => !el.hasAttribute('disabled') && el.offsetParent !== null)
+  }, [])
 
   useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
+    if (!open) return
+    previousFocusRef.current = document.activeElement as HTMLElement | null
+    const timer = setTimeout(() => {
+      const focusable = getFocusableElements()
+      if (focusable.length > 0) focusable[0].focus()
+    }, 0)
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { onClose(); return }
+      if (e.key !== 'Tab') return
+      const focusable = getFocusableElements()
+      if (focusable.length === 0) return
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
     }
-    if (open) {
-      document.addEventListener('keydown', handleEscape)
-      return () => document.removeEventListener('keydown', handleEscape)
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      clearTimeout(timer)
+      previousFocusRef.current?.focus()
     }
-  }, [open, onClose])
+  }, [open, onClose, getFocusableElements])
 
   const handleOverlayClick = (e: React.MouseEvent) => {
     if (e.target === overlayRef.current) onClose()
   }
+
+  useEffect(() => {
+    return () => clearTimeout(feedbackTimer.current)
+  }, [])
 
   const handleCopy = async (text: string, itemId: string) => {
     try {
       await navigator.clipboard.writeText(text)
       setCopyFeedbackItemId(itemId)
       setCopyFeedbackType('success')
-      setTimeout(() => {
-        setCopyFeedbackItemId(null)
-        setCopyFeedbackType(null)
-      }, 2000)
     } catch {
       setCopyFeedbackItemId(itemId)
       setCopyFeedbackType('error')
-      setTimeout(() => {
-        setCopyFeedbackItemId(null)
-        setCopyFeedbackType(null)
-      }, 2000)
     }
+    clearTimeout(feedbackTimer.current)
+    feedbackTimer.current = setTimeout(() => {
+      setCopyFeedbackItemId(null)
+      setCopyFeedbackType(null)
+    }, 2000)
   }
 
   const handleUse = (promptId: string) => {
@@ -117,6 +152,7 @@ export function LibraryPromptsModal({
       onClick={handleOverlayClick}
     >
       <div
+        ref={dialogRef}
         style={{
           background: 'var(--surface-1)',
           color: 'var(--text)',

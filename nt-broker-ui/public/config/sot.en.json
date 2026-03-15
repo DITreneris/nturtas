@@ -1,8 +1,8 @@
 {
   "brand": {
-    "productName": "DI Operating System for RE Broker",
+    "productName": "RE Broker Assistant",
     "edition": "Spin-off No. 7",
-    "positioning": "Professional RE prompts, listings and client communication in 30–60 sec."
+    "positioning": "Create a professional listing, client response or negotiation strategy in 60 sec. with AI."
   },
   "colors": {
     "charcoal": "#0F1115",
@@ -28,25 +28,25 @@
   "copy": {
     "promptAnatomyUrl": "https://www.promptanatomy.app/",
     "loadingLabel": "Loading...",
-    "heroTitle": "DI Operating System for RE Broker",
-    "heroSubtitle": "Generate professional RE prompts, listings and client communication in 30–60 sec.",
-    "heroCtaPrimary": "Generate prompt",
-    "heroCtaSecondary": "View templates",
+    "heroTitle": "RE Broker Assistant",
+    "heroSubtitle": "Create a professional listing, client response or negotiation strategy in 60 sec. with AI.",
+    "heroCtaPrimary": "Generate",
+    "heroCtaSecondary": "Template library",
     "heroCtaMeta": "Save up to 5 hours per week. Built for brokers.",
-    "badge": "DI Operating System",
+    "badge": "RE Broker Assistant",
     "copyErrorLabel": "Error:",
     "copyRetryLabel": "Retry",
     "copySuccess": "Copied",
     "copyFailed": "Copy failed",
     "btnCopy": "Copy",
-    "rulesAriaLabel": "Rules",
+    "rulesAriaLabel": "What you get",
     "themeToggleLabelLight": "Switch to dark mode",
     "themeToggleLabelDark": "Switch to light mode",
     "promptAnatomyLinkText": "Prompt anatomy →",
     "promptAnatomyAriaLabel": "Prompt anatomy – opens in new tab",
     "inputBlockLabel": "INPUT (filled)",
     "footerDebugLabel": "Theme: {{theme}}. SOT loaded – modes, copy and colors from config/sot.json.",
-    "modalTemplatesTitle": "Templates",
+    "modalTemplatesTitle": "Template library",
     "btnUse": "Use",
     "btnClose": "Close",
     "selectPlaceholder": "Select",
@@ -55,43 +55,128 @@
     "activeModeLabel": "Active mode:",
     "contactEmail": "info@promptanatomy.app",
     "footerContactLabel": "Contact:",
-    "footerCredit": "Spin-off No. 7 from Prompt Anatomy."
+    "footerCredit": "Spin-off No. 7 from Prompt Anatomy.",
+    "firstStepHint": "Choose a mode and fill in at least 1–2 fields – the result depends on your input.",
+    "outputDefaultTitle": "Your generated AI prompt",
+    "outputDefaultHint": "Copy this text and paste it into ChatGPT, Claude or another AI tool – you will get a ready result.",
+    "onboardingSteps": [
+      "Choose a mode above",
+      "Fill in the key fields",
+      "Click the button – get an AI prompt",
+      "Copy the prompt and paste into ChatGPT"
+    ],
+    "fieldProgressLabel": "{{filled}}/{{total}} fields filled",
+    "baseFieldsGroupLabel": "Property details",
+    "rulesTitle": "What you get",
+    "emptyGenerateHint": "Add at least a location and price – the result will be more accurate.",
+    "aiToolLinksLabel": "Want to try the prompt? Pick a tool:",
+    "charCountLabel": "Characters: {{count}}",
+    "operationCenterLabel": "RE Broker Center",
+    "operationCenterSubLabel": "Choose a mode, fill in the fields and get a ready prompt",
+    "whatsappUrl": "https://chat.whatsapp.com/It49fzTl1n90huRCoWWkwu?mode=gi_t",
+    "whatsappLabel": "Join the WhatsApp group",
+    "skipToContentLabel": "Skip to content",
+    "footerTagline": "Prompt created. Want more?",
+    "footerCopyright": "© 2026 Prompt Anatomy. All rights reserved."
   },
-  "showDebugInFooter": true,
+  "showDebugInFooter": false,
   "modesOrder": ["OBJEKTAS", "SKELBIMAS", "KOMUNIKACIJA", "DERYBOS", "ANALIZE"],
   "modes": {
-    "OBJEKTAS": { "id": "objektas", "label": "Property", "desc": "Property analysis and value", "formId": "form-objektas", "icon": "building-2", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "privalumai", "auditorija", "tonas"] },
-    "SKELBIMAS": { "id": "skelbimas", "label": "Listing", "desc": "RE listing creation", "formId": "form-skelbimas", "icon": "sparkles", "libraryPromptId": "skelbimas_nt", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "privalumai", "auditorija", "tonas", "platforma", "strategija", "ilgis"] },
-    "KOMUNIKACIJA": { "id": "komunikacija", "label": "Communication", "desc": "Client responses", "formId": "form-komunikacija", "icon": "message-square", "libraryPromptId": "komunikacija_pirkėjas", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "privalumai", "auditorija", "tonas", "klientoTipas", "situacija", "zinute", "ctaTipas"] },
-    "DERYBOS": { "id": "derybos", "label": "Negotiation", "desc": "Negotiation strategy", "formId": "form-derybos", "icon": "handshake", "libraryPromptId": "derybu_strategija", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "privalumai", "auditorija", "tonas", "siulomaKaina", "kontekstas", "derybuTikslas"] },
-    "ANALIZE": { "id": "analize", "label": "Analysis", "desc": "Market analysis and content", "formId": "form-analize", "icon": "bar-chart-3", "libraryPromptId": "rinkos_analize", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "privalumai", "auditorija", "tonas", "tema", "turinioTipas"] }
+    "OBJEKTAS": {
+      "id": "objektas", "label": "Property", "desc": "Property analysis and value",
+      "longDesc": "Analyse the property value, strengths and target audience. AI will prepare a property evaluation prompt.",
+      "ctaLabel": "Analyse property", "outputTitle": "Property analysis prompt",
+      "outputHint": "Copy this prompt and paste into ChatGPT – you will get a property analysis with value arguments.",
+      "accentColor": "#0891b2",
+      "formId": "form-objektas", "icon": "building-2",
+      "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas"],
+      "fieldGroups": [
+        { "label": "Property details", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas"] }
+      ]
+    },
+    "SKELBIMAS": {
+      "id": "skelbimas", "label": "Listing", "desc": "RE listing creation",
+      "longDesc": "Create a professional listing for RE portals or social channels. AI will form a hook, USP and CTA.",
+      "ctaLabel": "Create listing", "outputTitle": "Listing prompt",
+      "outputHint": "Copy this prompt and paste into ChatGPT – you will get a ready listing text.",
+      "accentColor": "#2563eb",
+      "formId": "form-skelbimas", "icon": "sparkles", "libraryPromptId": "skelbimas_nt",
+      "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas", "platforma", "strategija", "ilgis"],
+      "fieldGroups": [
+        { "label": "Listing settings", "fields": ["platforma", "strategija", "ilgis"] },
+        { "label": "Property details", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas"], "collapsible": true, "defaultCollapsed": false }
+      ]
+    },
+    "KOMUNIKACIJA": {
+      "id": "komunikacija", "label": "Communication", "desc": "Client responses",
+      "longDesc": "Prepare a professional response to a client – buyer or seller. AI will form a message with value proposition and CTA.",
+      "ctaLabel": "Prepare response", "outputTitle": "Communication prompt",
+      "outputHint": "Copy this prompt and paste into ChatGPT – you will get a ready client response.",
+      "accentColor": "#7c3aed",
+      "formId": "form-komunikacija", "icon": "message-square", "libraryPromptId": "komunikacija_pirkėjas",
+      "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas", "klientoTipas", "situacija", "zinute", "ctaTipas"],
+      "fieldGroups": [
+        { "label": "Communication context", "fields": ["klientoTipas", "situacija", "zinute", "ctaTipas"] },
+        { "label": "Property details", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas"], "collapsible": true, "defaultCollapsed": false }
+      ]
+    },
+    "DERYBOS": {
+      "id": "derybos", "label": "Negotiation", "desc": "Negotiation strategy",
+      "longDesc": "Prepare a negotiation strategy and arguments – defend price, find a compromise or close the deal. AI will form the argumentation.",
+      "ctaLabel": "Prepare strategy", "outputTitle": "Negotiation prompt",
+      "outputHint": "Copy this prompt and paste into ChatGPT – you will get a negotiation strategy with arguments.",
+      "accentColor": "#dc2626",
+      "formId": "form-derybos", "icon": "handshake", "libraryPromptId": "derybu_strategija",
+      "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas", "siulomaKaina", "kontekstas", "derybuTikslas"],
+      "fieldGroups": [
+        { "label": "Negotiation context", "fields": ["siulomaKaina", "kontekstas", "derybuTikslas"] },
+        { "label": "Property details", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas"], "collapsible": true, "defaultCollapsed": false }
+      ]
+    },
+    "ANALIZE": {
+      "id": "analize", "label": "Analysis", "desc": "Market analysis and content",
+      "longDesc": "Create expert RE market content – overview, forecast or analysis on a given topic. AI will form structured content.",
+      "ctaLabel": "Generate analysis", "outputTitle": "Analysis prompt",
+      "outputHint": "Copy this prompt and paste into ChatGPT – you will get expert market content.",
+      "accentColor": "#059669",
+      "formId": "form-analize", "icon": "bar-chart-3", "libraryPromptId": "rinkos_analize",
+      "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas", "tema", "turinioTipas"],
+      "fieldGroups": [
+        { "label": "Analysis settings", "fields": ["tema", "turinioTipas"] },
+        { "label": "Property details", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas"], "collapsible": true, "defaultCollapsed": false }
+      ]
+    }
   },
   "fieldMeta": {
-    "objektoTipas": { "label": "Property type", "type": "text", "placeholder": "e.g. flat, house" },
-    "lokacija": { "label": "Location / address", "type": "text", "placeholder": "City, area" },
-    "plotas": { "label": "Area (m²)", "type": "text", "placeholder": "m²" },
-    "kambariai": { "label": "Rooms", "type": "text", "placeholder": "e.g. 3" },
-    "kaina": { "label": "Price (€)", "type": "text", "placeholder": "€" },
-    "bukle": { "label": "Condition", "type": "text", "placeholder": "e.g. new, well maintained" },
+    "objektoTipas": { "label": "Property type", "type": "select", "placeholder": "Select", "options": ["Flat", "House", "Townhouse", "Commercial", "Land", "Garage"], "recommended": true },
+    "lokacija": { "label": "Location / address", "type": "text", "placeholder": "City, area", "recommended": true },
+    "plotas": { "label": "Area (m²)", "type": "select", "placeholder": "Select", "options": ["Up to 50 m²", "Up to 75 m²", "Up to 100 m²", "Up to 150 m²", "Up to 200 m²", "200+ m²"] },
+    "kambariai": { "label": "Rooms", "type": "select", "placeholder": "Select", "options": ["1", "2", "3", "4", "5", "6+"] },
+    "kaina": { "label": "Price (€)", "type": "select", "placeholder": "Select", "options": ["Up to €50,000", "Up to €75,000", "Up to €100,000", "Up to €150,000", "Up to €200,000", "€200,000+"], "recommended": true },
+    "bukle": { "label": "Condition", "type": "select", "placeholder": "Select", "options": ["New build", "Renovated", "Good condition", "Average condition", "Needs renovation"] },
+    "statybosMetai": { "label": "Year built", "type": "select", "placeholder": "Select", "options": ["Before 1940", "1941–1960", "1961–1990", "1991–2000", "2001–2010", "2011–2020", "2021+"] },
+    "aukstas": { "label": "Floor", "type": "select", "placeholder": "Select", "options": ["1", "2", "3", "4", "5", "6–10", "10+", "Attic"] },
+    "sildymas": { "label": "Heating", "type": "select", "placeholder": "Select", "options": ["Central", "Gas", "Electric", "Solid fuel", "Heat pump"] },
+    "irengimas": { "label": "Fit-out", "type": "select", "placeholder": "Select", "options": ["Fully fitted", "Partial finish", "Unfitted"] },
     "privalumai": { "label": "Advantages", "type": "textarea", "placeholder": "USP, advantages" },
-    "auditorija": { "label": "Audience", "type": "text", "placeholder": "Target audience" },
+    "auditorija": { "label": "Audience", "type": "select", "placeholder": "Select", "options": ["Young family", "Investor", "First home", "Retirees", "Entrepreneurs"] },
     "tonas": { "label": "Tone", "type": "select", "placeholder": "Select", "options": ["premium", "neutral", "friendly"] },
-    "platforma": { "label": "Platform", "type": "text", "placeholder": "e.g. listing sites" },
-    "strategija": { "label": "Strategy", "type": "text", "placeholder": "Emotional / rational" },
-    "ilgis": { "label": "Length", "type": "text", "placeholder": "Short / medium" },
-    "klientoTipas": { "label": "Client type", "type": "text", "placeholder": "Buyer / seller" },
-    "situacija": { "label": "Situation", "type": "text", "placeholder": "Price inquiry, follow-up..." },
+    "platforma": { "label": "Platform", "type": "select", "placeholder": "Select", "options": ["Aruodas", "Skelbimai.lt", "Facebook", "Instagram", "LinkedIn"] },
+    "strategija": { "label": "Strategy", "type": "select", "placeholder": "Select", "options": ["Emotional", "Rational", "Mixed"] },
+    "ilgis": { "label": "Length", "type": "select", "placeholder": "Select", "options": ["Short", "Medium", "Long"] },
+    "klientoTipas": { "label": "Client type", "type": "select", "placeholder": "Select", "options": ["Buyer", "Seller", "Tenant"] },
+    "situacija": { "label": "Situation", "type": "select", "placeholder": "Select", "options": ["Price inquiry", "Follow-up after viewing", "Not responding", "Submitting offer", "First contact"] },
     "zinute": { "label": "Message", "type": "textarea", "placeholder": "Client message or context" },
-    "ctaTipas": { "label": "CTA type", "type": "text", "placeholder": "Meeting, call" },
+    "ctaTipas": { "label": "CTA type", "type": "select", "placeholder": "Select", "options": ["Meeting", "Call", "Email", "Viewing"] },
     "siulomaKaina": { "label": "Proposed price (€)", "type": "text", "placeholder": "€" },
     "kontekstas": { "label": "Context", "type": "textarea", "placeholder": "Negotiation context" },
-    "derybuTikslas": { "label": "Negotiation goal", "type": "text", "placeholder": "Defend price / compromise" },
+    "derybuTikslas": { "label": "Negotiation goal", "type": "select", "placeholder": "Select", "options": ["Defend price", "Compromise", "Close deal"] },
     "tema": { "label": "Topic", "type": "text", "placeholder": "Market topic" },
-    "turinioTipas": { "label": "Content type", "type": "text", "placeholder": "Expert / review / forecast" }
+    "turinioTipas": { "label": "Content type", "type": "select", "placeholder": "Select", "options": ["Expert", "Review", "Forecast"] }
   },
   "theme": {
-    "light": { "--primary": "#1E4A8C", "--primary-hover": "#153A70", "--primary-light": "#2D5BB8", "--accent-gold": "#B8962E", "--accent-gold-hover": "#C9A227", "--surface-0": "linear-gradient(180deg, #F0F4FA 0%, #E6ECF4 50%, #E0E8F0 100%)", "--surface-1": "linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)", "--text": "#1A1E24", "--text-light": "#5C6370", "--border": "#DDE2E8", "--output-bg": "#1E4A8C" },
-    "dark": { "--primary": "#4E7AEE", "--primary-hover": "#3D6AD9", "--primary-light": "#6B92F5", "--accent-gold": "#D4AF37", "--accent-gold-hover": "#E5C86B", "--surface-0": "linear-gradient(180deg, #0F1115 0%, #13171E 50%, #0D0F13 100%)", "--surface-1": "linear-gradient(180deg, #1C1F26 0%, #232830 100%)", "--text": "#F2F4F7", "--text-light": "#8B92A0", "--border": "#2E3544", "--output-bg": "#1A2744" }
+    "light": { "--primary": "#1E4A8C", "--primary-hover": "#153A70", "--primary-light": "#2D5BB8", "--accent-gold": "#B8962E", "--accent-gold-hover": "#C9A227", "--surface-0": "linear-gradient(180deg, #F0F4FA 0%, #E6ECF4 50%, #E0E8F0 100%)", "--surface-1": "linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)", "--text": "#1A1E24", "--text-light": "#5C6370", "--border": "#DDE2E8", "--output-bg": "#1E4A8C", "--success": "#0d9488", "--error": "#dc2626", "--error-bg": "#fef2f2", "--shadow-sm": "0 1px 2px 0 rgba(0,0,0,0.05)", "--shadow-md": "0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1)", "--shadow-lg": "0 25px 50px -12px rgba(0,0,0,0.25)" },
+    "dark": { "--primary": "#4E7AEE", "--primary-hover": "#3D6AD9", "--primary-light": "#6B92F5", "--accent-gold": "#D4AF37", "--accent-gold-hover": "#E5C86B", "--surface-0": "linear-gradient(180deg, #0F1115 0%, #13171E 50%, #0D0F13 100%)", "--surface-1": "linear-gradient(180deg, #1C1F26 0%, #232830 100%)", "--text": "#F2F4F7", "--text-light": "#8B92A0", "--border": "#2E3544", "--output-bg": "#1A2744", "--success": "#2dd4bf", "--error": "#f87171", "--error-bg": "#450a0a", "--shadow-sm": "0 1px 3px 0 rgba(0,0,0,0.2)", "--shadow-md": "0 4px 6px -1px rgba(0,0,0,0.2), 0 2px 4px -2px rgba(0,0,0,0.15)", "--shadow-lg": "0 25px 50px -12px rgba(0,0,0,0.4)" }
   },
   "libraryPrompts": [
     { "id": "skelbimas_nt", "title": "RE listing template", "desc": "For portals and social channels", "icon": "sparkles", "prompt": "Role: RE market analyst and top-tier RE broker (15y experience). Goal: Create listing from property data – emotional or rational angle. Tone: premium. INPUT: Property, location, price, area/rooms, advantages, audience. OUTPUT: Hook, main copy, 3-5 USP, CTA. Quality: accurate language, no sales fluff." },
@@ -100,10 +185,14 @@
     { "id": "rinkos_analize", "title": "Market analysis / content", "desc": "Expert content by topic", "icon": "bar-chart-3", "prompt": "Role: RE market analyst. Create expert content (overview, insights) on given topic. OUTPUT: Structured content – facts, trends, conclusions. Accurate language, value for reader." }
   ],
   "rules": [
-    { "text": "Accurate language; no sales fluff, only value", "icon": "check-circle" },
-    { "text": "Maximum engagement and clear USP", "icon": "check-circle" },
-    { "text": "Role: RE market analyst and top-tier RE broker", "icon": "check-circle" },
-    { "text": "One mode – one goal; clarity over complexity", "icon": "check-circle" },
-    { "text": "Result fits broker workflow in 30–60 sec.", "icon": "check-circle" }
+    { "text": "Professional, accurate language", "icon": "check-circle" },
+    { "text": "Ready to use in 30–60 sec.", "icon": "check-circle" },
+    { "text": "Maximum engagement and clear value", "icon": "check-circle" },
+    { "text": "Tailored for RE broker daily workflow", "icon": "check-circle" }
+  ],
+  "aiToolLinks": [
+    { "label": "Open ChatGPT", "url": "https://chat.openai.com/", "icon": "external-link" },
+    { "label": "Open Claude", "url": "https://claude.ai/", "icon": "external-link" },
+    { "label": "Open Gemini", "url": "https://gemini.google.com/", "icon": "external-link" }
   ]
 }

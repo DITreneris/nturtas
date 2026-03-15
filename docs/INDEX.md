@@ -6,7 +6,7 @@ Vienintelis dokumentacijos navigacijos mazgas po `README.md`.
 
 - **Produktas:** DI Operacinė Sistema NT Brokeriui (Spin-off Nr. 7).
 - **Konfigūracija:** [config/sot.json](../config/sot.json) – brand, copy, režimai (modes), spalvos/theme, libraryPrompts, rules. UI ir turinys valdomi iš šio failo; nt-broker-ui jį naudoja per SotProvider / useSot.
-- **Aktyvi aplikacija:** [nt-broker-ui](../nt-broker-ui/) – React + Vite; build naudoja [nt-broker-ui/public/config/sot.json](../nt-broker-ui/public/config/sot.json).
+- **Aktyvi aplikacija:** [nt-broker-ui](../nt-broker-ui/) – React + Vite; build naudoja locale-based SOT failus (`sot.lt.json`, `sot.en.json`, `sot.es.json`) iš `nt-broker-ui/public/config/`.
 
 ## Kanoninė taisyklė
 
@@ -29,8 +29,8 @@ Vienintelis dokumentacijos navigacijos mazgas po `README.md`.
 - **nt-broker-ui (aktyvus UI):**
   - [nt-broker-ui/README.md](../nt-broker-ui/README.md)
   - [nt-broker-ui/src/App.tsx](../nt-broker-ui/src/App.tsx)
-  - [nt-broker-ui/src/sot/](../nt-broker-ui/src/sot/) - SotContext, loadSot, types, defaultSot.
-  - [nt-broker-ui/public/config/sot.json](../nt-broker-ui/public/config/sot.json) - SOT build kopija.
+  - [nt-broker-ui/src/sot/](../nt-broker-ui/src/sot/) - SotContext, loadSot, localeUtils, types, defaultSot.
+  - `nt-broker-ui/public/config/sot.{lt,en,es}.json` - SOT locale kopijos (generuojamos per `copy-sot`).
 - **Testai:**
   - [tests/e2e/nt-broker-ui.spec.js](../tests/e2e/nt-broker-ui.spec.js) – nt-broker-ui E2E.
   - nt-broker-ui unit: `cd nt-broker-ui && npm run test`.
@@ -46,3 +46,4 @@ Vienintelis dokumentacijos navigacijos mazgas po `README.md`.
 - [archive/legacy-mokytojas_2026-03/](archive/legacy-mokytojas_2026-03/)
 - [archive/legacy-di-promptu-biblioteka_2026-02/](archive/legacy-di-promptu-biblioteka_2026-02/)
 - [archive/legacy-vaizdo-generatorius_2026-02/](archive/legacy-vaizdo-generatorius_2026-02/)
+- [docs/archive/LT_EN_UI_UX_REPORT.md](archive/LT_EN_UI_UX_REPORT.md) – kito projekto (DI Operacinis Centras) ataskaita.
