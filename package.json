@@ -4,8 +4,12 @@
   "private": true,
   "description": "DI Operacinė Sistema NT Brokeriui – profesionalūs NT promptai, skelbimai ir klientų komunikacija",
   "scripts": {
-    "test": "npm run test:docs && npm run test:ui",
+    "test": "npm run test:docs && npm run quality:premium && npm run test:ui",
     "test:docs": "node tests/docs-hygiene.test.js",
+    "quality:premium": "node tests/premium-quality.test.js && node tests/ux-kpi-thresholds.test.js",
+    "quality:premium:events": "node tests/premium-quality.test.js && cross-env UX_EVENTS_FILE=./test-results/ux-events.json node tests/ux-kpi-thresholds.test.js",
+    "score:premium": "node tests/premium-score-report.js",
+    "score:premium:full": "cross-env UX_EVENTS_FILE=./test-results/ux-events.json node tests/premium-score-report.js",
     "test:ui": "cd nt-broker-ui && npm run copy-sot && npm run build && npm run test",
     "test:e2e": "start-server-and-test \"cd nt-broker-ui && npm run build && npx vite preview --port 4173 --host 0.0.0.0\" \"http://127.0.0.1:4173/nturtas/\" \"cross-env BASE_URL=http://127.0.0.1:4173/nturtas/ npx playwright test tests/e2e/nt-broker-ui.spec.js\"",
     "test:mixed": "npm run test && npm run test:e2e",

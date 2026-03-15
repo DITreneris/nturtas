@@ -87,6 +87,24 @@ export interface SotCopy {
   privacyUrl?: string
   outputBadgeLabel?: string
   outputCopyCtaLabel?: string
+  noTemplateHint?: string
+  noTemplateCtaLabel?: string
+  templatesSectionTitle?: string
+  templatesExpandLabel?: string
+  templatesCollapseLabel?: string
+  sessionsTitle?: string
+  sessionsSaveLabel?: string
+  sessionsDeleteAllLabel?: string
+  sessionsEmptyLabel?: string
+  sessionDeleteLabel?: string
+  sessionCopyLabel?: string
+  sessionRestoreLabel?: string
+  sessionsFullLabel?: string
+  recommendedStartLabel?: string
+  copySuccessCtaPrefix?: string
+  outputLearnMorePrefix?: string
+  aiToolLinksPromptAnatomyLabel?: string
+  templatesSourcePrefix?: string
 }
 
 export interface SotTheme {

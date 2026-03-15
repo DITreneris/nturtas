@@ -5,8 +5,8 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: #F2F4F7;
-  background: linear-gradient(180deg, #0F1115 0%, #13171E 100%);
+  color: #F0F2F5;
+  background: #0F1117;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -20,11 +20,11 @@ html {
 
 a {
   font-weight: 500;
-  color: #6B92F5;
+  color: #F06580;
   text-decoration: inherit;
 }
 a:hover {
-  color: #8BABF7;
+  color: #F58DA5;
 }
 
 body {
@@ -57,19 +57,19 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1C1F26;
+  background-color: #1A1D27;
   cursor: pointer;
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #4E7AEE;
+  border-color: #F06580;
 }
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 2px solid var(--primary, #4E7AEE);
+  outline: 2px solid var(--primary, #1B2A4A);
   outline-offset: 2px;
 }
 
@@ -131,8 +131,8 @@ select:focus-visible {
    Spinner
    ────────────────────────────────────────────── */
 .spinner {
-  border: 3px solid var(--border, #DDE2E8);
-  border-top-color: var(--primary, #1E4A8C);
+  border: 3px solid var(--border, #E5E7EB);
+  border-top-color: var(--primary, #1B2A4A);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -177,7 +177,7 @@ select:focus-visible {
   display: inline-block;
   width: 6px;
   height: 6px;
-  background: var(--accent-gold, #B8962E);
+  background: var(--accent-gold, #E83E5E);
   border-radius: 50%;
   margin-left: 0.375rem;
   vertical-align: middle;
@@ -209,7 +209,7 @@ select:focus-visible {
   width: 1.5rem;
   height: 1.5rem;
   border-radius: 50%;
-  background: var(--primary, #1E4A8C);
+  background: var(--primary, #1B2A4A);
   color: #fff;
   display: flex;
   align-items: center;
@@ -230,7 +230,7 @@ select:focus-visible {
 
 .hero-card .step-number {
   background: #fff;
-  color: var(--primary, #1E4A8C);
+  color: var(--primary, #1B2A4A);
 }
 
 /* ──────────────────────────────────────────────
@@ -263,7 +263,7 @@ select:focus-visible {
   overflow: hidden;
   z-index: 100;
   padding: 0.75rem 1.5rem;
-  background: var(--primary, #1E4A8C);
+  background: var(--primary, #1B2A4A);
   color: #fff;
   font-weight: 700;
   font-size: 0.875rem;
@@ -395,7 +395,7 @@ select:focus-visible {
    HERO CARD
    ══════════════════════════════════════════════ */
 .hero-card {
-  background: linear-gradient(135deg, var(--primary, #1E4A8C) 0%, var(--primary-hover, #153A70) 55%, var(--primary-hover, #0F2B5C) 100%);
+  background: var(--primary, #1B2A4A);
   border-radius: 24px;
   padding: 36px 48px;
   color: #fff;
@@ -421,7 +421,7 @@ select:focus-visible {
 }
 
 .dark .hero-card {
-  background: linear-gradient(135deg, var(--output-bg, #1A2744) 0%, var(--primary-hover, #3D6AD9) 30%, var(--output-bg, #1A2744) 100%);
+  background: var(--output-bg, #152238);
 }
 
 /* ──────────────────────────────────────────────
@@ -459,15 +459,15 @@ select:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  background: color-mix(in srgb, var(--accent-gold, #D4AF37) 25%, transparent);
-  border: 1px solid color-mix(in srgb, var(--accent-gold, #D4AF37) 40%, transparent);
+  background: color-mix(in srgb, var(--accent-gold, #E83E5E) 25%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-gold, #E83E5E) 40%, transparent);
   border-radius: 9999px;
   padding: 0.375rem 0.875rem;
   font-size: 0.6875rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--accent-gold, #D4AF37);
+  color: var(--accent-gold, #E83E5E);
 }
 
 /* ──────────────────────────────────────────────
@@ -501,7 +501,7 @@ select:focus-visible {
   height: 24px;
   border-radius: 50%;
   background: #fff;
-  color: var(--primary, #1E4A8C);
+  color: var(--primary, #1B2A4A);
   font-weight: 800;
   font-size: 0.75rem;
   display: flex;
@@ -532,8 +532,8 @@ select:focus-visible {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: var(--accent-gold, #D4AF37);
-  color: #1A1E24;
+  background: var(--accent-gold, #E83E5E);
+  color: #FFFFFF;
   border: none;
   border-radius: 12px;
   padding: 0.875rem 1.75rem;
@@ -545,8 +545,8 @@ select:focus-visible {
   text-decoration: none;
 }
 .cta-button:hover {
-  background: var(--accent-gold-hover, #E5C86B);
-  color: #1A1E24;
+  background: var(--accent-gold-hover, #D13350);
+  color: #FFFFFF;
 }
 .cta-button:active {
   transform: scale(0.98);
@@ -573,6 +573,14 @@ select:focus-visible {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.7);
   color: #fff;
+}
+
+.cta-button-muted {
+  opacity: 0.82;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+.cta-button-muted:hover {
+  opacity: 1;
 }
 
 .header-cta-meta {
@@ -622,6 +630,27 @@ select:focus-visible {
   margin-top: 0.125rem;
 }
 
+.mode-recommended-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.375rem;
+  border-radius: 9999px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: color-mix(in srgb, var(--accent-gold, #E83E5E) 18%, transparent);
+  color: var(--accent-gold, #E83E5E);
+  border: 1px solid color-mix(in srgb, var(--accent-gold, #E83E5E) 35%, transparent);
+}
+
+.mode-usage-hint {
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+  font-size: 0.8125rem;
+  color: var(--text-light);
+}
+
 /* ══════════════════════════════════════════════
    FORM CARD
    ══════════════════════════════════════════════ */
@@ -641,10 +670,12 @@ select:focus-visible {
 }
 
 .form-cta-outline {
+  background: transparent !important;
   color: var(--text) !important;
   border-color: var(--border) !important;
 }
 .form-cta-outline:hover {
+  background: var(--surface-0) !important;
   border-color: var(--primary) !important;
   color: var(--primary) !important;
 }
@@ -718,8 +749,8 @@ select:focus-visible {
   gap: 0.5rem;
   width: 100%;
   padding: 0.875rem 1.5rem;
-  background: var(--accent-gold, #D4AF37);
-  color: #1A1E24;
+  background: var(--accent-gold, #E83E5E);
+  color: #FFFFFF;
   border-radius: 12px;
   border: none;
   font-weight: 700;
@@ -732,7 +763,7 @@ select:focus-visible {
   transition: background-color 0.2s ease, transform 0.1s ease;
 }
 .output-cta:hover {
-  background: var(--accent-gold-hover, #C49B2F);
+  background: var(--accent-gold-hover, #D13350);
 }
 .output-cta:active {
   transform: scale(0.98);
@@ -753,7 +784,7 @@ select:focus-visible {
    COMMUNITY SECTION
    ══════════════════════════════════════════════ */
 .community {
-  background: linear-gradient(135deg, #FFFFFF, var(--surface-0, #F0F4FA));
+  background: var(--surface-1, #FFFFFF);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 2rem;
@@ -763,7 +794,7 @@ select:focus-visible {
 }
 
 .dark .community {
-  background: linear-gradient(135deg, var(--surface-1, #1C1F26), var(--surface-0, #13171E));
+  background: var(--surface-1, #1A1D27);
 }
 
 .community h2 {
@@ -918,17 +949,17 @@ select:focus-visible {
    ══════════════════════════════════════════════ */
 @media (prefers-color-scheme: light) {
   :root {
-    color: #1A1E24;
-    background: linear-gradient(180deg, #F0F4FA 0%, #E6ECF4 100%);
+    color: #1A1E2C;
+    background: #F7F8FA;
   }
   a {
-    color: #1E4A8C;
+    color: #1B2A4A;
   }
   a:hover {
-    color: #2D5BB8;
+    color: #2A4A7A;
   }
   button {
-    background-color: #F8FAFC;
+    background-color: #FFFFFF;
   }
 }
 

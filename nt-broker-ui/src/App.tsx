@@ -12,10 +12,11 @@ import {
   ChevronUp,
   ExternalLink,
 } from 'lucide-react'
+import { Save, Trash2 } from 'lucide-react'
 import { SotProvider, useSot } from './sot/SotContext'
 import { defaultSot } from './sot/defaultSot'
 import { ModeForm } from './components/ModeForm'
-import { LibraryPromptsModal } from './components/LibraryPromptsModal'
+import { TemplatesInline } from './components/TemplatesInline'
 
 type IconComponent = React.ComponentType<{ className?: string; size?: number }>
 const ICON_MAP: Record<string, IconComponent> = {
@@ -41,18 +42,105 @@ function AppContent() {
   const [formValues, setFormValues] = useState<Record<string, string>>({})
   const [generatedPrompt, setGeneratedPrompt] = useState<string | null>(null)
   const [copyFeedback, setCopyFeedback] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
-  const [libraryModalOpen, setLibraryModalOpen] = useState(false)
-  const [rulesExpanded, setRulesExpanded] = useState(true)
+  const [rulesExpanded, setRulesExpanded] = useState(false)
   const [emptyHint, setEmptyHint] = useState<string | null>(null)
+  const [noTemplateMessage, setNoTemplateMessage] = useState<string | null>(null)
+  const [templatesExpandSignal, setTemplatesExpandSignal] = useState(0)
   const emptyHintTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
   const copyFeedbackTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const templatesSectionRef = useRef<HTMLDivElement>(null)
+  const appMountedAt = useRef(Date.now())
+  const hasSentFirstCopy = useRef(false)
+  const templateAssistUsed = useRef(false)
+
+  interface Session {
+    id: string
+    label: string
+    prompt: string
+    modeId?: string
+    createdAt: number
+  }
+  const SESSION_KEY = 'nt_broker_sessions'
+  const SESSION_MAX = 20
+  const [savedSessions, setSavedSessions] = useState<Session[]>(() => {
+    try {
+      const raw = localStorage.getItem(SESSION_KEY)
+      return raw ? JSON.parse(raw) : []
+    } catch {
+      return []
+    }
+  })
+  const [sessionCopyFeedback, setSessionCopyFeedback] = useState<string | null>(null)
+  const sessionFeedbackTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
+
+  const trackUxEvent = (eventName: string, payload: Record<string, unknown> = {}) => {
+    const detail = {
+      eventName,
+      ts: Date.now(),
+      locale,
+      activeMode,
+      ...payload,
+    }
+
+    window.dispatchEvent(new CustomEvent('ntbroker:ux', { detail }))
+    const dataLayer = (window as unknown as { dataLayer?: unknown[] }).dataLayer
+    if (Array.isArray(dataLayer)) {
+      dataLayer.push({ event: 'ntbroker_ux', ...detail })
+    }
+  }
 
   useEffect(() => {
     return () => {
       clearTimeout(emptyHintTimer.current)
       clearTimeout(copyFeedbackTimer.current)
+      clearTimeout(sessionFeedbackTimer.current)
     }
   }, [])
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(SESSION_KEY, JSON.stringify(savedSessions))
+    } catch { /* quota exceeded */ }
+  }, [savedSessions])
+
+  useEffect(() => {
+    trackUxEvent('app_loaded')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const saveSession = () => {
+    if (!generatedPrompt) return
+    if (savedSessions.length >= SESSION_MAX) return
+    const session: Session = {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      label: generatedPrompt.slice(0, 60).replace(/\n/g, ' '),
+      prompt: generatedPrompt,
+      modeId: activeMode,
+      createdAt: Date.now(),
+    }
+    setSavedSessions((prev) => [session, ...prev])
+    trackUxEvent('session_saved', { sessionId: session.id })
+  }
+
+  const deleteSession = (id: string) => {
+    setSavedSessions((prev) => prev.filter((s) => s.id !== id))
+  }
+
+  const deleteAllSessions = () => {
+    setSavedSessions([])
+  }
+
+  const copySession = async (prompt: string) => {
+    try {
+      await navigator.clipboard.writeText(prompt)
+      setSessionCopyFeedback('success')
+      trackUxEvent('session_copied')
+    } catch {
+      setSessionCopyFeedback('error')
+    }
+    clearTimeout(sessionFeedbackTimer.current)
+    sessionFeedbackTimer.current = setTimeout(() => setSessionCopyFeedback(null), 2000)
+  }
 
   const modesList = useMemo(() => {
     if (!sot?.modes) return []
@@ -126,8 +214,11 @@ function AppContent() {
     if (!basePrompt && prompts.length === 0) {
       setGeneratedPrompt(null)
       setCopyFeedback(null)
+      setNoTemplateMessage(copy.noTemplateHint ?? dc?.noTemplateHint ?? null)
+      trackUxEvent('generate_blocked_no_template')
       return
     }
+    setNoTemplateMessage(null)
     const allFields = currentMode?.fieldGroups
       ? currentMode.fieldGroups.flatMap((g) => g.fields)
       : currentMode?.fields ?? []
@@ -151,6 +242,11 @@ function AppContent() {
         : ''
     setGeneratedPrompt(basePrompt + inputBlock)
     setCopyFeedback(null)
+    trackUxEvent('generate_clicked', {
+      filledFields: inputLines.length,
+      templateAssist: templateAssistUsed.current,
+    })
+    templateAssistUsed.current = false
   }
 
   const getModeIdForPromptId = (promptId: string) =>
@@ -163,14 +259,42 @@ function AppContent() {
       setCopyFeedback({ message: copy.copySuccess ?? dc?.copySuccess ?? '', type: 'success' })
       clearTimeout(copyFeedbackTimer.current)
       copyFeedbackTimer.current = setTimeout(() => setCopyFeedback(null), 2000)
+      if (!hasSentFirstCopy.current) {
+        hasSentFirstCopy.current = true
+        trackUxEvent('output_copied_first', { ttfcMs: Date.now() - appMountedAt.current })
+      } else {
+        trackUxEvent('output_copied')
+      }
     } catch {
       setCopyFeedback({ message: copy.copyFailed ?? dc?.copyFailed ?? '', type: 'error' })
     }
   }
 
+  const restoreSession = (session: Session) => {
+    if (session.modeId) {
+      setActiveMode(session.modeId)
+    }
+    setGeneratedPrompt(session.prompt)
+    setCopyFeedback(null)
+    trackUxEvent('session_restored', { sessionId: session.id })
+  }
+
+  const openTemplatesInline = () => {
+    setNoTemplateMessage(null)
+    setTemplatesExpandSignal((v) => v + 1)
+    templatesSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    trackUxEvent('templates_opened_from_cta')
+  }
+
   const outputTitle = currentMode?.outputTitle ?? copy.outputDefaultTitle ?? ''
   const outputHint = currentMode?.outputHint ?? copy.outputDefaultHint ?? ''
   const ctaLabel = currentMode?.ctaLabel ?? copy.heroCtaPrimary ?? dc?.heroCtaPrimary ?? ''
+  const firstStepHint = copy.firstStepHint ?? dc?.firstStepHint ?? ''
+  const recommendedStartId = defaultModeId
+  const recommendedStartLabel =
+    copy.recommendedStartLabel
+    ?? (locale === 'lt' ? 'Rekomenduojama pradžia' : locale === 'es' ? 'Inicio recomendado' : 'Recommended start')
+  const whenToUseLabel = locale === 'lt' ? 'Kada naudoti:' : locale === 'es' ? 'Cuando usar:' : 'When to use:'
   const Icon = currentMode?.Icon
 
   return (
@@ -286,7 +410,7 @@ function AppContent() {
             <button type="button" className="cta-button" data-testid="cta-generate" onClick={handleGenerate}>
               {ctaLabel}
             </button>
-            <button type="button" className="cta-button-outline" data-testid="cta-templates" onClick={() => setLibraryModalOpen(true)}>
+            <button type="button" className="cta-button-outline cta-button-muted" data-testid="cta-templates" onClick={openTemplatesInline}>
               {copy.heroCtaSecondary ?? dc?.heroCtaSecondary ?? ''}
             </button>
           </div>
@@ -332,7 +456,10 @@ function AppContent() {
                     type="button"
                     className={isActive ? 'btn-primary' : 'btn-nav'}
                     data-testid={`mode-${mode.id}`}
-                    onClick={() => setActiveMode(mode.id)}
+                    onClick={() => {
+                      setActiveMode(mode.id)
+                      trackUxEvent('mode_selected', { modeId: mode.id })
+                    }}
                     style={{
                       display: 'flex',
                       flexDirection: 'column',
@@ -350,6 +477,11 @@ function AppContent() {
                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                       <ModeIcon size={16} />
                       {mode.label}
+                      {mode.id === recommendedStartId && (
+                        <span className="mode-recommended-pill">
+                          {recommendedStartLabel}
+                        </span>
+                      )}
                     </span>
                     <span style={{ fontSize: '0.625rem', fontWeight: 400, opacity: 0.8 }}>
                       {mode.desc}
@@ -371,6 +503,18 @@ function AppContent() {
 
             {/* Mode context */}
             <div style={{ marginTop: '1rem' }}>
+              {firstStepHint && (
+                <p
+                  style={{
+                    margin: '0 0 0.5rem',
+                    fontSize: '0.8125rem',
+                    color: 'var(--text-light)',
+                    fontStyle: 'italic',
+                  }}
+                >
+                  {firstStepHint}
+                </p>
+              )}
               <p style={{ color: 'var(--text-light)', fontSize: '0.875rem' }}>
                 {copy.activeModeLabel ?? dc?.activeModeLabel ?? ''}{' '}
                 <strong style={{ color: currentMode?.accentColor }}>{currentMode?.label ?? activeMode}</strong>
@@ -378,6 +522,11 @@ function AppContent() {
               {currentMode?.longDesc && (
                 <p style={{ marginTop: '0.5rem', fontSize: '0.875rem', lineHeight: 1.6 }}>
                   {currentMode.longDesc}
+                </p>
+              )}
+              {currentMode?.desc && (
+                <p className="mode-usage-hint">
+                  <strong>{whenToUseLabel}</strong> {currentMode.desc}
                 </p>
               )}
             </div>
@@ -477,7 +626,7 @@ function AppContent() {
               <button type="button" className="cta-button" onClick={handleGenerate}>
                 {ctaLabel}
               </button>
-              <button type="button" className="cta-button-outline form-cta-outline" onClick={() => setLibraryModalOpen(true)}>
+              <button type="button" className="cta-button-outline cta-button-muted form-cta-outline" onClick={openTemplatesInline}>
                 {copy.heroCtaSecondary ?? dc?.heroCtaSecondary ?? ''}
               </button>
             </div>
@@ -495,10 +644,13 @@ function AppContent() {
                     {currentMode.label}
                   </span>
                 )}
-                <button type="button" className="btn-output-copy" onClick={handleCopyOutput} style={{ marginLeft: 'auto' }}>
-                  {copy.btnCopy ?? dc?.btnCopy ?? ''}
-                </button>
               </div>
+
+              {outputHint && (
+                <p style={{ margin: '0 0 0.5rem', fontSize: '0.8125rem', color: 'var(--text-light)', fontStyle: 'italic' }}>
+                  {outputHint}
+                </p>
+              )}
 
               <textarea
                 className="editable-output"
@@ -512,7 +664,6 @@ function AppContent() {
                 <span className="char-count">
                   {(copy.charCountLabel ?? dc?.charCountLabel ?? '{{count}}').replace('{{count}}', String(generatedPrompt.length))}
                 </span>
-                {outputHint && <span style={{ flex: 1 }}>{outputHint}</span>}
               </div>
 
               {copyFeedback && (
@@ -522,15 +673,32 @@ function AppContent() {
                   aria-atomic="true"
                   style={{
                     display: 'flex',
-                    alignItems: 'center',
+                    flexDirection: 'column',
+                    alignItems: 'flex-start',
                     gap: '0.25rem',
                     marginTop: '0.5rem',
                     fontSize: '0.8125rem',
                     color: copyFeedback.type === 'success' ? 'var(--success)' : 'var(--error)',
                   }}
                 >
-                  {copyFeedback.type === 'success' && <Check size={14} aria-hidden />}
-                  {copyFeedback.message}
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                    {copyFeedback.type === 'success' && <Check size={14} aria-hidden />}
+                    {copyFeedback.message}
+                  </span>
+                  {copyFeedback.type === 'success' && copy.promptAnatomyUrl && (copy.copySuccessCtaPrefix ?? dc?.copySuccessCtaPrefix) && (
+                    <span style={{ color: 'var(--text-light)', fontWeight: 400 }}>
+                      {(copy.copySuccessCtaPrefix ?? dc?.copySuccessCtaPrefix ?? '')}{' '}
+                      <a
+                        href={copy.promptAnatomyUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={copy.promptAnatomyAriaLabel ?? dc?.promptAnatomyAriaLabel ?? ''}
+                        style={{ color: 'inherit', textDecoration: 'underline' }}
+                      >
+                        {copy.promptAnatomyLinkText ?? dc?.promptAnatomyLinkText ?? ''}
+                      </a>
+                    </span>
+                  )}
                 </span>
               )}
 
@@ -538,49 +706,206 @@ function AppContent() {
                 {copy.outputCopyCtaLabel ?? dc?.outputCopyCtaLabel ?? ''} →
               </button>
 
-              {sot?.aiToolLinks && sot.aiToolLinks.length > 0 && (
-                <div className="ai-tool-links">
-                  <span>{copy.aiToolLinksLabel ?? dc?.aiToolLinksLabel ?? ''}</span>
-                  {sot.aiToolLinks.map((link) => (
-                    <a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer" className="btn-ai-tool">
-                      <ExternalLink size={14} aria-hidden />
-                      {link.label}
-                    </a>
-                  ))}
-                </div>
+              {(copy.outputLearnMorePrefix ?? dc?.outputLearnMorePrefix) && copy.promptAnatomyUrl && (
+                <p style={{ margin: '0.75rem 0 0', fontSize: '0.8125rem', color: 'var(--text-light)', fontStyle: 'italic' }}>
+                  {copy.outputLearnMorePrefix ?? dc?.outputLearnMorePrefix ?? ''}{' '}
+                  <a
+                    href={copy.promptAnatomyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={copy.promptAnatomyAriaLabel ?? dc?.promptAnatomyAriaLabel ?? ''}
+                    style={{ color: 'var(--primary-light, var(--text))', textDecoration: 'underline' }}
+                  >
+                    {copy.promptAnatomyLinkText ?? dc?.promptAnatomyLinkText ?? ''}
+                  </a>
+                </p>
               )}
             </div>
           )}
 
-          <LibraryPromptsModal
-            open={libraryModalOpen}
-            onClose={() => setLibraryModalOpen(false)}
-            items={sot?.libraryPrompts ?? []}
-            getModeIdForPromptId={getModeIdForPromptId}
-            onSelectMode={(modeId) => {
-              setActiveMode(modeId)
-              setLibraryModalOpen(false)
-            }}
-            copy={{
-              modalTemplatesTitle: copy.modalTemplatesTitle,
-              btnCopy: copy.btnCopy,
-              btnUse: copy.btnUse,
-              btnClose: copy.btnClose,
-              copySuccess: copy.copySuccess,
-              copyFailed: copy.copyFailed,
-            }}
-          />
+          {/* No-template alert */}
+          {generatedPrompt === null && noTemplateMessage && (
+            <div
+              role="alert"
+              style={{
+                marginTop: '1rem',
+                padding: '1rem',
+                background: 'var(--error-bg, #fef2f2)',
+                border: '1px solid var(--error)',
+                borderRadius: '0.5rem',
+                fontSize: '0.875rem',
+                color: 'var(--error)',
+              }}
+            >
+              {noTemplateMessage}
+              <button
+                type="button"
+                className="btn-ghost"
+                onClick={openTemplatesInline}
+                style={{ marginLeft: '0.75rem', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline' }}
+              >
+                {copy.noTemplateCtaLabel ?? dc?.noTemplateCtaLabel ?? ''}
+              </button>
+            </div>
+          )}
+
+          {/* AI tool links – always visible (CEO parity) */}
+          {sot?.aiToolLinks && sot.aiToolLinks.length > 0 && (
+            <div className="ai-tool-links" style={{ marginTop: '1rem' }}>
+              <span>{copy.aiToolLinksLabel ?? dc?.aiToolLinksLabel ?? ''}</span>
+              {sot.aiToolLinks.map((link) => (
+                <a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer" className="btn-ai-tool">
+                  <ExternalLink size={14} aria-hidden />
+                  {link.label}
+                </a>
+              ))}
+              {copy.promptAnatomyUrl && (copy.aiToolLinksPromptAnatomyLabel ?? dc?.aiToolLinksPromptAnatomyLabel) && (
+                <a
+                  href={copy.promptAnatomyUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={copy.promptAnatomyAriaLabel ?? dc?.promptAnatomyAriaLabel ?? ''}
+                  style={{ fontSize: '0.8125rem', color: 'var(--text-light)', textDecoration: 'underline', marginTop: '0.5rem', display: 'inline-block' }}
+                >
+                  {copy.aiToolLinksPromptAnatomyLabel ?? dc?.aiToolLinksPromptAnatomyLabel ?? ''}
+                </a>
+              )}
+            </div>
+          )}
+
+          {/* Sessions */}
+          {generatedPrompt !== null && (
+            <section style={{ marginTop: '1.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
+                <h3 style={{ margin: 0, fontSize: '1rem' }}>{copy.sessionsTitle ?? dc?.sessionsTitle ?? 'Sesijos'}</h3>
+                <button
+                  type="button"
+                  className="btn-primary"
+                  onClick={saveSession}
+                  disabled={savedSessions.length >= SESSION_MAX}
+                  style={{ padding: '0.375rem 0.75rem', fontSize: '0.8125rem', cursor: 'pointer', borderRadius: '0.375rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}
+                >
+                  <Save size={14} aria-hidden />
+                  {copy.sessionsSaveLabel ?? dc?.sessionsSaveLabel ?? 'Išsaugoti'}
+                </button>
+                {savedSessions.length > 0 && (
+                  <button
+                    type="button"
+                    className="btn-ghost"
+                    onClick={deleteAllSessions}
+                    style={{ padding: '0.375rem 0.75rem', fontSize: '0.8125rem', cursor: 'pointer', borderRadius: '0.375rem', color: 'var(--error)' }}
+                  >
+                    {copy.sessionsDeleteAllLabel ?? dc?.sessionsDeleteAllLabel ?? 'Ištrinti sesijas'}
+                  </button>
+                )}
+              </div>
+              {savedSessions.length >= SESSION_MAX && (
+                <p style={{ fontSize: '0.8125rem', color: 'var(--error)', margin: '0 0 0.5rem' }}>
+                  {copy.sessionsFullLabel ?? dc?.sessionsFullLabel ?? ''}
+                </p>
+              )}
+              {savedSessions.length === 0 ? (
+                <p style={{ fontSize: '0.8125rem', color: 'var(--text-light)' }}>
+                  {copy.sessionsEmptyLabel ?? dc?.sessionsEmptyLabel ?? 'Nėra išsaugotų sesijų.'}
+                </p>
+              ) : (
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  {savedSessions.map((s) => (
+                    <li
+                      key={s.id}
+                      style={{
+                        padding: '0.75rem',
+                        border: '1px solid var(--border)',
+                        borderRadius: '0.5rem',
+                        background: 'var(--surface-0)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.75rem',
+                        flexWrap: 'wrap',
+                      }}
+                    >
+                      <span style={{ flex: 1, fontSize: '0.8125rem', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {s.label}
+                      </span>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--text-light)', flexShrink: 0 }}>
+                        {new Date(s.createdAt).toLocaleString()}
+                      </span>
+                      <button
+                        type="button"
+                        className="btn-ghost"
+                        onClick={() => restoreSession(s)}
+                        style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem', cursor: 'pointer', borderRadius: '0.375rem' }}
+                      >
+                        {copy.sessionRestoreLabel ?? dc?.sessionRestoreLabel ?? 'Atkurti'}
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-primary"
+                        onClick={() => copySession(s.prompt)}
+                        style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem', cursor: 'pointer', borderRadius: '0.375rem' }}
+                      >
+                        {copy.sessionCopyLabel ?? dc?.sessionCopyLabel ?? 'Kopijuoti'}
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-ghost"
+                        onClick={() => deleteSession(s.id)}
+                        style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem', cursor: 'pointer', borderRadius: '0.375rem', color: 'var(--error)', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}
+                      >
+                        <Trash2 size={12} aria-hidden />
+                        {copy.sessionDeleteLabel ?? dc?.sessionDeleteLabel ?? 'Ištrinti'}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {sessionCopyFeedback && (
+                <span role="status" aria-live="polite" style={{ display: 'block', marginTop: '0.375rem', fontSize: '0.8125rem', color: sessionCopyFeedback === 'success' ? 'var(--success)' : 'var(--error)' }}>
+                  {sessionCopyFeedback === 'success' ? (copy.copySuccess ?? dc?.copySuccess ?? '') : (copy.copyFailed ?? dc?.copyFailed ?? '')}
+                </span>
+              )}
+            </section>
+          )}
+
+          {/* Inline templates (CEO-style) */}
+          <div ref={templatesSectionRef}>
+            <TemplatesInline
+              items={sot?.libraryPrompts ?? []}
+              getModeIdForPromptId={getModeIdForPromptId}
+              expandSignal={templatesExpandSignal}
+              onSelectMode={(modeId) => setActiveMode(modeId)}
+              onUseTemplate={({ promptId, modeId }) => {
+                templateAssistUsed.current = true
+                trackUxEvent('template_used', { promptId, modeId: modeId ?? null })
+              }}
+              copy={{
+                templatesSectionTitle: copy.templatesSectionTitle,
+                templatesExpandLabel: copy.templatesExpandLabel,
+                templatesCollapseLabel: copy.templatesCollapseLabel,
+                btnCopy: copy.btnCopy,
+                btnUse: copy.btnUse,
+                copySuccess: copy.copySuccess,
+                copyFailed: copy.copyFailed,
+                templatesSourcePrefix: copy.templatesSourcePrefix ?? dc?.templatesSourcePrefix,
+                promptAnatomyUrl: copy.promptAnatomyUrl,
+                promptAnatomyLinkText: copy.promptAnatomyLinkText ?? dc?.promptAnatomyLinkText,
+                promptAnatomyAriaLabel: copy.promptAnatomyAriaLabel ?? dc?.promptAnatomyAriaLabel,
+              }}
+            />
+          </div>
 
           {/* 7. Community section */}
-          {copy.whatsappUrl && (
+          {copy.whatsappUrl && generatedPrompt !== null && (
             <section className="community">
               <h2>{copy.communityTitle ?? dc?.communityTitle ?? ''}</h2>
               <p className="community-subtitle">{copy.communitySubtitle ?? dc?.communitySubtitle ?? ''}</p>
               <div className="community-ctas">
                 <a href={copy.whatsappUrl} target="_blank" rel="noopener noreferrer" className="community-cta-primary">
+                  <ExternalLink size={14} aria-hidden />
                   {copy.communityCtaPrimary ?? dc?.communityCtaPrimary ?? ''}
                 </a>
                 <a href={copy.promptAnatomyUrl} target="_blank" rel="noopener noreferrer" className="community-cta-secondary">
+                  <ExternalLink size={14} aria-hidden />
                   {copy.communityCtaSecondary ?? dc?.communityCtaSecondary ?? ''}
                 </a>
               </div>
@@ -590,10 +915,18 @@ function AppContent() {
           {/* 8. Footer */}
           <footer className="footer-card">
             <h3 className="footer-brand">{copy.heroTitle ?? dc?.heroTitle ?? ''} ✨</h3>
-            <p className="footer-tagline">{copy.heroCtaMeta ?? dc?.heroCtaMeta ?? ''}</p>
+            <p className="footer-tagline">{copy.footerTagline ?? dc?.footerTagline ?? copy.heroCtaMeta ?? dc?.heroCtaMeta ?? ''}</p>
             <div className="footer-product-link">
               {copy.footerCredit ?? sot?.brand?.edition ?? ''} {copy.footerContactLabel ?? dc?.footerContactLabel ?? ''}{' '}
               <a href={`mailto:${copy.contactEmail ?? dc?.contactEmail ?? ''}`}>{copy.contactEmail ?? dc?.contactEmail ?? ''}</a>
+              {copy.promptAnatomyUrl && (
+                <>
+                  {' · '}
+                  <a href={copy.promptAnatomyUrl} target="_blank" rel="noopener noreferrer" aria-label={copy.promptAnatomyAriaLabel ?? dc?.promptAnatomyAriaLabel ?? ''}>
+                    {copy.promptAnatomyLinkText ?? dc?.promptAnatomyLinkText ?? ''}
+                  </a>
+                </>
+              )}
             </div>
             {sot?.footerBadges && sot.footerBadges.length > 0 && (
               <div className="footer-badges">
@@ -609,6 +942,13 @@ function AppContent() {
                   <> <a href={copy.privacyUrl}>{copy.privacyLabel ?? dc?.privacyLabel ?? ''}</a></>
                 )}
               </p>
+              {copy.promptAnatomyUrl && (
+                <p style={{ marginTop: '0.25rem', fontSize: '0.8125rem' }}>
+                  <a href={copy.promptAnatomyUrl} target="_blank" rel="noopener noreferrer" aria-label={copy.promptAnatomyAriaLabel ?? dc?.promptAnatomyAriaLabel ?? ''}>
+                    {copy.promptAnatomyLinkText ?? dc?.promptAnatomyLinkText ?? ''}
+                  </a>
+                </p>
+              )}
             </div>
           </footer>
         </main>

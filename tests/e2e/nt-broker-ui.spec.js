@@ -15,6 +15,7 @@ for (const vp of viewports) {
       await page.goto('./?lang=lt', GOTO_OPTIONS);
       await expect(page.getByRole('heading', { level: 1 })).toContainText(/NT Brokerio Asistentas/i);
       await expect(page.getByText(/Sukurk profesionalų skelbimą, klientų atsakymą/i)).toBeVisible();
+      await expect(page.getByText(/užpildyk bent 1-2 laukus|užpildyk bent 1–2 laukus/i)).toBeVisible();
       await expect(page.getByTestId('mode-objektas')).toBeVisible();
       await expect(page.getByTestId('mode-skelbimas')).toBeVisible();
       await expect(page.getByTestId('cta-generate')).toBeVisible();
@@ -22,19 +23,19 @@ for (const vp of viewports) {
 
     test('mode tabs switch and show mode-specific CTA', async ({ page }) => {
       await page.goto('./?lang=lt', GOTO_OPTIONS);
-      await page.getByTestId('mode-derybos').click();
-      await expect(page.getByText(/Derybų strategija/i)).toBeVisible();
+      const derybosTab = page.getByTestId('mode-derybos');
+      await derybosTab.click();
+      await expect(derybosTab).toContainText(/Derybos/i);
       await expect(page.getByTestId('cta-generate')).toContainText(/Parengti strategiją/i);
       await page.getByRole('button', { name: /Perjungti į tamsų režimą/i }).click();
       await expect(page.getByRole('button', { name: /Perjungti į šviesų režimą/i })).toBeVisible();
     });
 
-    test('templates CTA opens library modal', async ({ page }) => {
+    test('templates CTA expands inline templates section', async ({ page }) => {
       await page.goto('./?lang=lt', GOTO_OPTIONS);
       await page.getByTestId('cta-templates').click();
-      const dialog = page.getByRole('dialog');
-      await expect(dialog).toBeVisible();
-      await expect(dialog.getByRole('heading', { name: /Šablonų biblioteka/i })).toBeVisible();
+      await expect(page.getByText(/Šablonų biblioteka \(\d+\)/i)).toBeVisible();
+      await expect(page.getByText(/NT skelbimo šablonas/i)).toBeVisible();
     });
 
     test('no horizontal overflow on mobile', async ({ page }) => {
@@ -46,13 +47,21 @@ for (const vp of viewports) {
       expect(overflowPx).toBeLessThanOrEqual(2);
     });
 
-    test('footer has contact email and community has Prompt Anatomy link', async ({ page }) => {
+    test('footer has contact email and Prompt Anatomy link', async ({ page }) => {
       await page.goto('./?lang=lt', GOTO_OPTIONS);
       const footer = page.locator('footer');
       await expect(footer).toBeVisible();
+      await expect(footer).toContainText(/Promptas sukurtas\. Nori daugiau\?/i);
       const mailtoLink = footer.locator('a[href^="mailto:"]');
       await expect(mailtoLink).toHaveAttribute('href', 'mailto:info@promptanatomy.app');
       await expect(mailtoLink).toContainText('info@promptanatomy.app');
+      const footerPromptLink = footer.locator('a[href="https://www.promptanatomy.app/"]');
+      await expect(footerPromptLink.first()).toBeVisible();
+    });
+
+    test('community has Prompt Anatomy link after generate', async ({ page }) => {
+      await page.goto('./?lang=lt', GOTO_OPTIONS);
+      await page.getByTestId('cta-generate').click();
       const community = page.locator('.community');
       const promptLink = community.locator('a[href="https://www.promptanatomy.app/"]');
       await expect(promptLink).toBeVisible();
@@ -96,8 +105,9 @@ for (const vp of viewports) {
       await expect(page.getByText('NT brokerio centras')).toBeVisible();
     });
 
-    test('community section has WhatsApp link', async ({ page }) => {
+    test('community section has WhatsApp link after generate', async ({ page }) => {
       await page.goto('./?lang=lt', GOTO_OPTIONS);
+      await page.getByTestId('cta-generate').click();
       const community = page.locator('.community');
       await expect(community).toBeVisible();
       const whatsappLink = community.locator('a[href*="whatsapp"]');

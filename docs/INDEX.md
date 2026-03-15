@@ -22,6 +22,7 @@ Vienintelis dokumentacijos navigacijos mazgas po `README.md`.
 - [CHANGELOG.md](../CHANGELOG.md) - pakeitimų istorija (Keep a Changelog, SemVer).
 - [docs/roadmap.md](roadmap.md) - UI/UX iteracijų roadmap (įgyvendinta + tolesnė eilė).
 - [docs/DEPLOY_NTURTAS.md](DEPLOY_NTURTAS.md) - deploy į nturtas (GitHub Pages), cold fresh repo checklist.
+- [docs/STYLE_GUIDE.md](STYLE_GUIDE.md) - spalvų paletė ir stiliaus gidas (Fotocasa-inspired).
 
 ## Kodo navigacija per indeksą
 
@@ -37,13 +38,13 @@ Vienintelis dokumentacijos navigacijos mazgas po `README.md`.
 - **Analizė:** [docs/CODEBASE_ANALYSIS.md](CODEBASE_ANALYSIS.md) – kodo bazės analizė, bugai, tobulinimai.
 - **i18n paruoštumas:** [docs/I18N_READINESS_ASSESSMENT.md](I18N_READINESS_ASSESSMENT.md) – ar UI paruoštas kitomis kalbomis, kriterijai, rekomendacijos.
 - **UX/Copy auditas:** [docs/UX_COPY_AUDIT.md](UX_COPY_AUDIT.md) – micro UI, UX, vartotojo kelionė, copy auditas, trinties mažinimas (tik atspalviai/gradientai).
-- **Premium UX/UI gilus auditas:** [docs/PREMIUM_UX_UI_DEEP_DIVE.md](PREMIUM_UX_UI_DEEP_DIVE.md) – vartotojo kelionė, OK/fail būsenos, mikro kopija, spalvos/gradientai/šešėliai, premium SaaS rekomendacijos; P1–P3 įgyvendinta (žr. skyrių 8 ir CHANGELOG).
+- **Premium UX/UI gilus auditas:** [docs/PREMIUM_UX_UI_DEEP_DIVE.md](PREMIUM_UX_UI_DEEP_DIVE.md) – naujas gilus auditas: vartotojo kelionės, trintys, stabdžiai, OK/FAIL matrica ir KISS-MARRY-KILL prioritetizacija.
 
 ## Archyvas
 
-- [archive/legacy-pamoku-kurejas_2026-03/](../archive/legacy-pamoku-kurejas_2026-03/) – buvusi root aplikacija (DI Pamokų Kūrėjas); index.html, generator.js, copy.js, style.css, testai.
+- [archive/legacy-pamoku-kurejas_2026-03/](../archive/legacy-pamoku-kurejas_2026-03/) – buvusi root aplikacija (archyvas).
 - [archive/pre-github-cleanup_2026-03/](archive/pre-github-cleanup_2026-03/)
-- [archive/legacy-mokytojas_2026-03/](archive/legacy-mokytojas_2026-03/)
+- [archive/legacy-mokytojas_2026-03/](archive/legacy-mokytojas_2026-03/) – seserinio projekto archyvas.
 - [archive/legacy-di-promptu-biblioteka_2026-02/](archive/legacy-di-promptu-biblioteka_2026-02/)
 - [archive/legacy-vaizdo-generatorius_2026-02/](archive/legacy-vaizdo-generatorius_2026-02/)
 - [docs/archive/LT_EN_UI_UX_REPORT.md](archive/LT_EN_UI_UX_REPORT.md) – kito projekto (DI Operacinis Centras) ataskaita.

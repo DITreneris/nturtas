@@ -6,7 +6,7 @@ Formatas pagal [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), versija
 
 ### Pridėta
 - **Hero card dizainas:** gradient fonas, 2 badge'ai (Promptų anatomija + Spin-off), onboarding žingsniai hero viduje, CTA mygtukai hero viduje.
-- **Operacijų centras:** numeruota ikona, pavadinimas, subtitras -- kortelės stilius kaip mokytojas.
+- **Operacijų centras:** numeruota ikona, pavadinimas, subtitras -- kortelės stilius.
 - **Formos kortelė:** sekcijos header su ikona ir režimo pavadinimu, card container.
 - **Output kortelė:** badge header (SUGENERUOTA UŽKLAUSA + mode badge + copy btn), didelis KOPIJUOTI CTA mygtukas.
 - **Community CTA sekcija:** kortelė su antrašte, subtitru, WhatsApp + Promptų anatomija mygtukai.
@@ -20,34 +20,48 @@ Formatas pagal [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), versija
 - **E2E testai:** atnaujinti selektoriai (WhatsApp ir PA link perkelti iš footer į community).
 - **Unit testai:** atnaujintas WhatsApp link testas (footer → community).
 
-## [Nereleisuota]
-
-### Pataisyta
-- **defaultSot.ts -- pilnas fallback:** pridėti `libraryPrompts` (4 šablonai), `rules` (4 taisyklės), `colors` ir `cta` sekcijos iš `config/sot.json`; jei SOT nepasikrauna, vartotojas mato pilną UI, ne tuščias sekcijas.
-- **Hardkoduoti LT fallback'ai pašalinti:** ~25 vietos `App.tsx` ir 6 vietos `LibraryPromptsModal.tsx` -- visi `?? 'Kopijuoti'` tipo fallback'ai pakeisti `defaultSot.copy` nuorodomis; EN/ES vartotojai nebematys lietuviškų tekstų jei konfigūracija nepasikraus.
-- **Modal focus trap (WCAG 2.1 AA):** `LibraryPromptsModal` -- Tab/Shift+Tab ciklas tarp focusable elementų; auto-focus atidarius; fokuso grąžinimas į trigger elementą uždarant.
-- **setTimeout cleanup:** `App.tsx` ir `LibraryPromptsModal.tsx` -- `useRef` + `clearTimeout` vietoj nevaldomų `setTimeout`; pašalinta state update ant unmounted komponento rizika.
-- **loadSot.ts error handling:** sukurta `SotLoadError` klasė su `instanceof` tikrinimu vietoj trapio string prefix matching; non-404 klaidos pranešimas naudoja locale-aware `errors.generic` vietoj hardkoduoto LT.
-- **main.tsx:** `document.getElementById('app')!` pakeistas null check su aiškiu error.
-- **isValidSot stiprinimas:** pridėti `modesOrder` (Array.isArray) ir `fieldMeta` (typeof object) tikrinimai.
-- **localeUtils.ts SSR guard:** `persistLocale` apgaubtas `typeof window === 'undefined'` guard analogiškai kitoms funkcijoms.
-- **loadSot.test.ts:** atnaujintas testas 500 klaidos scenarijui (tikrina `errors.generic`, ne hardkoduotą `Klaida 500`).
-
-### Pašalinta
-- **Dead CSS:** `.logo`, `.logo.vanilla`, `.card`, `.read-the-docs` (Vite template likučiai); `text-align: center` iš `#app`; `.read-the-docs` iš light mode media query.
-- **Dead failas:** `typescript.svg` (Vite template, neimportuotas).
-- **Dead tipai:** `SotCopy.recommendedFieldsHint` ir `SotCopy.modeFieldsGroupLabel` (nenaudojami).
-- **Nereikalingas `typeof console` check:** `loadSot.ts` supaprastintas iki tiesioginio `console.warn(...)`.
+## [2.2.0] – 2026-03-15
 
 ### Pakeista
-- **Array keys:** `App.tsx` onboardingSteps ir rules sąrašuose `key={i}` pakeisti į content-derived keys (`key={step}`, `key={rule.text}`).
-- **Dokumentacija sinchronizuota su kodu:**
-  - `docs/roadmap.md` -- 5 įgyvendinti items perkelti į „Įgyvendinta"; likę: forma/rezultatas, poliravimas.
-  - `README.md` -- roadmap sekcija sinchronizuota su roadmap.md.
-  - `docs/INDEX.md` -- SOT build path atnaujintas (locale-based failai); pridėtas `localeUtils.ts`; `LT_EN_UI_UX_REPORT.md` klasifikuotas kaip archyvas.
-  - `CHANGELOG.md` -- sujungti dubliuoti `### Pakeista`; `[Nereleisuota]` išleista kaip `[2.0.0]`.
-- **`nt-broker-ui/package.json`:** versija `0.0.0` → `2.0.0`.
-- **`LT_EN_UI_UX_REPORT.md`:** perkeltas iš root į `docs/archive/` (kito projekto dokumentas).
+- **Spalvų paletė (Fotocasa-inspired):** visa spalvų schema pakeista -- primary navy `#1B2A4A`, accent coral `#E83E5E` (vietoj auksinės), CTA mygtukai koraliniai su baltu tekstu, solidūs paviršiai (jokių gradientų).
+- **SOT theme/colors/cta:** `config/sot.json`, `sot.en.json`, `sot.es.json`, `defaultSot.ts` -- naujos spalvos visomis kalbomis.
+- **CSS fallback'ai:** visi senų spalvų fallback'ai (`#1E4A8C`, `#D4AF37`, `#B8962E`, gradientai) pakeisti naujais solidžiais; `.cta-button` ir `.output-cta` teksto spalva `#FFFFFF`.
+- **Hero/Community bg:** gradientai pakeisti solidžiais navy/white spalvomis.
+- **Dark mode:** naujos dark spalvos -- primary `#F06580` (coral light), surfaces `#0F1117`/`#1A1D27`, solidūs (ne gradientai).
+
+### Pridėta
+- **Stiliaus gidas:** `docs/STYLE_GUIDE.md` -- Fotocasa-inspired spalvų paletė, principai (solidūs paviršiai, aukštas kontrastas, rounded corners).
+- **docs/INDEX.md:** pridėtas style guide nuoroda.
+
+## [Nereleisuota]
+
+### Pakeista
+- **UX roadmap P1-P3 įgyvendinimas (conversion-first):**
+  - `App.tsx`: pašalintas modalinis templates kelias; hero/form antriniai CTA veda į inline templates (scroll + expand).
+  - Output paliktas su vienu aiškiu primary copy veiksmu.
+  - Režimų juostoje pridėtas `recommended start` signalas ir `Kada naudoti` helper tekstas.
+  - Sesijose pridėtas `Atkurti` veiksmas (`restore to output`).
+  - Taisyklės numatytai sutrauktos; community sekcija rodoma po pirmo generavimo.
+- **Instrumentacija (P3):** įdiegtas UX event sluoksnis (`ntbroker:ux` + optional `dataLayer`) su `ttfc` ir pagrindiniais funnel eventais (`app_loaded`, `mode_selected`, `template_used`, `generate_clicked`, `output_copied_first`, `output_copied`, `session_saved`, `session_restored`, `session_copied`).
+- **Testai:** atnaujinti `unit` ir `e2e` scenarijai inline templates ir post-generate flow.
+- **Dokumentacija:** `docs/PREMIUM_UX_UI_DEEP_DIVE.md` perrašytas į kanoninį `score engine` formatą su svoriais, KPI slenksčiais, `T0/T1` snapshot taisykle ir `Definition of Done` procentų kėlimui.
+- **Low hanging fruits (realiai įjungta):**
+  - `App.tsx`: rodomas `copy.firstStepHint` prieš formą.
+  - `App.tsx`: footer tagline dabar skaitoma iš `copy.footerTagline` (fallback tik jei nėra rakto).
+  - `App.tsx` + `style.css`: antriniai CTA vizualiai susilpninti ir aiškiau atskirti nuo primary; community CTA pažymėti external ikona.
+- **Release quality vartai:** root `package.json` test pipeline papildytas `quality:premium` (SOT copy coverage, tokenų disciplina, required UX event'ai, hardcoded copy rizikų check) ir optional KPI slenksčių vartais per `UX_EVENTS_FILE`.
+
+### Pridėta
+- `config/premium-score.json`: premium vertinimo svoriai, KPI threshold'ai, privalomi UX event'ai ir leidžiamų copy išimčių sąrašas.
+- `tests/premium-quality.test.js`: automatinis premium quality gate scriptas.
+- `tests/ux-kpi-thresholds.test.js`: KPI slenksčių tikrinimas pagal event export (`JSON` arba `JSONL`).
+- `package.json` scriptai:
+  - `quality:premium`
+  - `quality:premium:events`
+- `SotCopy` raktai: `sessionRestoreLabel`, `recommendedStartLabel` (`types`, `defaultSot`, `config/sot.json`).
+
+### Pašalinta
+- `nt-broker-ui/src/components/LibraryPromptsModal.tsx` (nebenaudojamas aktyviame UX sraute).
 
 ---
 

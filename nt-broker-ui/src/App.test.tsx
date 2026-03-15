@@ -10,6 +10,7 @@ const mockSot = {
     heroCtaPrimary: 'Generuoti',
     heroCtaSecondary: 'Šablonų biblioteka',
     heroCtaMeta: 'Sutaupyk iki 5 val. per savaitę.',
+    firstStepHint: 'Pasirink režimą ir užpildyk bent 1–2 laukus – rezultatas priklausys nuo įvesties.',
     badge: 'NT Brokerio Asistentas',
     onboardingSteps: [
       'Pasirink režimą viršuje',
@@ -106,10 +107,19 @@ describe('App', () => {
     expect(screen.getByText(/Kopijuok prompt ir įklijuok/i)).toBeTruthy()
   })
 
+  it('renders first step hint and footer tagline from SOT', async () => {
+    render(<App />)
+    await screen.findByRole('heading', { level: 1 }, { timeout: 3000 })
+    expect(screen.getByText(/užpildyk bent 1–2 laukus/i)).toBeTruthy()
+    expect(screen.getByText('Promptas sukurtas. Nori daugiau?')).toBeTruthy()
+  })
+
   it('renders rules with new title', async () => {
     render(<App />)
     await screen.findByRole('heading', { level: 1 }, { timeout: 3000 })
-    expect(screen.getByText(/Ką gausite/i)).toBeTruthy()
+    const rulesToggle = screen.getByRole('button', { name: /Ką gausite/i })
+    expect(rulesToggle).toBeTruthy()
+    fireEvent.click(rulesToggle)
     expect(screen.getByText(/Profesionali, tiksli lietuvių kalba/i)).toBeTruthy()
   })
 
@@ -161,9 +171,10 @@ describe('App', () => {
     expect(screen.getByText('Atidaryti Claude')).toBeTruthy()
   })
 
-  it('renders WhatsApp link in community section', async () => {
+  it('renders WhatsApp link in community section after generation', async () => {
     render(<App />)
     await screen.findByRole('heading', { level: 1 }, { timeout: 3000 })
+    fireEvent.click(screen.getByTestId('cta-generate'))
     const community = document.querySelector('.community')
     expect(community).toBeTruthy()
     const whatsappLink = community!.querySelector('a[href*="whatsapp"]')

@@ -2,7 +2,7 @@
 
 Profesionalūs NT promptai, skelbimai ir klientų komunikacija per 30–60 sek. Konfigūracija ir turinys valdomi iš **SOT** – `config/sot.json` (žr. `docs/INDEX.md`).
 
-**Aktyvi aplikacija:** `nt-broker-ui` (React + Vite). Legacy root aplikacija (DI Pamokų Kūrėjas) – [archive/legacy-pamoku-kurejas_2026-03/](archive/legacy-pamoku-kurejas_2026-03/).
+**Aktyvi aplikacija:** `nt-broker-ui` (React + Vite).
 
 ## Greita pradžia
 
@@ -39,7 +39,7 @@ Pirmą kartą: nukopijuokite šią kodo bazę į nturtas, įjunkite Pages iš Ac
 Tolesnė UI/UX iteracijų eilė – [docs/roadmap.md](docs/roadmap.md). Detalės – `.cursor/plans/footer_ir_ux_iteration_plan.md` (lokalus planas, ne repo).
 
 1. **Forma ir rezultatas** – lengva validacija 1–2 laukams; pasirinktinai „Generuoti dar kartą" / „Redaguoti".
-2. **Poliravimas** – skeleton loading, touch target patikra, papildomas aukso akcentas.
+2. **Poliravimas** – skeleton loading, touch target patikra, vizualiniai akcentai.
 
 ## Lean principai
 
