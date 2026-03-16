@@ -102,7 +102,10 @@ for (const vp of viewports) {
 
     test('operation center label visible', async ({ page }) => {
       await page.goto('./?lang=lt', GOTO_OPTIONS);
-      await expect(page.getByText('NT brokerio centras')).toBeVisible();
+      // Ops center block: title from SOT step1Label (e.g. "1. Pasirink režimą") or operationCenterLabel
+      const opsCenter = page.locator('.ops-center');
+      await expect(opsCenter).toBeVisible();
+      await expect(opsCenter.locator('.ops-center-title')).toContainText(/Pasirink režimą|brokerio centras/i);
     });
 
     test('community section has WhatsApp link after generate', async ({ page }) => {
