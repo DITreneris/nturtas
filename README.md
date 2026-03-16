@@ -36,7 +36,7 @@ Pirmą kartą: nukopijuokite šią kodo bazę į nturtas, įjunkite Pages iš Ac
 
 ## Roadmap
 
-Tolesnė UI/UX iteracijų eilė – [docs/roadmap.md](docs/roadmap.md). Detalės – `.cursor/plans/footer_ir_ux_iteration_plan.md` (lokalus planas, ne repo).
+Tolesnė UI/UX iteracijų eilė – [docs/roadmap.md](docs/roadmap.md).
 
 1. **Forma ir rezultatas** – lengva validacija 1–2 laukams; pasirinktinai „Generuoti dar kartą" / „Redaguoti".
 2. **Poliravimas** – skeleton loading, touch target patikra, vizualiniai akcentai.

@@ -1,6 +1,6 @@
 # Roadmap (NT Broker – UI/UX iteracijos)
 
-Kanoninis planas – [`.cursor/plans/footer_ir_ux_iteration_plan.md`](../.cursor/plans/footer_ir_ux_iteration_plan.md). Čia – trumpa eilė.
+Čia – trumpa eilė (detalės lokaliai pagal poreikį).
 
 ## Įgyvendinta
 
