@@ -739,7 +739,53 @@ select:focus-visible {
 }
 
 /* ══════════════════════════════════════════════
-   STEP 1 BLOCK (ops center + mode tabs)
+   Visual flow stepper: MODE → DATA → GENERATE → COPY
+   ══════════════════════════════════════════════ */
+.flow-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  padding: var(--space-4) var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.flow-step {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-button);
+  background: var(--surface-1);
+  color: var(--text);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  border: 1px solid var(--border);
+}
+
+.flow-step-label {
+  white-space: nowrap;
+}
+
+.flow-step-arrow {
+  color: var(--text-light);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .flow-stepper {
+    gap: var(--space-2);
+    padding: var(--space-3);
+  }
+  .flow-step-label {
+    display: none;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   STEP 1 BLOCK (mode tabs only)
    ══════════════════════════════════════════════ */
 .step1-block {
   margin-bottom: var(--space-6);
@@ -865,7 +911,7 @@ select:focus-visible {
 }
 
 /* ══════════════════════════════════════════════
-   FORM CARD
+   FORM CARD (one of border or shadow – border only)
    ══════════════════════════════════════════════ */
 .form-card {
   background: var(--surface-1);
@@ -873,7 +919,6 @@ select:focus-visible {
   border-radius: var(--radius-card);
   padding: var(--space-8);
   margin-bottom: var(--space-6);
-  box-shadow: var(--shadow-sm);
 }
 
 .form-cta-row {
@@ -907,15 +952,49 @@ select:focus-visible {
 }
 
 /* ══════════════════════════════════════════════
-   OUTPUT CARD
+   OUTPUT CARD (preview style – product UI, not dev tool)
    ══════════════════════════════════════════════ */
 .output-card {
   background: var(--output-bg);
   color: var(--on-primary);
   border-radius: var(--radius-card);
-  padding: 1.5rem;
-  box-shadow: var(--shadow-md);
-  margin-top: 1.5rem;
+  padding: var(--space-6);
+  margin-top: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.output-preview-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.output-preview-title {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--on-primary);
+}
+
+.output-preview-body {
+  min-height: 8rem;
+}
+
+.output-placeholder {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--on-primary-subtle);
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.output-preview-content {
+  font-family: inherit;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .output-header {
@@ -963,24 +1042,26 @@ select:focus-visible {
   gap: 0.5rem;
   width: 100%;
   padding: 0.875rem 1.5rem;
+  margin-top: var(--space-4);
   background: var(--accent-gold);
   color: var(--on-primary);
   border-radius: var(--radius-button);
   border: none;
   font-weight: 700;
   font-size: 0.9375rem;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
   cursor: pointer;
-  margin-top: 1rem;
   font-family: inherit;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
-.output-cta:hover {
+.output-cta:hover:not(:disabled) {
   background: var(--accent-gold-hover);
 }
 .output-cta:active {
   transform: scale(0.98);
+}
+.output-cta:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .output-meta {

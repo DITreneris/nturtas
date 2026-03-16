@@ -12,12 +12,7 @@ const mockSot = {
     heroCtaMeta: 'Sutaupyk iki 5 val. per savaitę.',
     firstStepHint: 'Pasirink režimą ir užpildyk bent 1–2 laukus – rezultatas priklausys nuo įvesties.',
     badge: 'NT Brokerio Asistentas',
-    onboardingSteps: [
-      'Pasirink režimą viršuje',
-      'Užpildyk pagrindinius laukus',
-      'Spustelk mygtuką – gausite AI prompt',
-      'Kopijuok prompt ir įklijuok į ChatGPT',
-    ],
+    onboardingSteps: [],
     rulesTitle: 'Ką gausite',
     outputDefaultTitle: 'Tavo sugeneruotas AI prompt',
     outputDefaultHint: 'Kopijuok šį tekstą ir įklijuok į ChatGPT.',
@@ -110,17 +105,18 @@ describe('App', () => {
     expect(templatesControl.textContent).toBe('Šablonų biblioteka')
   })
 
-  it('renders onboarding steps', async () => {
+  it('renders visual flow stepper (Režimas → Duomenys → Generuoti → Kopijuoti)', async () => {
     render(<App />)
     await screen.findByRole('heading', { level: 1 }, { timeout: 3000 })
-    expect(screen.getByText(/Pasirink režimą viršuje/i)).toBeTruthy()
-    expect(screen.getByText(/Kopijuok prompt ir įklijuok/i)).toBeTruthy()
+    expect(screen.getByText('Režimas')).toBeTruthy()
+    expect(screen.getByText('Duomenys')).toBeTruthy()
+    expect(screen.getByText('Generuoti')).toBeTruthy()
+    expect(screen.getByText('Kopijuoti')).toBeTruthy()
   })
 
-  it('renders first step hint and footer tagline from SOT', async () => {
+  it('renders footer tagline from SOT', async () => {
     render(<App />)
     await screen.findByRole('heading', { level: 1 }, { timeout: 3000 })
-    expect(screen.getByText(/užpildyk bent 1–2 laukus/i)).toBeTruthy()
     expect(screen.getByText('Promptas sukurtas. Nori daugiau?')).toBeTruthy()
   })
 
@@ -140,11 +136,12 @@ describe('App', () => {
     expect(screen.getByText('Objekto duomenys')).toBeTruthy()
   })
 
-  it('renders STEP 1 block with step1Label and subtitle', async () => {
+  it('renders mode tabs and flow stepper', async () => {
     render(<App />)
     await screen.findByRole('heading', { level: 1 }, { timeout: 3000 })
-    expect(screen.getByText('1. Pasirink režimą')).toBeTruthy()
-    expect(screen.getByText(/Pasirink režimą, užpildyk laukus/i)).toBeTruthy()
+    expect(screen.getByRole('button', { name: /Objektas/i })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /Skelbimas/i })).toBeTruthy()
+    expect(screen.getByText('Režimas')).toBeTruthy()
   })
 
   it('renders skip-to-content link', async () => {
@@ -173,11 +170,11 @@ describe('App', () => {
     expect(charCount!.textContent).toMatch(/Simbolių: \d+/)
   })
 
-  it('renders AI tool links in output card (CEO parity – always visible)', async () => {
+  it('output card has single Copy CTA (no AI tool links in main flow)', async () => {
     render(<App />)
     await screen.findByRole('heading', { level: 1 }, { timeout: 3000 })
-    expect(screen.getByText('Atidaryti ChatGPT')).toBeTruthy()
-    expect(screen.getByText('Atidaryti Claude')).toBeTruthy()
+    const copyBtn = screen.getByRole('button', { name: /Kopijuoti/i })
+    expect(copyBtn).toBeTruthy()
   })
 
   it('renders WhatsApp link in community section (always visible when whatsappUrl set)', async () => {

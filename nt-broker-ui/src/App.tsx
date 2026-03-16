@@ -15,6 +15,10 @@ import {
   Moon,
   Save,
   Trash2,
+  LayoutList,
+  PenLine,
+  Play,
+  Copy as CopyIcon,
 } from 'lucide-react'
 import { SotProvider, useSot } from './sot/SotContext'
 import { defaultSot } from './sot/defaultSot'
@@ -73,7 +77,6 @@ function AppContent() {
   const appMountedAt = useRef(Date.now())
   const hasSentFirstCopy = useRef(false)
   const templateAssistUsed = useRef(false)
-  const [hasShownFirstCopyHint, setHasShownFirstCopyHint] = useState(false)
 
   interface Session {
     id: string
@@ -130,11 +133,6 @@ function AppContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  useEffect(() => {
-    if (copyFeedback?.type === 'success') {
-      setHasShownFirstCopyHint(true)
-    }
-  }, [copyFeedback?.type])
 
   const saveSession = () => {
     if (!generatedPrompt) return
@@ -322,14 +320,11 @@ function AppContent() {
   }
 
   const outputTitle = currentMode?.outputTitle ?? copy.outputDefaultTitle ?? ''
-  const outputHint = currentMode?.outputHint ?? copy.outputDefaultHint ?? ''
   const ctaLabel = currentMode?.ctaLabel ?? copy.heroCtaPrimary ?? dc?.heroCtaPrimary ?? ''
-  const firstStepHint = copy.firstStepHint ?? dc?.firstStepHint ?? ''
   const recommendedStartId = defaultModeId
   const recommendedStartLabel =
     copy.recommendedStartLabel
     ?? (locale === 'lt' ? 'Rekomenduojama pradžia' : locale === 'es' ? 'Inicio recomendado' : 'Recommended start')
-  const whenToUseLabel = copy.whenToUseLabel ?? dc?.whenToUseLabel ?? (locale === 'lt' ? 'Kada naudoti:' : locale === 'es' ? 'Cuando usar:' : 'When to use:')
   const modeNavAriaLabel = copy.modeNavAriaLabel ?? dc?.modeNavAriaLabel ?? 'Režimų pasirinkimas'
   const Icon = currentMode?.Icon
 
@@ -431,38 +426,32 @@ function AppContent() {
           <button type="button" className="hero-cta-secondary" data-testid="cta-templates" onClick={openTemplatesInline}>
             {copy.heroCtaSecondary ?? dc?.heroCtaSecondary ?? ''}
           </button>
-          {copy.onboardingSteps && copy.onboardingSteps.length > 0 && (
-            <>
-              {(copy.onboardingStepsTitle ?? dc?.onboardingStepsTitle) && (
-                <p className="header-steps-title" style={{ margin: '1rem 0 0.5rem', fontSize: '0.875rem', fontWeight: 600, color: 'var(--on-primary-muted)' }}>
-                  {copy.onboardingStepsTitle ?? dc?.onboardingStepsTitle}
-                </p>
-              )}
-            <ul className="header-steps">
-              {copy.onboardingSteps.map((step, i) => (
-                <React.Fragment key={step}>
-                  {i > 0 && <span className="header-step-chevron">›</span>}
-                  <li className="header-step">
-                    <span className="header-step-num">{i + 1}</span>
-                    {step}
-                  </li>
-                </React.Fragment>
-              ))}
-            </ul>
-            </>
-          )}
         </header>
 
-        {/* 3. STEP 1: Operation center + mode tabs (one block) */}
-        <div className="step1-block">
-          <div className="ops-center">
-            <span className="ops-center-number">1</span>
-            <div>
-              <div className="ops-center-title">{copy.step1Label ?? copy.operationCenterLabel ?? dc?.step1Label ?? dc?.operationCenterLabel ?? ''}</div>
-              <div className="ops-center-subtitle">{copy.operationCenterSubLabel ?? dc?.operationCenterSubLabel ?? ''}</div>
-            </div>
-          </div>
+        {/* Visual flow stepper: MODE → DATA → GENERATE → COPY */}
+        <div className="flow-stepper" role="presentation" aria-hidden="true">
+          <span className="flow-step">
+            <LayoutList size={20} aria-hidden />
+            <span className="flow-step-label">Režimas</span>
+          </span>
+          <span className="flow-step-arrow" aria-hidden>→</span>
+          <span className="flow-step">
+            <PenLine size={20} aria-hidden />
+            <span className="flow-step-label">Duomenys</span>
+          </span>
+          <span className="flow-step-arrow" aria-hidden>→</span>
+          <span className="flow-step">
+            <Play size={20} aria-hidden />
+            <span className="flow-step-label">Generuoti</span>
+          </span>
+          <span className="flow-step-arrow" aria-hidden>→</span>
+          <span className="flow-step">
+            <CopyIcon size={20} aria-hidden />
+            <span className="flow-step-label">Kopijuoti</span>
+          </span>
+        </div>
 
+        <div className="step1-block">
           <nav className="step1-nav" aria-label={modeNavAriaLabel}>
             <div className="step1-nav-inner">
               <div className="step1-nav-tabs">
@@ -540,44 +529,8 @@ function AppContent() {
           {/* 5. Form card */}
           <Card variant="form">
             <div className="form-card-header">
-              <span className="step-label-inline" style={{ marginRight: '0.5rem', fontWeight: 800, color: 'var(--text-light)' }}>2</span>
-              {(copy.step2Label ?? dc?.step2Label) && (
-                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-light)', marginRight: '0.5rem' }}>
-                  {copy.step2Label ?? dc?.step2Label}
-                </span>
-              )}
-              {currentMode && Icon && <Icon size={16} />}
-              {currentMode?.label?.toUpperCase()}
-            </div>
-
-            {/* Mode context */}
-            <div style={{ marginTop: '1rem' }}>
-              {firstStepHint && (
-                <p
-                  style={{
-                    margin: '0 0 0.5rem',
-                    fontSize: '0.8125rem',
-                    color: 'var(--text-light)',
-                    fontStyle: 'italic',
-                  }}
-                >
-                  {firstStepHint}
-                </p>
-              )}
-              <p style={{ color: 'var(--text-light)', fontSize: '0.875rem' }}>
-                {copy.activeModeLabel ?? dc?.activeModeLabel ?? ''}{' '}
-                <strong style={{ color: currentMode?.accentColor }}>{currentMode?.label ?? activeMode}</strong>
-              </p>
-              {currentMode?.longDesc && (
-                <p style={{ marginTop: '0.5rem', fontSize: '0.875rem', lineHeight: 1.6 }}>
-                  {currentMode.longDesc}
-                </p>
-              )}
-              {currentMode?.desc && (
-                <p className="mode-usage-hint">
-                  <strong>{whenToUseLabel}</strong> {currentMode.desc}
-                </p>
-              )}
+              {currentMode && Icon && <Icon size={18} aria-hidden />}
+              <span>{currentMode?.label ?? activeMode}</span>
             </div>
 
             {/* Rules */}
@@ -685,9 +638,6 @@ function AppContent() {
               <button type="button" className="cta-button" onClick={handleGenerate}>
                 {ctaLabel}
               </button>
-              <button type="button" className="cta-button-outline cta-button-muted form-cta-outline" onClick={openTemplatesInline}>
-                {copy.heroCtaSecondary ?? dc?.heroCtaSecondary ?? ''}
-              </button>
             </div>
           </Card>
 
@@ -695,16 +645,8 @@ function AppContent() {
             <div className="main-content-output">
           {/* 6. Output card – always visible (CEO parity) */}
             <Card variant="output">
-              <div className="output-header">
-                <span className="step-label-inline" style={{ marginRight: '0.5rem', fontWeight: 800, color: 'var(--on-primary-subtle)' }}>3</span>
-                {(copy.step3Label ?? dc?.step3Label) && (
-                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--on-primary-subtle)', marginRight: '0.5rem' }}>
-                    {copy.step3Label ?? dc?.step3Label}
-                  </span>
-                )}
-                <span className="output-badge">
-                  {copy.outputBadgeLabel ?? dc?.outputBadgeLabel ?? 'SUGENERUOTA UŽKLAUSA'}
-                </span>
+              <div className="output-preview-header">
+                <span className="output-preview-title">{outputTitle}</span>
                 {currentMode && (
                   <span className="output-mode-badge" style={{ background: currentMode.accentColor }}>
                     {currentMode.label}
@@ -712,31 +654,25 @@ function AppContent() {
                 )}
               </div>
 
-              {(copy.outputUseHint ?? dc?.outputUseHint) && generatedPrompt !== null && (
-                <p style={{ margin: '0 0 0.5rem', fontSize: '0.875rem', color: 'var(--on-primary-muted)', fontWeight: 500 }}>
-                  {copy.outputUseHint ?? dc?.outputUseHint}
-                </p>
-              )}
-              {outputHint && generatedPrompt !== null && (
-                <p style={{ margin: '0 0 0.5rem', fontSize: '0.8125rem', color: 'var(--on-primary-subtle)', fontStyle: 'italic' }}>
-                  {outputHint}
-                </p>
-              )}
-
-              <textarea
-                className="editable-output"
-                value={generatedPrompt ?? ''}
-                onChange={(e) => setGeneratedPrompt(e.target.value)}
-                readOnly={generatedPrompt === null}
-                placeholder={generatedPrompt === null ? (copy.outputDefaultHint ?? dc?.outputDefaultHint ?? '') : undefined}
-                rows={10}
-                aria-label={outputTitle}
-              />
-
-              <div className="output-meta">
-                <span className="char-count">
-                  {(copy.charCountLabel ?? dc?.charCountLabel ?? '{{count}}').replace('{{count}}', String((generatedPrompt ?? '').length))}
-                </span>
+              <div className="output-preview-body">
+                {generatedPrompt === null ? (
+                  <p className="output-placeholder">{copy.outputDefaultHint ?? dc?.outputDefaultHint ?? ''}</p>
+                ) : (
+                  <>
+                    <textarea
+                      className="editable-output output-preview-content"
+                      value={generatedPrompt}
+                      onChange={(e) => setGeneratedPrompt(e.target.value)}
+                      rows={8}
+                      aria-label={outputTitle}
+                    />
+                    <div className="output-meta">
+                      <span className="char-count">
+                        {(copy.charCountLabel ?? dc?.charCountLabel ?? '{{count}}').replace('{{count}}', String(generatedPrompt.length))}
+                      </span>
+                    </div>
+                  </>
+                )}
               </div>
 
               {copyFeedback && generatedPrompt !== null && (
@@ -747,82 +683,21 @@ function AppContent() {
                   className="copy-feedback-block"
                   style={{
                     display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'flex-start',
+                    alignItems: 'center',
                     gap: 'var(--space-1)',
                     marginTop: 'var(--space-2)',
                     fontSize: 'var(--text-xs)',
                     color: copyFeedback.type === 'success' ? 'var(--success)' : 'var(--error)',
                   }}
                 >
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-1)' }}>
-                    {copyFeedback.type === 'success' && <Check size={14} aria-hidden />}
-                    {copyFeedback.message}
-                  </span>
-                  {copyFeedback.type === 'success' && !hasShownFirstCopyHint && (copy.copySuccessNextHint ?? dc?.copySuccessNextHint) && (
-                    <span style={{ color: 'var(--on-primary-muted)', fontWeight: 400 }}>
-                      {copy.copySuccessNextHint ?? dc?.copySuccessNextHint}
-                    </span>
-                  )}
-                  {copyFeedback.type === 'success' && copy.promptAnatomyUrl && (copy.copySuccessCtaPrefix ?? dc?.copySuccessCtaPrefix) && (
-                    <span style={{ color: 'var(--text-light)', fontWeight: 400 }}>
-                      {(copy.copySuccessCtaPrefix ?? dc?.copySuccessCtaPrefix ?? '')}{' '}
-                      <a
-                        href={copy.promptAnatomyUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={copy.promptAnatomyAriaLabel ?? dc?.promptAnatomyAriaLabel ?? ''}
-                        style={{ color: 'inherit', textDecoration: 'underline' }}
-                      >
-                        {copy.promptAnatomyLinkText ?? dc?.promptAnatomyLinkText ?? ''}
-                      </a>
-                    </span>
-                  )}
+                  {copyFeedback.type === 'success' && <Check size={14} aria-hidden />}
+                  {copyFeedback.message}
                 </span>
               )}
 
               <button type="button" className="output-cta" onClick={handleCopyOutput} disabled={generatedPrompt === null}>
-                {copy.outputCopyCtaLabel ?? dc?.outputCopyCtaLabel ?? ''} →
+                {copy.outputCopyCtaLabel ?? dc?.outputCopyCtaLabel ?? 'Kopijuoti'}
               </button>
-
-              {/* AI tool links – output zonoje po pagrindiniu kopijavimo CTA (FIRST_RUN_USER_JOURNEY_AUDIT §7) */}
-              {sot?.aiToolLinks && sot.aiToolLinks.length > 0 && (
-                <div className="ai-tool-links" style={{ marginTop: '1rem' }}>
-                  <span>{copy.aiToolLinksLabel ?? dc?.aiToolLinksLabel ?? ''}</span>
-                  {sot.aiToolLinks.map((link) => (
-                    <a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer" className="btn-ai-tool">
-                      <ExternalLink size={14} aria-hidden />
-                      {link.label}
-                    </a>
-                  ))}
-                  {copy.promptAnatomyUrl && (copy.aiToolLinksPromptAnatomyLabel ?? dc?.aiToolLinksPromptAnatomyLabel) && (
-                    <a
-                      href={copy.promptAnatomyUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={copy.promptAnatomyAriaLabel ?? dc?.promptAnatomyAriaLabel ?? ''}
-                      style={{ fontSize: '0.8125rem', color: 'var(--text-light)', textDecoration: 'underline', marginTop: '0.5rem', display: 'inline-block' }}
-                    >
-                      {copy.aiToolLinksPromptAnatomyLabel ?? dc?.aiToolLinksPromptAnatomyLabel ?? ''}
-                    </a>
-                  )}
-                </div>
-              )}
-
-              {(copy.outputLearnMorePrefix ?? dc?.outputLearnMorePrefix) && copy.promptAnatomyUrl && (
-                <p style={{ margin: '0.75rem 0 0', fontSize: '0.8125rem', color: 'var(--text-light)', fontStyle: 'italic' }}>
-                  {copy.outputLearnMorePrefix ?? dc?.outputLearnMorePrefix ?? ''}{' '}
-                  <a
-                    href={copy.promptAnatomyUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={copy.promptAnatomyAriaLabel ?? dc?.promptAnatomyAriaLabel ?? ''}
-                    style={{ color: 'var(--primary-light, var(--text))', textDecoration: 'underline' }}
-                  >
-                    {copy.promptAnatomyLinkText ?? dc?.promptAnatomyLinkText ?? ''}
-                  </a>
-                </p>
-              )}
             </Card>
 
           {/* No-template alert */}

@@ -68,6 +68,7 @@ export interface SotCopy {
   onboardingSteps?: string[]
   fieldProgressLabel?: string
   baseFieldsGroupLabel?: string
+  advancedFieldsGroupLabel?: string
   rulesTitle?: string
   emptyGenerateHint?: string
   aiToolLinksLabel?: string
