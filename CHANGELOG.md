@@ -52,6 +52,13 @@ Formatas pagal [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), versija
 ## [Nereleisuota]
 
 ### Pakeista
+- **UI/UX realus tobulinimo planas (pagal .cursor/plans/ui_ux_realus_tobulinimo_planas.md):**
+  - **Sticky navigacija:** top bar `position: sticky; top: 0` su `--top-bar-height`; režimų juosta (step1-nav) sticky po ja su `top: var(--top-bar-height)`; režimų tabai perkelti į CSS klasės `.step1-nav-inner`, `.step1-nav-tabs`.
+  - **Mobile top bar ir tema:** temos mygtukas rodo tik Sun/Moon ikoną (lucide-react), pilnas tekstas tik `aria-label`/`title`; mobile (≤640px) – mažesnis top bar padding, `.top-bar-brand` 0.875rem, mygtukams min-height/min-width 44px (touch target).
+  - **Dizaino tokenai:** `:root` ir `.dark` su pilnais tokenais iš defaultSot (primary, surface, text, accent, `--on-primary*`, `--community-cta-bg/hover`); hero, output, badge, CTA, editable-output – spalvos per `var(--*)`; pašalintas `@media (prefers-color-scheme: light)` override; `.btn-output-copy:hover` ir likę hardcoded rgba pakeisti į tokenus.
+  - **Spacing/typography:** `--space-1` … `--space-8`, `--text-xs/sm/base/lg`; top bar, step1-nav, form-card, ops-center, field-group, onboarding-steps, step1-block naudoja tokenus; locale mygtukų inline padding/fontSize pašalinti (liko fontWeight).
+  - **Mobile touch ir scroll:** CTA, output-cta, form-cta-row, session-item mygtukai mobile min-height 44px; step1-nav `-webkit-overflow-scrolling: touch` ir dešinėje fade (::after); sesijų sąrašas su `.session-list`, `.session-item`, session mygtukai touch-friendly.
+  - **Lygiuotė:** content wrapper pakeistas į klasę `.app-content-wrap` su `--content-max-width`, `padding: 0 var(--space-4)`; top bar naudoja tą patį `--content-max-width`; mobile top bar horizontal padding sutapatintas su content (var(--space-4)).
 - **UX roadmap P1-P3 įgyvendinimas (conversion-first):**
   - `App.tsx`: pašalintas modalinis templates kelias; hero/form antriniai CTA veda į inline templates (scroll + expand).
   - Output paliktas su vienu aiškiu primary copy veiksmu.
@@ -67,8 +74,28 @@ Formatas pagal [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), versija
   - `App.tsx` + `style.css`: antriniai CTA vizualiai susilpninti ir aiškiau atskirti nuo primary; community CTA pažymėti external ikona.
 - **Release quality vartai:** root `package.json` test pipeline papildytas `quality:premium` (SOT copy coverage, tokenų disciplina, required UX event'ai, hardcoded copy rizikų check) ir optional KPI slenksčių vartais per `UX_EVENTS_FILE`.
 - **AI įrankių mygtukai (ChatGPT, Claude, Gemini):** perkelti į output-card, tiesiai po Kopijuoti mygtuko – atitinka FIRST_RUN_USER_JOURNEY_AUDIT §7 (output zonoje po pagrindiniu kopijavimo CTA).
+- **CEO layout parity:** Two-column layout (forma kairėje, output dešinėje) desktop; output-card rodoma visada (empty state kol nėra generavimo); AI įrankių mygtukai matomi output zonoje iš karto; community (WhatsApp) sekcija rodoma visada, ne tik po generavimo.
+- **UX hierarchija ir fokusas (docs/UX_HIERARCHY_FOCUS_PLAN.md):** Hero supaprastintas – vienas pagrindinis CTA, workflow (onboardingSteps) perkeltas po CTA ir heroCtaMeta; „Šablonų biblioteka“ kaip secondary (hero-cta-secondary, tekstinė nuoroda); STEP 1 blokas – ops-center ir režimų tabai suvienoti, antraštė iš SOT `step1Label` („1. Pasirink režimą“); padidintas whitespace ~40% (hero, ops-center, form-card, main-content-layout); SOT naujas copy `step1Label` (LT/EN/ES).
+- **Tvarkymas 2026-03-16 (docs/ATASKAITA_2026-03-16.md):**
+  - **Kokybės vartas:** `style.css` – `.step1-nav::after` `linear-gradient` pakeistas į solid `var(--surface-1)` (STYLE_GUIDE, `npm run quality:premium` praeina).
+  - **TemplatesInline:** pridėta ikona `building-2` (Building2) – „Objekto analizės šablonas“ rodomas su pastato ikona.
+  - **Kalbų perjungiklis (i18n/a11y):** kalbų grupės ir mygtukų `aria-label` skaitomi iš SOT – nauji copy laukai `languageGroupAriaLabel`, `localeLabelLt`, `localeLabelEn`, `localeLabelEs` (config/sot.json, sot.en.json, sot.es.json, defaultSot, types, App.tsx).
+  - **loadSot:** pridėta `validateLibraryPrompts(sot)` – po pakrovimo tikrinama, ar režimų `libraryPromptId` atitinka `libraryPrompts[].id`; neatitikimo atveju `console.warn` (soft validacija).
+- **Premium SaaS UI/UX audito įgyvendinimas (docs/PREMIUM_SAAS_UI_UX_AUDIT.md, 6 dalių planas):**
+  - **1 dalis (CSS):** Design tokenai `--space-12`, `--space-14`, `--radius-button`, `--radius-card`, `--radius-card-sm`, `--radius-nested`; vienoda border-radius taisyklė (mygtukai 10px, kortelės 16px, nested 12px); transition 0.2s visiems `.btn-*`, `.cta-button`, `.output-cta`, `.community-cta-*`; vienodas `:focus-visible`; hero padding per tokenus; `.community`, `.footer-card` su `box-shadow: var(--shadow-sm)`; `.editable-output:focus` ring, `.top-bar-theme-btn` hover; `.char-count` per `--text-xs`.
+  - **2 dalis (App.tsx mikro):** Loading blokas su tokenais ir `.loading-spinner`; error blokas su `border-radius`, tokenais; locale mygtukai per `Button`, padding tokenais; rules toggle su `.rules-toggle-btn`; session mygtukai per `Button` ir `.session-item-btn`/`.session-item-btn-delete`; copy feedback ir no-template alert su tokenais.
+  - **3 dalis:** `.templates-inline-item` (radius 10px, shadow-sm); output/mode badge palaikymas.
+  - **4 dalis (Button):** Naujas `components/Button.tsx` su variantais `primary | secondary | ghost | nav`; naudojamas locale, retry, rules toggle, session mygtukai, sessions Save/Delete All, no-template CTA, TemplatesInline expand/Copy/Use.
+  - **5 dalis (tipografija ir 8pt grid):** Tokenai `--text-hero`, `--text-h1`, `--text-h2`, `--text-caption`; hero, h1, form-card-header, community, skip-to-content, operation-center-label, editable-output per tokenus; `docs/STYLE_GUIDE.md` papildytas tipografijos skale ir 8pt tinklelio aprašu.
+  - **6 dalis (Card, šešėliai, loading):** `form-card`, `ops-center`, `templates-inline-item` su `box-shadow: var(--shadow-sm)`; naujas `components/Card.tsx` (variantai `form | output | community | footer`, `as`: div/section/footer); form, output, community, footer naudoja `<Card variant="…">`; `.session-item` su vienodu padding, radius, shadow; loading bloke spinner 40px (`.loading-block .loading-spinner`).
+- **UX konversijos audito įgyvendinimas (docs/USER_JOURNEY_UX_CONVERSION_AUDIT.md, planas QW1–QW7, MW1–MW7):**
+  - **Fazė 1 (Quick Wins):** Hero – vienas primary CTA, „Šablonų biblioteka“ secondary (link stilius, `data-testid="cta-templates"`); onboarding žingsniai po CTA/meta su optional antrašte `onboardingStepsTitle` („Kaip naudoti“); virš output – aiškus `outputUseHint` („Įklijuok į ChatGPT arba Claude – gausi paruoštą tekstą.“); empty hint virš formos kai dar nėra generavimo (`emptyGenerateHint`); „Rekomenduojama pradžia“ pill ryškesnė (accent fonas, WCAG); Rules („Ką gausite“) pirmą sesiją default expanded, po sutraukimo – `localStorage` `nt_broker_rules_seen`; footer – kai `privacyUrl` tuščias, rodomas `privacyComingSoonLabel`.
+  - **Fazė 2 (Medium):** Step 2/3 žymėjimas – form card „2“ + `step2Label`, output card „3“ + `step3Label`; formoje recommended laukams – `fieldRecommendedSuffix` („ (Rekomenduojama)“) per ModeForm; testimonial blokas (rodomas jei `testimonialQuote` neuštuščiąs); tema persist – `nt_broker_theme` (light|dark) localStorage; mobile (≤768px) sticky CTA bar apačioje (Generuoti / Kopijuoti); po pirmo sėkmingo copy – `copySuccessNextHint` (vieną kartą).
+  - **SOT:** nauji copy raktai `outputUseHint`, `onboardingStepsTitle`, `step2Label`, `step3Label`, `fieldRecommendedSuffix`, `testimonialQuote`/`testimonialAuthor`/`testimonialRole`, `copySuccessNextHint`, `privacyComingSoonLabel` (config/sot.json, types, defaultSot). App.test.tsx – rules testas atnaujintas (default expanded pirmą kartą).
 
 ### Pridėta
+- **UI/UX tobulinimo planas:** `.cursor/plans/ui_ux_realus_tobulinimo_planas.md` – Nepriimtina kriterijai, sticky nav, mobile top bar/tema, design tokenai, spacing scale, touch targets, scroll hint, dokumentų nuorodos; `docs/PREMIUM_UX_UI_DEEP_DIVE.md` – skyrius „Implementation status (layout / navigation / mobile)“; `docs/UX_HIERARCHY_FOCUS_PLAN.md` ir `docs/INDEX.md` – nuorodos į planą.
+- **CSS:** `--content-max-width: 72rem`, `.app-content-wrap`; `.top-bar-theme-btn`; `.step1-nav-inner`, `.step1-nav-tabs`; `.session-list`, `.session-item`.
 - `config/premium-score.json`: premium vertinimo svoriai, KPI threshold'ai, privalomi UX event'ai ir leidžiamų copy išimčių sąrašas.
 - `tests/premium-quality.test.js`: automatinis premium quality gate scriptas.
 - `tests/ux-kpi-thresholds.test.js`: KPI slenksčių tikrinimas pagal event export (`JSON` arba `JSONL`).
@@ -76,6 +103,8 @@ Formatas pagal [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), versija
   - `quality:premium`
   - `quality:premium:events`
 - `SotCopy` raktai: `sessionRestoreLabel`, `recommendedStartLabel` (`types`, `defaultSot`, `config/sot.json`).
+- **2026-03-16:** SOT copy kalbų a11y/i18n – `languageGroupAriaLabel`, `localeLabelLt`, `localeLabelEn`, `localeLabelEs` (config/sot.json, sot.en.json, sot.es.json, defaultSot, types).
+- **Premium SaaS UI/UX (6 dalių planas):** `nt-broker-ui/src/components/Button.tsx` (variantai primary/secondary/ghost/nav); `nt-broker-ui/src/components/Card.tsx` (variantai form/output/community/footer, `as` div|section|footer); CSS klasės `.rules-toggle-btn`, `.loading-spinner`, `.loading-block .loading-spinner`, `.session-item`, `.session-item-btn`, `.session-item-btn-delete`, `.templates-inline-item`, `.error-block`, `.copy-feedback-block`, `.no-template-alert`; tipografijos tokenai `--text-hero`, `--text-h1`, `--text-h2`, `--text-caption`; 8pt grid ir tipografijos skalė `docs/STYLE_GUIDE.md`.
 
 ### Pašalinta
 - `nt-broker-ui/src/components/LibraryPromptsModal.tsx` (nebenaudojamas aktyviame UX sraute).

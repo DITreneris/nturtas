@@ -20,6 +20,8 @@ interface ModeFormProps {
   selectPlaceholder?: string
   accentColor?: string
   fieldProgressLabel?: string
+  /** MW3: priesaga prie recommended laukų label, pvz. " (Rekomenduojama)" */
+  fieldRecommendedSuffix?: string
 }
 
 function FieldInput({
@@ -29,6 +31,7 @@ function FieldInput({
   onChange,
   selectPlaceholder,
   isRecommended,
+  fieldRecommendedSuffix,
 }: {
   fieldId: string
   meta?: FieldMetaItem
@@ -36,6 +39,7 @@ function FieldInput({
   onChange: (fieldId: string, value: string) => void
   selectPlaceholder?: string
   isRecommended?: boolean
+  fieldRecommendedSuffix?: string
 }) {
   const label = meta?.label ?? humanizeFieldId(fieldId)
   const type = meta?.type ?? 'text'
@@ -64,6 +68,9 @@ function FieldInput({
     <div className={isRecommended ? 'field-recommended' : undefined} style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
       <label htmlFor={`field-${fieldId}`} style={{ fontSize: '0.875rem', fontWeight: 600 }}>
         {label}
+        {isRecommended && fieldRecommendedSuffix && (
+          <span className="recommended-suffix">{fieldRecommendedSuffix}</span>
+        )}
       </label>
       {type === 'textarea' ? (
         <textarea
@@ -105,6 +112,7 @@ function FieldGroupSection({
   onChange,
   selectPlaceholder,
   accentColor,
+  fieldRecommendedSuffix,
 }: {
   group: FieldGroup
   groupIndex: number
@@ -113,6 +121,7 @@ function FieldGroupSection({
   onChange: (fieldId: string, value: string) => void
   selectPlaceholder?: string
   accentColor?: string
+  fieldRecommendedSuffix?: string
 }) {
   const [collapsed, setCollapsed] = useState(group.defaultCollapsed ?? false)
   const isFirstGroup = groupIndex === 0
@@ -149,6 +158,7 @@ function FieldGroupSection({
               onChange={onChange}
               selectPlaceholder={selectPlaceholder}
               isRecommended={fieldMeta?.[fieldId]?.recommended}
+              fieldRecommendedSuffix={fieldRecommendedSuffix}
             />
           ))}
         </div>
@@ -167,6 +177,7 @@ export function ModeForm({
   selectPlaceholder,
   accentColor,
   fieldProgressLabel,
+  fieldRecommendedSuffix,
 }: ModeFormProps) {
   const allFields = fieldGroups
     ? fieldGroups.flatMap((g) => g.fields)
@@ -200,6 +211,7 @@ export function ModeForm({
             onChange={onChange}
             selectPlaceholder={selectPlaceholder}
             accentColor={accentColor}
+            fieldRecommendedSuffix={fieldRecommendedSuffix}
           />
         ))
       ) : (
@@ -212,6 +224,7 @@ export function ModeForm({
             onChange={onChange}
             selectPlaceholder={selectPlaceholder}
             isRecommended={fieldMeta?.[fieldId]?.recommended}
+            fieldRecommendedSuffix={fieldRecommendedSuffix}
           />
         ))
       )}

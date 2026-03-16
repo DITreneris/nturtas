@@ -83,12 +83,13 @@ describe('defaultSot', () => {
     expect(defaultSot.aiToolLinks![0]).toHaveProperty('url')
   })
 
-  it('has new copy keys: charCountLabel, aiToolLinksLabel, operationCenterLabel, footerTagline, footerCopyright', () => {
+  it('has new copy keys: charCountLabel, aiToolLinksLabel, operationCenterLabel, step1Label, footerTagline, footerCopyright', () => {
     const c = defaultSot.copy ?? {}
     expect(c.charCountLabel).toBeDefined()
     expect(c.aiToolLinksLabel).toBeDefined()
     expect(c.operationCenterLabel).toBeDefined()
     expect(c.operationCenterSubLabel).toBeDefined()
+    expect(c.step1Label).toBeDefined()
     expect(c.skipToContentLabel).toBeDefined()
     expect(c.footerTagline).toBeDefined()
     expect(c.footerCopyright).toBeDefined()

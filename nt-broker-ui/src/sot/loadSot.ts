@@ -47,6 +47,20 @@ function isValidSot(data: unknown): data is Sot {
   return true
 }
 
+function validateLibraryPrompts(data: Sot): void {
+  const prompts = data.libraryPrompts
+  if (!Array.isArray(prompts)) return
+  const ids = new Set(prompts.map((p) => p.id))
+  const modes = data.modes ?? {}
+  for (const [key, mode] of Object.entries(modes)) {
+    const modeObj = mode as { libraryPromptId?: string }
+    const promptId = modeObj.libraryPromptId
+    if (promptId && !ids.has(promptId)) {
+      console.warn(`[SOT] Režimas "${key}" nurodo libraryPromptId "${promptId}", bet toks id nerastas libraryPrompts.`)
+    }
+  }
+}
+
 export async function loadSot(locale: Locale): Promise<Sot> {
   const errors = getLoadErrorMessages(locale)
   const url = getSotUrl(locale)
@@ -60,7 +74,9 @@ export async function loadSot(locale: Locale): Promise<Sot> {
       console.warn('[SOT] Config missing modes, theme, or copy. Using default.')
       return defaultSot
     }
-    return data as Sot
+    const sot = data as Sot
+    validateLibraryPrompts(sot)
+    return sot
   } catch (e) {
     if (e instanceof SotLoadError) throw e
     throw new SotLoadError(errors.generic)

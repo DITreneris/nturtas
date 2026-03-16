@@ -1,88 +1,63 @@
 # Kodo bazės analizė (NT Broker – SOT)
 
-**Data:** 2026-03-15  
+**Data:** 2026-03-15 (atnaujinta 2026-03-16)  
 **Tikslas:** Gilus peržiūrimas prieš deploy – neatitikimai, klaidos, tobulinimai.
+
+**2026-03-16 ataskaita:** Žr. [docs/ATASKAITA_2026-03-16.md](ATASKAITA_2026-03-16.md) – pilnas šios dienos rezultatas (kokybės vartas, bug'ai, UI/UX).
 
 ---
 
 ## 1. Santrauka
 
 - **SOT principas** laikomas: copy, režimai, tema skaitomi iš `config/sot.json`; UI naudoja SotProvider/useSot.
-- **Kritinės rizikos:** defaultSot tema skiriasi nuo SOT; OBJEKTAS režimas neturi `libraryPromptId` – naudojamas `prompts[0]`; copy-sot esant trūkstam šaltiniui neišmeta klaidos.
-- **Rekomenduojama prieš deploy:** sutapatinti defaultSot temą su SOT, pridėti `copy.loadingLabel` į SOT, copy-sot – fail jei šaltinis nerastas, peržiūrėti base URL deploy kontekstui.
+- **Jau išspręsta (2026-03-15):** copy-sot jau naudoja `process.exit(1)` be šaltinio; `config/sot.json` jau turi `loadingLabel`; OBJEKTAS režimas – pridėtas `libraryPromptId: "objekto_analize"` ir atitinkamas šablonas `libraryPrompts`; pridėti SOT copy laukai `whenToUseLabel`, `modeNavAriaLabel` (i18n); sutrumpintas dubliuotas lucide-react import App.tsx.
+- **2026-03-16:** defaultSot.theme sutampa su config/sot.json. **Tvarkymas (2026-03-16):** linear-gradient pašalintas (solid `var(--surface-1)`); TemplatesInline – pridėta `building-2` ikona; kalbų aria-label iš SOT (`languageGroupAriaLabel`, `localeLabelLt/En/Es`); loadSot – pridėta `validateLibraryPrompts()` (įspėjimas, jei režimo libraryPromptId nerandamas).
+- **Likusios rekomendacijos:** base URL deploy kontekstui; index.html title/favicon – pagal poreikį iš SOT.
 
 ---
 
 ## 2. Kritinės problemos ir rizikos
 
-### 2.1 defaultSot tema skiriasi nuo config/sot.json
+### 2.1 defaultSot tema vs config/sot.json — **SUTAPATINTA (2026-03-16)**
 
 **Vieta:** `nt-broker-ui/src/sot/defaultSot.ts`
 
-Kai SOT nepakraunamas (404, tinklo klaida arba validacijos klaida), naudojamas `defaultSot`. Jo `theme.light` ir `theme.dark` reikšmės **skiriasi** nuo `config/sot.json` (pvz. `--primary`, `--surface-0` – vienas naudoja plokščias spalvas, kitas gradientus). Rezultatas: vartotojas gali pamatyti **skirtingą išvaizdą** priklausomai nuo to, ar SOT užsikrovė, ar buvo naudojamas fallback.
-
-**Rekomendacija:** Sutapatinti `defaultSot.theme` su `config/sot.json` theme (nukopijuoti tas pačias CSS kintamųjų reikšmes), kad fallback vizualiai atitiktų normalų SOT režimą.
+Patikrinta 2026-03-16: `defaultSot.theme.light` ir `defaultSot.theme.dark` reikšmės **sutampa** su `config/sot.json` theme (tie patys CSS kintamieji). Fallback vizualiai atitinka SOT režimą.
 
 ---
 
-### 2.2 OBJEKTAS režimas be libraryPromptId
+### 2.2 OBJEKTAS režimas be libraryPromptId — **IŠSPRĘSTA (2026-03-15)**
 
-**Vieta:** `config/sot.json` – režimas OBJEKTAS neturi `libraryPromptId`.  
-**Vieta:** `nt-broker-ui/src/App.tsx` – `handleGenerate`:
-
-```ts
-const template = promptId
-  ? prompts.find((p) => p.id === promptId)
-  : prompts[0]
-```
-
-Kai režimas OBJEKTAS, naudojamas `prompts[0]` – t.y. pirmas įrašas iš `libraryPrompts`. Jei SOT bus pakeistas (eilės tvarka ar pridedami šablonai), OBJEKTAS gali „gauti“ netinkamą šabloną. Be to, `defaultSot` turi `libraryPrompts: []` – tada `prompts[0]` būtų `undefined` ir `basePrompt` būtų `''`.
-
-**Rekomendacija:**  
-- Arba SOT apibrėžti OBJEKTAS režimui atitinkamą `libraryPromptId` (ir atitinkamą promptą `libraryPrompts` masyve),  
-- Arba kode aiškiai apdoroti atvejį, kai režimas neturi `libraryPromptId`: pvz. rodyti pranešimą „Pasirinkite režimą su šablonu“ arba naudoti tik tam režimui skirtą default tekstą, o ne `prompts[0]`.
+**Buvo:** Režimas OBJEKTAS neturėjo `libraryPromptId`, naudojamas buvo `prompts[0]`.  
+**Pataisyta:** Į `config/sot.json` (ir lt/en/es) pridėtas `libraryPromptId: "objekto_analize"` režimui OBJEKTAS ir į `libraryPrompts` pridėtas šablonas `objekto_analize` (objekto vertinimo/analizės promptas). Tas pats atnaujinta `defaultSot.ts`.
 
 ---
 
-### 2.3 copy-sot: trūkstamas šaltinis – exit 0
+### 2.3 copy-sot: trūkstamas šaltinis — **IŠSPRĘSTA**
 
-**Vieta:** `nt-broker-ui/scripts/copy-sot.cjs`
-
-Jei `config/sot.json` neegzistuoja, skriptas tik spausdina įspėjimą ir daro `process.exit(0)`. Buildas toliau eina, bet `public/config/sot.json` nebus atnaujintas (arba nebus sukurtas). CI to nepagauna; gali būti naudojama senoji arba neturima konfigūracija.
-
-**Rekomendacija:** Jei `config/sot.json` nerandamas, daryti `process.exit(1)`, kad CI ir lokalus buildas „lūžtų“ ir būtų aišku, kad SOT šaltinis privalomas.
+**Vieta:** `nt-broker-ui/scripts/copy-sot.cjs`. Skriptas jau naudoja `process.exit(1)`, jei `config/sot.json` nerandamas.
 
 ---
 
-### 2.4 config/sot.json neturi copy.loadingLabel
+### 2.4 config/sot.json neturi copy.loadingLabel — **JAU YRA**
 
-**Vieta:** `config/sot.json` – `copy` objekte nėra `loadingLabel`.  
-**Vieta:** `nt-broker-ui/src/App.tsx` – naudojama `sot?.copy?.loadingLabel ?? 'Kraunama...'`.
-
-Dabar loading tekstas visada fallback’as iš kodo. Kad visi UI tekstai būtų valdomi per SOT, `loadingLabel` turėtų būti SOT dalis.
-
-**Rekomendacija:** Pridėti į `config/sot.json`: `"loadingLabel": "Kraunama..."` (ir atitinkamai į `nt-broker-ui/public/config/sot.json` po copy-sot).
+`config/sot.json` jau turi `"loadingLabel": "Kraunama..."`; EN/ES locale failai – atitinkamus vertimus.
 
 ---
 
 ## 3. Neatitikimai ir smulkūs trūkumai
 
-### 3.1 Hardkoduoti UI tekstai (ne iš SOT)
+### 3.1 Hardkoduoti UI tekstai (ne iš SOT) — iš dalies sutvarkyta
 
-Šie tekstai nėra valdomi per SOT; jei reikia vienodos vietos visiems copy – juos perkelti į SOT arba palikti kaip sąmoningą sprendimą (pvz. dev tekstai).
+**Atnaujinta (2026-03-15):** Į SOT įvesti ir naudojami `whenToUseLabel`, `modeNavAriaLabel` – forma ir nav aria-label dabar iš SOT (i18n). Dauguma klaidos/copy tekstų jau naudoja `copy.*` su dc fallback.
 
-| Tekstas | Vieta |
-|--------|--------|
-| „Kopijuoti“, „Nukopijuota“, „Kopijuoti nepavyko“ | App.tsx |
-| „Bandyti dar kartą“, „Klaida:“ | App.tsx (klaidos blokas) |
-| „Šablonai“, „Kopijuoti“, „Naudoti“, „Uždaryti“ | LibraryPromptsModal.tsx |
-| „Pasirinkite“ (select placeholder) | ModeForm.tsx |
-| „Tema: … SOT pakrautas …“ | App.tsx (footer) |
-| „Perjungti į tamsų/šviesų režimą“ | App.tsx (theme mygtukas) |
-| „Taisyklės“ (aria-label) | App.tsx |
-| „Promptų anatomija →“ | App.tsx (nuorodos tekstas) |
+Likusieji per SOT valdomi arba fallback: copyErrorLabel, copyRetryLabel, btnCopy, btnUse, btnClose, selectPlaceholder, themeToggleLabel*, rulesTitle, promptAnatomyLinkText – visi naudoja `copy.* ?? dc.*`.
 
-**Rekomendacija:** Norint pilno SOT valdymo – į SOT įvesti `copy` laukus (pvz. `copyErrorLabel`, `copyRetryLabel`, `modalTitleTemplates`, `btnCopy`, `btnUse`, `btnClose`, `selectPlaceholder`, `themeToggleLabel`, `rulesAriaLabel`, `promptAnatomyLinkText`) ir naudoti juos komponentuose. Kitu atveju – dokumentuoti, kad tai sąmoningi fallback’ai.
+| Tekstas | Vieta | Būsena |
+|--------|--------|--------|
+| „Kada naudoti:“ / „When to use:“ | App.tsx | **SOT:** `whenToUseLabel` |
+| „Režimų pasirinkimas“ (nav aria-label) | App.tsx | **SOT:** `modeNavAriaLabel` |
+| Kiti (klaidos, mygtukai, taisyklės) | App.tsx, ModeForm, TemplatesInline | Fallback iš defaultSot; SOT copy jau turi atitinkamus laukus |
 
 ---
 
@@ -104,11 +79,9 @@ Dabartiniu mastu – ne klaida, tik galima tobulinti, jei reikės.
 
 ---
 
-### 3.4 loadSot validacija – libraryPrompts ir libraryPromptId
+### 3.4 loadSot validacija – libraryPrompts ir libraryPromptId — **PRIDĖTA (2026-03-16)**
 
-`isValidSot` tikrina tik `modes`, `theme`, `copy`. Neticinama, ar `libraryPrompts` yra masyvas, ar režimų `libraryPromptId` atitinka `libraryPrompts` id. Sugedus ar per klaidą pakeitus SOT, gali būti „orphan“ id arba tuščias sąrašas.
-
-**Rekomendacija:** Optionally – validacijoje tikrinti, kad `libraryPrompts` yra array, o režimai su `libraryPromptId` nurodo egzistuojantį id (arba bent jau loginti įspėjimą).
+Pridėta `validateLibraryPrompts(sot)`: po sėkmingo load tikrinama, ar režimų `libraryPromptId` atitinka `libraryPrompts[].id`. Jei nurodomas neegzistuojantis id – `console.warn`. Config vis tiek grąžinamas (soft validacija).
 
 ---
 
@@ -167,7 +140,30 @@ E2E ir preview turi atitikti tą patį path. Jei keisite Vite `base`, reikia atn
 
 ---
 
-## 7. Dokumentacijos atnaujinimas
+## 7. Low-hanging fruits (greiti pataisymai)
 
-- Šis dokumentas (`docs/CODEBASE_ANALYSIS.md`) atnaujintas 2026-03-15; ankstesnė analizė (2026-03-08) buvo iš dalies peržengta (pvz. CTA handler’iai jau prijungti, formos ir generavimas įdiegti).
+| Pataisymas | Būsena | Pastaba |
+|------------|--------|--------|
+| Dubliuotas `lucide-react` import App.tsx | **Atlikta** | Sujungtas į vieną importą (Save, Trash2 į bendrą sąrašą). |
+| `whenToUseLabel` ir `modeNavAriaLabel` iš SOT | **Atlikta** | Pridėta į config/sot.json, defaultSot, types; App naudoja copy/dc; EN/ES locale atnaujinti. |
+| OBJEKTAS `libraryPromptId` + šablonas | **Atlikta** | Pridėtas `objekto_analize` į libraryPrompts ir OBJEKTAS režimas. |
+| Tonas select opcijos iš SOT | Atidėta | `fieldMeta.tonas.options` jau SOT; ModeForm naudoja `meta?.options` – jei SOT turi options, veikia. Patikrinti, ar SOT visur turi tonas.options. |
+| loadSot: validacija libraryPrompts/id | Atidėta | Optional – loginti įspėjimą arba tikrinti masyvą ir id atitikimą. |
+
+---
+
+## 8. Micro UI/UX pagerinimai
+
+- **Touch targets:** Mygtukai (LT/EN/ES, tema, režimų tabai) – įsitikinti, kad min ~44px aukštis (a11y). Dabartiniai padding’ai (`0.75rem 1.5rem`) pakanka; mobile verta peržiūrėti.
+- **Skip to content:** Jau yra; naudojamas `copy.skipToContentLabel` – gerai.
+- **Klaidos blokas:** Turi `role="alert"`, retry mygtukas – gerai; galima pridėti `aria-describedby` jei reikia.
+- **Output textarea:** `aria-label={outputTitle}` – gerai; placeholder naudoja copy.
+- **Session list:** Atkurti/Kopijuoti/Ištrinti – mygtukai turi tekstą iš SOT; aria-label galima pridėti jei tik icon.
+- **Vizualinė hierarchija:** Žr. `docs/UX_HIERARCHY_FOCUS_PLAN.md` ir `docs/PREMIUM_UX_UI_DEEP_DIVE.md` – hero supaprastinimas, vienas pagrindinis CTA, STEP 1/2/3 srautas – strateginiai, ne vienkartiniai fixai.
+
+---
+
+## 9. Dokumentacijos atnaujinimas
+
+- Šis dokumentas (`docs/CODEBASE_ANALYSIS.md`) atnaujintas 2026-03-15; įrašyti atlikti pataisymai (OBJEKTAS, whenToUseLabel, modeNavAriaLabel, import, copy-sot/loadingLabel būsenos).
 - `docs/INDEX.md` jau nurodo šią analizę „Kodo navigacija“ skiltyje – atitinka.

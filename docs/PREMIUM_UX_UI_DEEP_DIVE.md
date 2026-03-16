@@ -175,6 +175,19 @@ Procentas gali buti padidintas tik jei:
 - KPI slenksciai turi buti verifikuojami su realiu event export, ne vien lokaliu smoke.
 - Jei nebus nuolat paleidziamas `quality:premium`, balai vel taps subjektyvus.
 
+### Implementation status (layout / navigation / mobile)
+
+Įgyvendinta pagal [.cursor/plans/ui_ux_realus_tobulinimo_planas.md](../.cursor/plans/ui_ux_realus_tobulinimo_planas.md):
+
+- **Sticky navigacija:** top bar `position: sticky`; režimų juosta (step1-nav) sticky po ja su `top: var(--top-bar-height)`.
+- **Mobile top bar:** mažesnis padding, brand `font-size: 0.875rem`, mygtukai su 44px touch target.
+- **Temos mygtukas:** tik ikona (Sun/Moon), pilnas tekstas tik `aria-label` / `title`.
+- **Dizaino tokenai:** `:root` ir `.dark` fallback iš defaultSot theme; hero, output, CTA, badge spalvos per `var(--*)`; `prefers-color-scheme` override pašalintas.
+- **Spacing/typography:** `--space-*`, `--text-xs/sm/base/lg`; top bar, step1-nav, form, ops-center naudoja tokenus.
+- **Mobile touch targets:** CTA, output-cta, session-item mygtukai min-height 44px.
+- **Režimų scroll:** `-webkit-overflow-scrolling: touch`, dešinėje fade (::after) hint.
+- **Top bar ir content:** vienodas horizontal padding mobile (`var(--space-4)`).
+
 ---
 
 ## 8. Galutinis principas

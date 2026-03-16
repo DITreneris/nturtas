@@ -59,6 +59,16 @@
     "firstStepHint": "Elige un modo y rellena al menos 1–2 campos; el resultado dependerá de lo que indiques.",
     "outputDefaultTitle": "Tu prompt de IA generado",
     "outputDefaultHint": "Puedes editar el texto aquí antes de copiar. Copia y pega en ChatGPT o Claude.",
+    "outputUseHint": "Pega en ChatGPT o Claude – obtendrás el texto listo.",
+    "onboardingStepsTitle": "Cómo usar",
+    "step2Label": "Introduce la información",
+    "step3Label": "Resultado y copia",
+    "fieldRecommendedSuffix": " (Recomendado)",
+    "testimonialQuote": "",
+    "testimonialAuthor": "",
+    "testimonialRole": "",
+    "copySuccessNextHint": "Pega en ChatGPT y obtén la respuesta en segundos.",
+    "privacyComingSoonLabel": "Privacidad (próximamente)",
     "onboardingSteps": [
       "Elige un modo arriba",
       "Rellena los campos principales",
@@ -73,6 +83,7 @@
     "charCountLabel": "Caracteres: {{count}}",
     "operationCenterLabel": "Centro del corredor inmobiliario",
     "operationCenterSubLabel": "Elige un modo, rellena los campos y obtén un prompt listo",
+    "step1Label": "1. Elige modo",
     "whatsappUrl": "https://chat.whatsapp.com/It49fzTl1n90huRCoWWkwu?mode=gi_t",
     "whatsappLabel": "Unirse al grupo de WhatsApp",
     "skipToContentLabel": "Ir al contenido",
@@ -102,7 +113,13 @@
     "copySuccessCtaPrefix": "¿Quieres más?",
     "outputLearnMorePrefix": "Aprende más sobre prompts:",
     "aiToolLinksPromptAnatomyLabel": "Aprende anatomía del prompt →",
-    "templatesSourcePrefix": "Plantillas de "
+    "templatesSourcePrefix": "Plantillas de ",
+    "whenToUseLabel": "Cuándo usar:",
+    "modeNavAriaLabel": "Selección de modo",
+    "languageGroupAriaLabel": "Selección de idioma",
+    "localeLabelLt": "Lituano",
+    "localeLabelEn": "Inglés",
+    "localeLabelEs": "Español"
   },
   "showDebugInFooter": false,
   "modesOrder": ["OBJEKTAS", "SKELBIMAS", "KOMUNIKACIJA", "DERYBOS", "ANALIZE"],
@@ -114,6 +131,7 @@
       "outputHint": "Copia este prompt y pégalo en ChatGPT – obtendrás un análisis del inmueble con argumentos de valor.",
       "accentColor": "#0891b2",
       "formId": "form-objektas", "icon": "building-2",
+      "libraryPromptId": "objekto_analize",
       "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas"],
       "fieldGroups": [
         { "label": "Datos del inmueble", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas"] }
@@ -204,6 +222,7 @@
     "dark": { "--primary": "#F06580", "--primary-hover": "#E84D6A", "--primary-light": "#F58DA5", "--accent-gold": "#E83E5E", "--accent-gold-hover": "#F06580", "--surface-0": "#0F1117", "--surface-1": "#1A1D27", "--text": "#F0F2F5", "--text-light": "#9CA3AF", "--border": "#2D3340", "--output-bg": "#152238", "--success": "#2dd4bf", "--error": "#f87171", "--error-bg": "#450a0a", "--shadow-sm": "0 1px 3px 0 rgba(0,0,0,0.2)", "--shadow-md": "0 4px 6px -1px rgba(0,0,0,0.2), 0 2px 4px -2px rgba(0,0,0,0.15)", "--shadow-lg": "0 25px 50px -12px rgba(0,0,0,0.4)" }
   },
   "libraryPrompts": [
+    { "id": "objekto_analize", "title": "Plantilla de análisis de inmueble", "desc": "Valor y audiencia del inmueble", "icon": "building-2", "prompt": "Rol: analista de mercado inmobiliario y tasador. Objetivo: A partir de los datos del inmueble preparar un prompt de evaluación y análisis – puntos fuertes, público objetivo, argumentos de valor. Tono: premium, profesional. INPUT: Inmueble, ubicación, superficie/habitaciones, precio, estado, ventajas, audiencia, tono. OUTPUT: Prompt estructurado para pegar en ChatGPT – obtener análisis del inmueble, valoración y recomendaciones. Lengua precisa." },
     { "id": "skelbimas_nt", "title": "Plantilla de anuncio inmobiliario", "desc": "Para portales y redes", "icon": "sparkles", "prompt": "Rol: analista de mercado inmobiliario y corredor de alto nivel. Objetivo: crear anuncio a partir de datos del inmueble. OUTPUT: gancho, texto principal, 3-5 USP, CTA. Lengua precisa, sin ruido comercial." },
     { "id": "komunikacija_pirkėjas", "title": "Comunicación con clientes", "desc": "Respuestas a compradores y vendedores", "icon": "message-square", "prompt": "Rol: asistente del corredor. Preparar respuesta al cliente según situación. OUTPUT: respuesta breve y profesional, CTA. Lengua precisa." },
     { "id": "derybu_strategija", "title": "Argumentación de negociación", "desc": "Objetivo, precio, contexto", "icon": "handshake", "prompt": "Rol: estratega de negociación. Formular argumentos. OUTPUT: 3-5 argumentos sólidos. Lengua precisa, sin agresividad." },

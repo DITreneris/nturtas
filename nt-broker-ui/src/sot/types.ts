@@ -74,6 +74,7 @@ export interface SotCopy {
   charCountLabel?: string
   operationCenterLabel?: string
   operationCenterSubLabel?: string
+  step1Label?: string
   whatsappLabel?: string
   whatsappUrl?: string
   skipToContentLabel?: string
@@ -105,6 +106,32 @@ export interface SotCopy {
   outputLearnMorePrefix?: string
   aiToolLinksPromptAnatomyLabel?: string
   templatesSourcePrefix?: string
+  whenToUseLabel?: string
+  modeNavAriaLabel?: string
+  languageGroupAriaLabel?: string
+  localeLabelLt?: string
+  localeLabelEn?: string
+  localeLabelEs?: string
+  /** Vienas aiškus sakinys virš output (kai yra promptas) */
+  outputUseHint?: string
+  /** Antraštė virš onboarding žingsnių hero */
+  onboardingStepsTitle?: string
+  /** Step 2 label (forma) */
+  step2Label?: string
+  /** Step 3 label (output) */
+  step3Label?: string
+  /** Prie recommended laukų – priesaga prie label, pvz. " (Rekomenduojama)" */
+  fieldRecommendedSuffix?: string
+  /** Testimonial citata */
+  testimonialQuote?: string
+  /** Testimonial autorius */
+  testimonialAuthor?: string
+  /** Testimonial pareigos */
+  testimonialRole?: string
+  /** Po pirmo sėkmingo copy – hint įklijuoti į ChatGPT */
+  copySuccessNextHint?: string
+  /** Footer: kai privacyUrl tuščias – rodomas tekstas */
+  privacyComingSoonLabel?: string
 }
 
 export interface SotTheme {

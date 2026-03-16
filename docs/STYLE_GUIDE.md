@@ -46,5 +46,30 @@ Inspiracija: **Fotocasa.es** (Ispanijos NT portalas) -- koraline/rausva akcento 
 2. **Aukštas kontrastas** -- baltos kortelės ant šviesiai pilko fono.
 3. **Coral = veiksmas** -- visi CTA mygtukai koraliniai su baltu tekstu.
 4. **Navy = struktūra** -- hero, nav, output fonas tamsiai mėlynas.
-5. **Rounded corners** -- kortelės 16px, mygtukai 12px, badge'ai 9999px.
+5. **Rounded corners** -- kortelės 16px (`--radius-card`), mygtukai 10px (`--radius-button`), mažos kortelės 10px (`--radius-card-sm`), nested 12px (`--radius-nested`), badge'ai 9999px.
 6. **Baltas tekstas ant tamsaus fono** -- hero, output, nav.
+
+## Tipografijos skalė
+
+| Tokenas | Reikšmė | Naudojimas |
+|---------|---------|------------|
+| `--text-hero` | 2rem | Hero antraštė |
+| `--text-h1` | 1.5rem | H1 |
+| `--text-h2` | 1.25rem | Sekcijų antraštės (h2) |
+| `--text-base` | 1rem | Kūnas |
+| `--text-lg` | 1.125rem | Hero subtitle, ops center |
+| `--text-sm` | 0.875rem | Form header, labels |
+| `--text-caption` | 0.8125rem | Meta, output context |
+| `--text-xs` | 0.75rem | Badge, char count, maži elementai |
+
+## 8pt tinklelis (spacing)
+
+Visi atstumai (margin, padding) naudoja `--space-*` tokenus; kartotiniai iš 4px (0.25rem):
+
+| Tokenas | Reikšmė |
+|---------|---------|
+| `--space-1` … `--space-8` | 0.25rem … 2rem |
+| `--space-12` | 3rem |
+| `--space-14` | 3.5rem |
+
+Nenaudoti fiksuotų `1rem`, `1.5rem` arba `24px` – naudoti tokenus dėl nuoseklumo.

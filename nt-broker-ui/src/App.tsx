@@ -11,10 +11,15 @@ import {
   ChevronDown,
   ChevronUp,
   ExternalLink,
+  Sun,
+  Moon,
+  Save,
+  Trash2,
 } from 'lucide-react'
-import { Save, Trash2 } from 'lucide-react'
 import { SotProvider, useSot } from './sot/SotContext'
 import { defaultSot } from './sot/defaultSot'
+import { Button } from './components/Button'
+import { Card } from './components/Card'
 import { ModeForm } from './components/ModeForm'
 import { TemplatesInline } from './components/TemplatesInline'
 
@@ -38,11 +43,27 @@ const dc = defaultSot.copy
 function AppContent() {
   const { sot, loading, error, retryLoad, locale, setLocale } = useSot()
   const [activeMode, setActiveMode] = useState<string>('skelbimas')
-  const [theme, setTheme] = useState<'light' | 'dark'>('light')
+  const THEME_KEY = 'nt_broker_theme'
+  const RULES_SEEN_KEY = 'nt_broker_rules_seen'
+  const getInitialTheme = (): 'light' | 'dark' => {
+    try {
+      const v = localStorage.getItem(THEME_KEY) as 'light' | 'dark' | null
+      return v === 'light' || v === 'dark' ? v : 'light'
+    } catch {
+      return 'light'
+    }
+  }
+  const [theme, setTheme] = useState<'light' | 'dark'>(getInitialTheme)
   const [formValues, setFormValues] = useState<Record<string, string>>({})
   const [generatedPrompt, setGeneratedPrompt] = useState<string | null>(null)
   const [copyFeedback, setCopyFeedback] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
-  const [rulesExpanded, setRulesExpanded] = useState(false)
+  const [rulesExpanded, setRulesExpanded] = useState(() => {
+    try {
+      return !localStorage.getItem(RULES_SEEN_KEY)
+    } catch {
+      return true
+    }
+  })
   const [emptyHint, setEmptyHint] = useState<string | null>(null)
   const [noTemplateMessage, setNoTemplateMessage] = useState<string | null>(null)
   const [templatesExpandSignal, setTemplatesExpandSignal] = useState(0)
@@ -52,6 +73,7 @@ function AppContent() {
   const appMountedAt = useRef(Date.now())
   const hasSentFirstCopy = useRef(false)
   const templateAssistUsed = useRef(false)
+  const [hasShownFirstCopyHint, setHasShownFirstCopyHint] = useState(false)
 
   interface Session {
     id: string
@@ -107,6 +129,12 @@ function AppContent() {
     trackUxEvent('app_loaded')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    if (copyFeedback?.type === 'success') {
+      setHasShownFirstCopyHint(true)
+    }
+  }, [copyFeedback?.type])
 
   const saveSession = () => {
     if (!generatedPrompt) return
@@ -169,6 +197,12 @@ function AppContent() {
   }, [defaultModeId, modesList, activeMode])
 
   useEffect(() => {
+    try {
+      localStorage.setItem(THEME_KEY, theme)
+    } catch { /* ignore */ }
+  }, [theme])
+
+  useEffect(() => {
     if (!sot?.theme) return
     const vars = sot.theme[theme]
     if (!vars) return
@@ -190,13 +224,14 @@ function AppContent() {
     const loadingLabel = sot?.copy?.loadingLabel ?? dc?.loadingLabel ?? ''
     return (
       <div
-        style={{ padding: '2rem', textAlign: 'center' }}
+        className="loading-block"
+        style={{ padding: 'var(--space-8)', textAlign: 'center' }}
         role="status"
         aria-live="polite"
         aria-label={loadingLabel}
       >
-        <div className="spinner" style={{ margin: '0 auto 1rem', width: 32, height: 32 }} aria-hidden />
-        <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text-light)' }}>{loadingLabel}</p>
+        <div className="spinner loading-spinner" aria-hidden />
+        <p style={{ margin: 0, marginTop: 'var(--space-4)', fontSize: 'var(--text-sm)', color: 'var(--text-light)' }}>{loadingLabel}</p>
       </div>
     )
   }
@@ -294,7 +329,8 @@ function AppContent() {
   const recommendedStartLabel =
     copy.recommendedStartLabel
     ?? (locale === 'lt' ? 'Rekomenduojama pradžia' : locale === 'es' ? 'Inicio recomendado' : 'Recommended start')
-  const whenToUseLabel = locale === 'lt' ? 'Kada naudoti:' : locale === 'es' ? 'Cuando usar:' : 'When to use:'
+  const whenToUseLabel = copy.whenToUseLabel ?? dc?.whenToUseLabel ?? (locale === 'lt' ? 'Kada naudoti:' : locale === 'es' ? 'Cuando usar:' : 'When to use:')
+  const modeNavAriaLabel = copy.modeNavAriaLabel ?? dc?.modeNavAriaLabel ?? 'Režimų pasirinkimas'
   const Icon = currentMode?.Icon
 
   return (
@@ -306,29 +342,21 @@ function AppContent() {
       {error && (
         <div
           role="alert"
+          className="error-block"
           style={{
-            padding: '0.75rem 1rem',
+            padding: 'var(--space-3) var(--space-4)',
             textAlign: 'center',
-            background: 'var(--error-bg, var(--error))',
+            background: 'var(--error-bg)',
             color: 'var(--error)',
             border: '1px solid var(--error)',
-            fontSize: '0.875rem',
+            fontSize: 'var(--text-sm)',
+            borderRadius: 'var(--radius-button)',
           }}
         >
           {copy.copyErrorLabel ?? dc?.copyErrorLabel ?? ''} {error}
-          <button
-            type="button"
-            className="btn-ghost"
-            onClick={() => retryLoad()}
-            style={{
-              marginLeft: '0.75rem',
-              padding: '0.25rem 0.75rem',
-              cursor: 'pointer',
-              fontWeight: 600,
-            }}
-          >
+          <Button variant="ghost" onClick={() => retryLoad()} style={{ marginLeft: 'var(--space-3)', padding: 'var(--space-1) var(--space-3)', fontWeight: 600 }}>
             {copy.copyRetryLabel ?? dc?.copyRetryLabel ?? ''}
-          </button>
+          </Button>
         </div>
       )}
 
@@ -338,45 +366,47 @@ function AppContent() {
           <Rocket size={16} /> {copy.heroTitle ?? dc?.heroTitle ?? ''}
         </span>
         <div className="top-bar-actions">
-          <div role="group" aria-label="Language selection" style={{ display: 'flex', gap: '0.5rem' }}>
+          <div role="group" aria-label={copy.languageGroupAriaLabel ?? dc?.languageGroupAriaLabel ?? 'Language selection'} className="locale-buttons-wrap" style={{ display: 'flex', gap: 'var(--space-2)' }}>
             {LOCALES.map(({ code, label }) => (
-              <button
+              <Button
                 key={code}
-                type="button"
-                className={locale === code ? 'btn-primary' : 'btn-ghost'}
+                variant={locale === code ? 'primary' : 'ghost'}
+                className="locale-btn"
                 onClick={() => setLocale(code)}
-                aria-label={code === 'lt' ? 'Lietuvių' : code === 'en' ? 'English' : 'Español'}
+                aria-label={code === 'lt' ? (copy.localeLabelLt ?? dc?.localeLabelLt ?? 'Lietuvių') : code === 'en' ? (copy.localeLabelEn ?? dc?.localeLabelEn ?? 'English') : (copy.localeLabelEs ?? dc?.localeLabelEs ?? 'Español')}
                 aria-pressed={locale === code}
-                style={{
-                  padding: '0.25rem 0.5rem',
-                  fontSize: '0.75rem',
-                  fontWeight: locale === code ? 700 : 500,
-                  borderRadius: '0.375rem',
-                  cursor: 'pointer',
-                }}
+                style={{ fontWeight: locale === code ? 700 : 500, padding: 'var(--space-2) var(--space-3)' }}
               >
                 {label}
-              </button>
+              </Button>
             ))}
           </div>
           <button
             type="button"
-            className="btn-ghost"
+            className="btn-ghost top-bar-theme-btn"
             onClick={() => setTheme((t) => (t === 'light' ? 'dark' : 'light'))}
             aria-label={theme === 'light' ? (copy.themeToggleLabelLight ?? dc?.themeToggleLabelLight ?? '') : (copy.themeToggleLabelDark ?? dc?.themeToggleLabelDark ?? '')}
-            style={{
-              padding: '0.25rem 0.5rem',
-              fontSize: '0.75rem',
-              cursor: 'pointer',
-              borderRadius: '0.375rem',
-            }}
+            title={theme === 'light' ? (copy.themeToggleLabelLight ?? dc?.themeToggleLabelLight ?? '') : (copy.themeToggleLabelDark ?? dc?.themeToggleLabelDark ?? '')}
           >
-            {theme === 'light' ? (copy.themeToggleLabelLight ?? dc?.themeToggleLabelLight ?? '') : (copy.themeToggleLabelDark ?? dc?.themeToggleLabelDark ?? '')}
+            {theme === 'light' ? <Sun size={18} aria-hidden /> : <Moon size={18} aria-hidden />}
           </button>
         </div>
       </nav>
 
-      <div style={{ maxWidth: '72rem', margin: '0 auto', padding: '0 1rem' }}>
+      {/* Mobile sticky CTA (MW6) – visible only on small screens */}
+      <div className="sticky-cta-bar" aria-hidden="true">
+        {generatedPrompt === null ? (
+          <button type="button" className="cta-button sticky-cta-btn" onClick={handleGenerate}>
+            {ctaLabel}
+          </button>
+        ) : (
+          <button type="button" className="cta-button sticky-cta-btn" onClick={handleCopyOutput}>
+            {copy.outputCopyCtaLabel ?? dc?.outputCopyCtaLabel ?? ''} →
+          </button>
+        )}
+      </div>
+
+      <div className="app-content-wrap">
         {/* 2. Hero card */}
         <header className="hero-card">
           <div className="hero-badges">
@@ -392,7 +422,22 @@ function AppContent() {
             {copy.heroSubtitle ?? dc?.heroSubtitle ?? ''}
           </p>
 
+          <div className="header-cta">
+            <button type="button" className="cta-button" data-testid="cta-generate" onClick={handleGenerate}>
+              {ctaLabel}
+            </button>
+          </div>
+          <p className="header-cta-meta">{copy.heroCtaMeta ?? dc?.heroCtaMeta ?? ''}</p>
+          <button type="button" className="hero-cta-secondary" data-testid="cta-templates" onClick={openTemplatesInline}>
+            {copy.heroCtaSecondary ?? dc?.heroCtaSecondary ?? ''}
+          </button>
           {copy.onboardingSteps && copy.onboardingSteps.length > 0 && (
+            <>
+              {(copy.onboardingStepsTitle ?? dc?.onboardingStepsTitle) && (
+                <p className="header-steps-title" style={{ margin: '1rem 0 0.5rem', fontSize: '0.875rem', fontWeight: 600, color: 'var(--on-primary-muted)' }}>
+                  {copy.onboardingStepsTitle ?? dc?.onboardingStepsTitle}
+                </p>
+              )}
             <ul className="header-steps">
               {copy.onboardingSteps.map((step, i) => (
                 <React.Fragment key={step}>
@@ -404,48 +449,23 @@ function AppContent() {
                 </React.Fragment>
               ))}
             </ul>
+            </>
           )}
-
-          <div className="header-cta">
-            <button type="button" className="cta-button" data-testid="cta-generate" onClick={handleGenerate}>
-              {ctaLabel}
-            </button>
-            <button type="button" className="cta-button-outline cta-button-muted" data-testid="cta-templates" onClick={openTemplatesInline}>
-              {copy.heroCtaSecondary ?? dc?.heroCtaSecondary ?? ''}
-            </button>
-          </div>
-          <p className="header-cta-meta">{copy.heroCtaMeta ?? dc?.heroCtaMeta ?? ''}</p>
         </header>
 
-        {/* 3. Operation center */}
-        <div className="ops-center">
-          <span className="ops-center-number">1</span>
-          <div>
-            <div className="ops-center-title">{copy.operationCenterLabel ?? dc?.operationCenterLabel ?? ''}</div>
-            <div className="ops-center-subtitle">{copy.operationCenterSubLabel ?? dc?.operationCenterSubLabel ?? ''}</div>
+        {/* 3. STEP 1: Operation center + mode tabs (one block) */}
+        <div className="step1-block">
+          <div className="ops-center">
+            <span className="ops-center-number">1</span>
+            <div>
+              <div className="ops-center-title">{copy.step1Label ?? copy.operationCenterLabel ?? dc?.step1Label ?? dc?.operationCenterLabel ?? ''}</div>
+              <div className="ops-center-subtitle">{copy.operationCenterSubLabel ?? dc?.operationCenterSubLabel ?? ''}</div>
+            </div>
           </div>
-        </div>
 
-        {/* 4. Mode tabs */}
-        <nav
-          style={{
-            position: 'sticky',
-            top: 0,
-            zIndex: 30,
-            background: 'var(--surface-1)',
-            boxShadow: 'var(--shadow-sm, 0 1px 3px var(--border))',
-            borderBottom: '1px solid var(--border)',
-          }}
-        >
-          <div style={{ overflowX: 'auto' }}>
-            <div
-              style={{
-                display: 'flex',
-                padding: '0.5rem',
-                gap: '0.5rem',
-                minWidth: 'max-content',
-              }}
-            >
+          <nav className="step1-nav" aria-label={modeNavAriaLabel}>
+            <div className="step1-nav-inner">
+              <div className="step1-nav-tabs">
               {modesList.map((mode) => {
                 const isActive = activeMode === mode.id
                 const ModeIcon = mode.Icon
@@ -492,11 +512,40 @@ function AppContent() {
             </div>
           </div>
         </nav>
+        </div>
 
         <main id="main-content">
+          <div className="main-content-layout">
+            <div className="main-content-form">
+          {/* Empty / first-step hint above form when no output yet (QW4) */}
+          {generatedPrompt === null && (copy.emptyGenerateHint ?? dc?.emptyGenerateHint) && (
+            <p
+              className="form-above-hint"
+              style={{
+                margin: '0 0 0.75rem',
+                padding: '0.5rem 0.75rem',
+                fontSize: '0.8125rem',
+                color: 'var(--text-light)',
+                background: 'var(--surface-0)',
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--radius-button)',
+                fontStyle: 'italic',
+              }}
+              role="status"
+            >
+              {copy.emptyGenerateHint ?? dc?.emptyGenerateHint}
+            </p>
+          )}
+
           {/* 5. Form card */}
-          <div className="form-card">
+          <Card variant="form">
             <div className="form-card-header">
+              <span className="step-label-inline" style={{ marginRight: '0.5rem', fontWeight: 800, color: 'var(--text-light)' }}>2</span>
+              {(copy.step2Label ?? dc?.step2Label) && (
+                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-light)', marginRight: '0.5rem' }}>
+                  {copy.step2Label ?? dc?.step2Label}
+                </span>
+              )}
               {currentMode && Icon && <Icon size={16} />}
               {currentMode?.label?.toUpperCase()}
             </div>
@@ -534,29 +583,38 @@ function AppContent() {
             {/* Rules */}
             {sot?.rules && sot.rules.length > 0 && (
               <div style={{ marginTop: '1.5rem' }}>
-                <button
-                  type="button"
-                  className="btn-ghost"
-                  onClick={() => setRulesExpanded((e) => !e)}
+                <Button
+                  variant="ghost"
+                  className="rules-toggle-btn"
+                  onClick={() => {
+                    setRulesExpanded((e) => {
+                      const next = !e
+                      if (!next) {
+                        try {
+                          localStorage.setItem(RULES_SEEN_KEY, '1')
+                        } catch { /* ignore */ }
+                      }
+                      return next
+                    })
+                  }}
                   aria-expanded={rulesExpanded}
                   aria-controls="rules-list"
                   id="rules-toggle"
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
-                    gap: '0.5rem',
-                    padding: '0.375rem 0.5rem',
-                    fontSize: '0.875rem',
+                    gap: 'var(--space-2)',
+                    padding: 'var(--space-2)',
+                    fontSize: 'var(--text-sm)',
                     color: 'var(--text-light)',
-                    cursor: 'pointer',
                     fontWeight: 600,
                     border: 'none',
                     background: 'transparent',
                   }}
                 >
-                  {rulesExpanded ? <ChevronUp size={18} aria-hidden /> : <ChevronDown size={18} aria-hidden />}
+                  {rulesExpanded ? <ChevronUp size={16} aria-hidden /> : <ChevronDown size={16} aria-hidden />}
                   {copy.rulesTitle ?? copy.rulesAriaLabel ?? dc?.rulesTitle ?? ''} ({sot.rules.length})
-                </button>
+                </Button>
                 {rulesExpanded && (
                   <ul
                     id="rules-list"
@@ -603,6 +661,7 @@ function AppContent() {
                 selectPlaceholder={copy.selectPlaceholder}
                 accentColor={currentMode.accentColor}
                 fieldProgressLabel={copy.fieldProgressLabel}
+                fieldRecommendedSuffix={copy.fieldRecommendedSuffix ?? dc?.fieldRecommendedSuffix}
               />
             )}
 
@@ -630,12 +689,19 @@ function AppContent() {
                 {copy.heroCtaSecondary ?? dc?.heroCtaSecondary ?? ''}
               </button>
             </div>
-          </div>
+          </Card>
 
-          {/* 6. Output card */}
-          {generatedPrompt !== null && (
-            <div className="output-card">
+            </div>
+            <div className="main-content-output">
+          {/* 6. Output card – always visible (CEO parity) */}
+            <Card variant="output">
               <div className="output-header">
+                <span className="step-label-inline" style={{ marginRight: '0.5rem', fontWeight: 800, color: 'var(--on-primary-subtle)' }}>3</span>
+                {(copy.step3Label ?? dc?.step3Label) && (
+                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--on-primary-subtle)', marginRight: '0.5rem' }}>
+                    {copy.step3Label ?? dc?.step3Label}
+                  </span>
+                )}
                 <span className="output-badge">
                   {copy.outputBadgeLabel ?? dc?.outputBadgeLabel ?? 'SUGENERUOTA UŽKLAUSA'}
                 </span>
@@ -646,45 +712,58 @@ function AppContent() {
                 )}
               </div>
 
-              {outputHint && (
-                <p style={{ margin: '0 0 0.5rem', fontSize: '0.8125rem', color: 'var(--text-light)', fontStyle: 'italic' }}>
+              {(copy.outputUseHint ?? dc?.outputUseHint) && generatedPrompt !== null && (
+                <p style={{ margin: '0 0 0.5rem', fontSize: '0.875rem', color: 'var(--on-primary-muted)', fontWeight: 500 }}>
+                  {copy.outputUseHint ?? dc?.outputUseHint}
+                </p>
+              )}
+              {outputHint && generatedPrompt !== null && (
+                <p style={{ margin: '0 0 0.5rem', fontSize: '0.8125rem', color: 'var(--on-primary-subtle)', fontStyle: 'italic' }}>
                   {outputHint}
                 </p>
               )}
 
               <textarea
                 className="editable-output"
-                value={generatedPrompt}
+                value={generatedPrompt ?? ''}
                 onChange={(e) => setGeneratedPrompt(e.target.value)}
+                readOnly={generatedPrompt === null}
+                placeholder={generatedPrompt === null ? (copy.outputDefaultHint ?? dc?.outputDefaultHint ?? '') : undefined}
                 rows={10}
                 aria-label={outputTitle}
               />
 
               <div className="output-meta">
                 <span className="char-count">
-                  {(copy.charCountLabel ?? dc?.charCountLabel ?? '{{count}}').replace('{{count}}', String(generatedPrompt.length))}
+                  {(copy.charCountLabel ?? dc?.charCountLabel ?? '{{count}}').replace('{{count}}', String((generatedPrompt ?? '').length))}
                 </span>
               </div>
 
-              {copyFeedback && (
+              {copyFeedback && generatedPrompt !== null && (
                 <span
                   role="status"
                   aria-live="polite"
                   aria-atomic="true"
+                  className="copy-feedback-block"
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'flex-start',
-                    gap: '0.25rem',
-                    marginTop: '0.5rem',
-                    fontSize: '0.8125rem',
+                    gap: 'var(--space-1)',
+                    marginTop: 'var(--space-2)',
+                    fontSize: 'var(--text-xs)',
                     color: copyFeedback.type === 'success' ? 'var(--success)' : 'var(--error)',
                   }}
                 >
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-1)' }}>
                     {copyFeedback.type === 'success' && <Check size={14} aria-hidden />}
                     {copyFeedback.message}
                   </span>
+                  {copyFeedback.type === 'success' && !hasShownFirstCopyHint && (copy.copySuccessNextHint ?? dc?.copySuccessNextHint) && (
+                    <span style={{ color: 'var(--on-primary-muted)', fontWeight: 400 }}>
+                      {copy.copySuccessNextHint ?? dc?.copySuccessNextHint}
+                    </span>
+                  )}
                   {copyFeedback.type === 'success' && copy.promptAnatomyUrl && (copy.copySuccessCtaPrefix ?? dc?.copySuccessCtaPrefix) && (
                     <span style={{ color: 'var(--text-light)', fontWeight: 400 }}>
                       {(copy.copySuccessCtaPrefix ?? dc?.copySuccessCtaPrefix ?? '')}{' '}
@@ -702,7 +781,7 @@ function AppContent() {
                 </span>
               )}
 
-              <button type="button" className="output-cta" onClick={handleCopyOutput}>
+              <button type="button" className="output-cta" onClick={handleCopyOutput} disabled={generatedPrompt === null}>
                 {copy.outputCopyCtaLabel ?? dc?.outputCopyCtaLabel ?? ''} →
               </button>
 
@@ -744,32 +823,27 @@ function AppContent() {
                   </a>
                 </p>
               )}
-            </div>
-          )}
+            </Card>
 
           {/* No-template alert */}
           {generatedPrompt === null && noTemplateMessage && (
             <div
               role="alert"
+              className="no-template-alert"
               style={{
-                marginTop: '1rem',
-                padding: '1rem',
-                background: 'var(--error-bg, #fef2f2)',
+                marginTop: 'var(--space-4)',
+                padding: 'var(--space-4)',
+                background: 'var(--error-bg)',
                 border: '1px solid var(--error)',
-                borderRadius: '0.5rem',
-                fontSize: '0.875rem',
+                borderRadius: 'var(--radius-button)',
+                fontSize: 'var(--text-sm)',
                 color: 'var(--error)',
               }}
             >
               {noTemplateMessage}
-              <button
-                type="button"
-                className="btn-ghost"
-                onClick={openTemplatesInline}
-                style={{ marginLeft: '0.75rem', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline' }}
-              >
+              <Button variant="ghost" onClick={openTemplatesInline} style={{ marginLeft: 'var(--space-3)', fontWeight: 600, textDecoration: 'underline' }}>
                 {copy.noTemplateCtaLabel ?? dc?.noTemplateCtaLabel ?? ''}
-              </button>
+              </Button>
             </div>
           )}
 
@@ -778,25 +852,23 @@ function AppContent() {
             <section style={{ marginTop: '1.5rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
                 <h3 style={{ margin: 0, fontSize: '1rem' }}>{copy.sessionsTitle ?? dc?.sessionsTitle ?? 'Sesijos'}</h3>
-                <button
-                  type="button"
-                  className="btn-primary"
+                <Button
+                  variant="primary"
                   onClick={saveSession}
                   disabled={savedSessions.length >= SESSION_MAX}
-                  style={{ padding: '0.375rem 0.75rem', fontSize: '0.8125rem', cursor: 'pointer', borderRadius: '0.375rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}
+                  style={{ padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--text-xs)', display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)' }}
                 >
                   <Save size={14} aria-hidden />
                   {copy.sessionsSaveLabel ?? dc?.sessionsSaveLabel ?? 'Išsaugoti'}
-                </button>
+                </Button>
                 {savedSessions.length > 0 && (
-                  <button
-                    type="button"
-                    className="btn-ghost"
+                  <Button
+                    variant="ghost"
                     onClick={deleteAllSessions}
-                    style={{ padding: '0.375rem 0.75rem', fontSize: '0.8125rem', cursor: 'pointer', borderRadius: '0.375rem', color: 'var(--error)' }}
+                    style={{ padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--text-xs)', color: 'var(--error)' }}
                   >
                     {copy.sessionsDeleteAllLabel ?? dc?.sessionsDeleteAllLabel ?? 'Ištrinti sesijas'}
-                  </button>
+                  </Button>
                 )}
               </div>
               {savedSessions.length >= SESSION_MAX && (
@@ -809,52 +881,25 @@ function AppContent() {
                   {copy.sessionsEmptyLabel ?? dc?.sessionsEmptyLabel ?? 'Nėra išsaugotų sesijų.'}
                 </p>
               ) : (
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <ul className="session-list" style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                   {savedSessions.map((s) => (
-                    <li
-                      key={s.id}
-                      style={{
-                        padding: '0.75rem',
-                        border: '1px solid var(--border)',
-                        borderRadius: '0.5rem',
-                        background: 'var(--surface-0)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.75rem',
-                        flexWrap: 'wrap',
-                      }}
-                    >
+                    <li key={s.id} className="session-item">
                       <span style={{ flex: 1, fontSize: '0.8125rem', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {s.label}
                       </span>
                       <span style={{ fontSize: '0.75rem', color: 'var(--text-light)', flexShrink: 0 }}>
                         {new Date(s.createdAt).toLocaleString()}
                       </span>
-                      <button
-                        type="button"
-                        className="btn-ghost"
-                        onClick={() => restoreSession(s)}
-                        style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem', cursor: 'pointer', borderRadius: '0.375rem' }}
-                      >
+                      <Button variant="ghost" className="session-item-btn" onClick={() => restoreSession(s)}>
                         {copy.sessionRestoreLabel ?? dc?.sessionRestoreLabel ?? 'Atkurti'}
-                      </button>
-                      <button
-                        type="button"
-                        className="btn-primary"
-                        onClick={() => copySession(s.prompt)}
-                        style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem', cursor: 'pointer', borderRadius: '0.375rem' }}
-                      >
+                      </Button>
+                      <Button variant="primary" className="session-item-btn" onClick={() => copySession(s.prompt)}>
                         {copy.sessionCopyLabel ?? dc?.sessionCopyLabel ?? 'Kopijuoti'}
-                      </button>
-                      <button
-                        type="button"
-                        className="btn-ghost"
-                        onClick={() => deleteSession(s.id)}
-                        style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem', cursor: 'pointer', borderRadius: '0.375rem', color: 'var(--error)', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}
-                      >
+                      </Button>
+                      <Button variant="ghost" className="session-item-btn session-item-btn-delete" onClick={() => deleteSession(s.id)}>
                         <Trash2 size={12} aria-hidden />
                         {copy.sessionDeleteLabel ?? dc?.sessionDeleteLabel ?? 'Ištrinti'}
-                      </button>
+                      </Button>
                     </li>
                   ))}
                 </ul>
@@ -866,6 +911,9 @@ function AppContent() {
               )}
             </section>
           )}
+
+            </div>
+          </div>
 
           {/* Inline templates (CEO-style) */}
           <div ref={templatesSectionRef}>
@@ -894,9 +942,23 @@ function AppContent() {
             />
           </div>
 
-          {/* 7. Community section */}
-          {copy.whatsappUrl && generatedPrompt !== null && (
-            <section className="community">
+          {/* Testimonial (MW4) – rodomas tik jei testimonialQuote užpildytas */}
+          {(copy.testimonialQuote ?? dc?.testimonialQuote) && (
+            <section className="testimonial-block" aria-label="Atsiliepimas">
+              <blockquote style={{ margin: 0, fontSize: '1rem', fontStyle: 'italic', color: 'var(--text)' }}>
+                {copy.testimonialQuote ?? dc?.testimonialQuote}
+              </blockquote>
+              {((copy.testimonialAuthor ?? dc?.testimonialAuthor) || (copy.testimonialRole ?? dc?.testimonialRole)) && (
+                <footer style={{ marginTop: '0.75rem', fontSize: '0.875rem', color: 'var(--text-light)' }}>
+                  — {[copy.testimonialAuthor ?? dc?.testimonialAuthor, copy.testimonialRole ?? dc?.testimonialRole].filter(Boolean).join(', ')}
+                </footer>
+              )}
+            </section>
+          )}
+
+          {/* 7. Community section (always visible – CEO parity) */}
+          {copy.whatsappUrl && (
+            <Card variant="community" as="section">
               <h2>{copy.communityTitle ?? dc?.communityTitle ?? ''}</h2>
               <p className="community-subtitle">{copy.communitySubtitle ?? dc?.communitySubtitle ?? ''}</p>
               <div className="community-ctas">
@@ -909,11 +971,11 @@ function AppContent() {
                   {copy.communityCtaSecondary ?? dc?.communityCtaSecondary ?? ''}
                 </a>
               </div>
-            </section>
+            </Card>
           )}
 
           {/* 8. Footer */}
-          <footer className="footer-card">
+          <Card variant="footer" as="footer">
             <h3 className="footer-brand">{copy.heroTitle ?? dc?.heroTitle ?? ''} ✨</h3>
             <p className="footer-tagline">{copy.footerTagline ?? dc?.footerTagline ?? copy.heroCtaMeta ?? dc?.heroCtaMeta ?? ''}</p>
             <div className="footer-product-link">
@@ -938,9 +1000,11 @@ function AppContent() {
             <div className="footer-copyright">
               <p>
                 {copy.footerCopyright ?? dc?.footerCopyright ?? ''}
-                {copy.privacyUrl && (
+                {copy.privacyUrl ? (
                   <> <a href={copy.privacyUrl}>{copy.privacyLabel ?? dc?.privacyLabel ?? ''}</a></>
-                )}
+                ) : (copy.privacyComingSoonLabel ?? dc?.privacyComingSoonLabel) ? (
+                  <> <span style={{ color: 'var(--text-light)' }}>{copy.privacyComingSoonLabel ?? dc?.privacyComingSoonLabel}</span></>
+                ) : null}
               </p>
               {copy.promptAnatomyUrl && (
                 <p style={{ marginTop: '0.25rem', fontSize: '0.8125rem' }}>
@@ -950,7 +1014,7 @@ function AppContent() {
                 </p>
               )}
             </div>
-          </footer>
+          </Card>
         </main>
       </div>
     </div>

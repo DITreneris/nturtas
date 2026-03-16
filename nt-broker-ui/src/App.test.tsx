@@ -26,6 +26,7 @@ const mockSot = {
     aiToolLinksLabel: 'Nori išbandyti užklausą? Pasirink įrankį:',
     operationCenterLabel: 'NT brokerio centras',
     operationCenterSubLabel: 'Pasirink režimą, užpildyk laukus ir gauk paruoštą užklausą',
+    step1Label: '1. Pasirink režimą',
     skipToContentLabel: 'Pereiti prie turinio',
     whatsappUrl: 'https://chat.whatsapp.com/test',
     whatsappLabel: 'Prisijungti prie WhatsApp grupės',
@@ -100,6 +101,15 @@ describe('App', () => {
     expect(screen.getByTestId('cta-generate').textContent).toBe('Sukurti skelbimą')
   })
 
+  it('renders one primary CTA and secondary templates link in hero', async () => {
+    render(<App />)
+    await screen.findByRole('heading', { level: 1 }, { timeout: 3000 })
+    expect(screen.getByTestId('cta-generate')).toBeTruthy()
+    const templatesControl = screen.getByTestId('cta-templates')
+    expect(templatesControl).toBeTruthy()
+    expect(templatesControl.textContent).toBe('Šablonų biblioteka')
+  })
+
   it('renders onboarding steps', async () => {
     render(<App />)
     await screen.findByRole('heading', { level: 1 }, { timeout: 3000 })
@@ -119,7 +129,7 @@ describe('App', () => {
     await screen.findByRole('heading', { level: 1 }, { timeout: 3000 })
     const rulesToggle = screen.getByRole('button', { name: /Ką gausite/i })
     expect(rulesToggle).toBeTruthy()
-    fireEvent.click(rulesToggle)
+    // QW6: rules default expanded on first visit – rule text visible without clicking
     expect(screen.getByText(/Profesionali, tiksli lietuvių kalba/i)).toBeTruthy()
   })
 
@@ -130,10 +140,10 @@ describe('App', () => {
     expect(screen.getByText('Objekto duomenys')).toBeTruthy()
   })
 
-  it('renders operation center label', async () => {
+  it('renders STEP 1 block with step1Label and subtitle', async () => {
     render(<App />)
     await screen.findByRole('heading', { level: 1 }, { timeout: 3000 })
-    expect(screen.getByText('NT brokerio centras')).toBeTruthy()
+    expect(screen.getByText('1. Pasirink režimą')).toBeTruthy()
     expect(screen.getByText(/Pasirink režimą, užpildyk laukus/i)).toBeTruthy()
   })
 
@@ -163,18 +173,16 @@ describe('App', () => {
     expect(charCount!.textContent).toMatch(/Simbolių: \d+/)
   })
 
-  it('renders AI tool links after output generation', async () => {
+  it('renders AI tool links in output card (CEO parity – always visible)', async () => {
     render(<App />)
     await screen.findByRole('heading', { level: 1 }, { timeout: 3000 })
-    fireEvent.click(screen.getByTestId('cta-generate'))
     expect(screen.getByText('Atidaryti ChatGPT')).toBeTruthy()
     expect(screen.getByText('Atidaryti Claude')).toBeTruthy()
   })
 
-  it('renders WhatsApp link in community section after generation', async () => {
+  it('renders WhatsApp link in community section (always visible when whatsappUrl set)', async () => {
     render(<App />)
     await screen.findByRole('heading', { level: 1 }, { timeout: 3000 })
-    fireEvent.click(screen.getByTestId('cta-generate'))
     const community = document.querySelector('.community')
     expect(community).toBeTruthy()
     const whatsappLink = community!.querySelector('a[href*="whatsapp"]')

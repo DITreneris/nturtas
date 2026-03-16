@@ -69,6 +69,16 @@
     "firstStepHint": "Pasirink režimą ir užpildyk bent 1–2 laukus – rezultatas priklausys nuo įvesties.",
     "outputDefaultTitle": "Tavo sugeneruotas AI prompt",
     "outputDefaultHint": "Galite redaguoti tekstą čia prieš kopijuojant. Nukopijuok ir įklijuok į ChatGPT arba Claude.",
+    "outputUseHint": "Įklijuok į ChatGPT arba Claude – gausi paruoštą tekstą.",
+    "onboardingStepsTitle": "Kaip naudoti",
+    "step2Label": "Įvesk informaciją",
+    "step3Label": "Rezultatas ir kopijavimas",
+    "fieldRecommendedSuffix": " (Rekomenduojama)",
+    "testimonialQuote": "",
+    "testimonialAuthor": "",
+    "testimonialRole": "",
+    "copySuccessNextHint": "Įklijuok į ChatGPT ir gauk atsakymą per kelias sekundes.",
+    "privacyComingSoonLabel": "Privatumas (ruošiama)",
     "onboardingSteps": [
       "Pasirink režimą viršuje",
       "Užpildyk pagrindinius laukus",
@@ -83,6 +93,7 @@
     "charCountLabel": "Simbolių: {{count}}",
     "operationCenterLabel": "NT brokerio centras",
     "operationCenterSubLabel": "Pasirink režimą, užpildyk laukus ir gauk paruoštą užklausą",
+    "step1Label": "1. Pasirink režimą",
     "whatsappUrl": "https://chat.whatsapp.com/It49fzTl1n90huRCoWWkwu?mode=gi_t",
     "whatsappLabel": "Prisijungti prie WhatsApp grupės",
     "skipToContentLabel": "Pereiti prie turinio",
@@ -113,7 +124,13 @@
     "copySuccessCtaPrefix": "Nori daugiau?",
     "outputLearnMorePrefix": "Sužinok daugiau apie promptus:",
     "aiToolLinksPromptAnatomyLabel": "Mokykis promptų anatomijos →",
-    "templatesSourcePrefix": "Šablonai iš "
+    "templatesSourcePrefix": "Šablonai iš ",
+    "whenToUseLabel": "Kada naudoti:",
+    "modeNavAriaLabel": "Režimų pasirinkimas",
+    "languageGroupAriaLabel": "Kalbos pasirinkimas",
+    "localeLabelLt": "Lietuvių",
+    "localeLabelEn": "English",
+    "localeLabelEs": "Español"
   },
   "showDebugInFooter": false,
   "modesOrder": ["OBJEKTAS", "SKELBIMAS", "KOMUNIKACIJA", "DERYBOS", "ANALIZE"],
@@ -129,6 +146,7 @@
       "accentColor": "#0891b2",
       "formId": "form-objektas",
       "icon": "building-2",
+      "libraryPromptId": "objekto_analize",
       "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas"],
       "fieldGroups": [
         { "label": "Objekto duomenys", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas"] }
@@ -275,6 +293,13 @@
     }
   },
   "libraryPrompts": [
+    {
+      "id": "objekto_analize",
+      "title": "Objekto analizės šablonas",
+      "desc": "Objekto vertė ir auditorija",
+      "icon": "building-2",
+      "prompt": "Rolė: NT rinkos analitikas ir vertintojas.\nGoal: Iš objekto duomenų parengti objekto vertinimo ir analizės promptą – stipriosios pusės, tikslinė auditorija, vertės argumentai.\nTone: premium, profesionalus\nINPUT: Objektas, lokacija, plotas/kambariai, kaina, būklė, privalumai, auditorija, tonas.\nOUTPUT: Struktūruotas promptas, kurį galima įklijuoti į ChatGPT – gauti objekto analizę, vertės įvertinimą ir rekomendacijas. Tiksli lietuvių kalba."
+    },
     {
       "id": "skelbimas_nt",
       "title": "NT skelbimo šablonas",

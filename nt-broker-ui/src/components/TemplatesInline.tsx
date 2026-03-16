@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { ChevronDown, ChevronUp, Sparkles, MessageSquare, Handshake, BarChart3 } from 'lucide-react'
+import { ChevronDown, ChevronUp, Building2, Sparkles, MessageSquare, Handshake, BarChart3 } from 'lucide-react'
+import { Button } from './Button'
 import { defaultSot } from '../sot/defaultSot'
 
 type IconComponent = React.ComponentType<{ className?: string; size?: number }>
 const ICON_MAP: Record<string, IconComponent> = {
+  'building-2': Building2,
   sparkles: Sparkles,
   'message-square': MessageSquare,
   handshake: Handshake,
@@ -108,20 +110,18 @@ export function TemplatesInline({
 
   return (
     <section style={{ marginTop: '1.5rem' }}>
-      <button
-        type="button"
-        className="btn-ghost"
+      <Button
+        variant="ghost"
         onClick={() => setExpanded((e) => !e)}
         aria-expanded={expanded}
         aria-controls="templates-inline-list"
         style={{
           display: 'inline-flex',
           alignItems: 'center',
-          gap: '0.5rem',
-          padding: '0.375rem 0.5rem',
-          fontSize: '0.875rem',
+          gap: 'var(--space-2)',
+          padding: 'var(--space-2)',
+          fontSize: 'var(--text-sm)',
           color: 'var(--text-light)',
-          cursor: 'pointer',
           fontWeight: 600,
           border: 'none',
           background: 'transparent',
@@ -129,7 +129,7 @@ export function TemplatesInline({
       >
         {expanded ? <ChevronUp size={18} aria-hidden /> : <ChevronDown size={18} aria-hidden />}
         {sectionTitle} ({items.length})
-      </button>
+      </Button>
 
       {expanded && (
         <ul
@@ -153,15 +153,7 @@ export function TemplatesInline({
               : item.prompt.slice(0, PREVIEW_LIMIT) + '…'
 
             return (
-              <li
-                key={item.id}
-                style={{
-                  padding: '1rem',
-                  border: '1px solid var(--border)',
-                  borderRadius: '0.5rem',
-                  background: 'var(--surface-0)',
-                }}
-              >
+              <li key={item.id} className="templates-inline-item">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
                   <Icon size={18} aria-hidden />
                   <strong>{item.title}</strong>
@@ -184,34 +176,31 @@ export function TemplatesInline({
                 >
                   {displayPrompt}
                 </pre>
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
-                  <button
-                    type="button"
-                    className="btn-primary"
+                <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap', alignItems: 'center' }}>
+                  <Button
+                    variant="primary"
                     onClick={() => handleCopy(item.prompt, item.id)}
-                    style={{ padding: '0.375rem 0.75rem', fontSize: '0.8125rem', cursor: 'pointer', borderRadius: '0.375rem' }}
+                    style={{ padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--text-xs)' }}
                   >
                     {btnCopyText}
-                  </button>
+                  </Button>
                   {modeId && onSelectMode && (
-                    <button
-                      type="button"
-                      className="btn-secondary"
+                    <Button
+                      variant="secondary"
                       onClick={() => handleUse(item.id)}
-                      style={{ padding: '0.375rem 0.75rem', fontSize: '0.8125rem', cursor: 'pointer', borderRadius: '0.375rem' }}
+                      style={{ padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--text-xs)' }}
                     >
                       {btnUseText}
-                    </button>
+                    </Button>
                   )}
                   {needsTruncation && (
-                    <button
-                      type="button"
-                      className="btn-ghost"
+                    <Button
+                      variant="ghost"
                       onClick={() => togglePromptExpand(item.id)}
-                      style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem', cursor: 'pointer' }}
+                      style={{ padding: 'var(--space-1) var(--space-2)', fontSize: 'var(--text-xs)' }}
                     >
                       {isPromptExpanded ? collapseLabel : expandLabel}
-                    </button>
+                    </Button>
                   )}
                   {copyFeedbackId === item.id && copyFeedbackType && (
                     <span

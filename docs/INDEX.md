@@ -36,9 +36,14 @@ Vienintelis dokumentacijos navigacijos mazgas po `README.md`.
   - [tests/e2e/nt-broker-ui.spec.js](../tests/e2e/nt-broker-ui.spec.js) – nt-broker-ui E2E.
   - nt-broker-ui unit: `cd nt-broker-ui && npm run test`.
 - **Analizė:** [docs/CODEBASE_ANALYSIS.md](CODEBASE_ANALYSIS.md) – kodo bazės analizė, bugai, tobulinimai.
+- **Ataskaita 2026-03-16:** [docs/ATASKAITA_2026-03-16.md](ATASKAITA_2026-03-16.md) – šios dienos analizė: neatitikimai, kokybės vartas (linear-gradient), bug'ai (TemplatesInline ikona), UI/UX.
 - **i18n paruoštumas:** [docs/I18N_READINESS_ASSESSMENT.md](I18N_READINESS_ASSESSMENT.md) – ar UI paruoštas kitomis kalbomis, kriterijai, rekomendacijos.
 - **UX/Copy auditas:** [docs/UX_COPY_AUDIT.md](UX_COPY_AUDIT.md) – micro UI, UX, vartotojo kelionė, copy auditas, trinties mažinimas (tik atspalviai/gradientai).
 - **Premium UX/UI gilus auditas:** [docs/PREMIUM_UX_UI_DEEP_DIVE.md](PREMIUM_UX_UI_DEEP_DIVE.md) – naujas gilus auditas: vartotojo kelionės, trintys, stabdžiai, OK/FAIL matrica ir KISS-MARRY-KILL prioritetizacija.
+- **Premium SaaS UI/UX auditas (8 blokų):** [docs/PREMIUM_SAAS_UI_UX_AUDIT.md](PREMIUM_SAAS_UI_UX_AUDIT.md) – UI architektūra, tipografija, spalvos, šešėliai, komponentų nuoseklumas, vizualinė hierarchija, 25+ mikro pataisymai, Quick/Medium/Major planas.
+- **UX hierarchija ir fokusas:** [docs/UX_HIERARCHY_FOCUS_PLAN.md](UX_HIERARCHY_FOCUS_PLAN.md) – 1 ekranas = 1 veiksmas, hero supaprastinimas, STEP 1/2/3 srautas, 5 greiti fixai.
+- **Vartotojo kelionės ir konversijos UX auditas:** [docs/USER_JOURNEY_UX_CONVERSION_AUDIT.md](USER_JOURNEY_UX_CONVERSION_AUDIT.md) – First Impression, User Journey Map, Navigation, Value Communication, Conversion Path, Trust, Cognitive Load, 25+ mikro problemos, Quick/Medium/Strategic planas.
+- **UI/UX realus tobulinimo planas:** [.cursor/plans/ui_ux_realus_tobulinimo_planas.md](../.cursor/plans/ui_ux_realus_tobulinimo_planas.md) – sticky nav, mobile top bar, tema ikona, design tokenai, touch targets, dokumentų nuorodos.
 
 ## Archyvas
 

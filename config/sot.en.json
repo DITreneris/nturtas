@@ -59,6 +59,16 @@
     "firstStepHint": "Choose a mode and fill in at least 1–2 fields – the result depends on your input.",
     "outputDefaultTitle": "Your generated AI prompt",
     "outputDefaultHint": "You can edit the text here before copying. Copy and paste into ChatGPT or Claude.",
+    "outputUseHint": "Paste into ChatGPT or Claude – you'll get ready-made text.",
+    "onboardingStepsTitle": "How to use",
+    "step2Label": "Enter information",
+    "step3Label": "Result and copy",
+    "fieldRecommendedSuffix": " (Recommended)",
+    "testimonialQuote": "",
+    "testimonialAuthor": "",
+    "testimonialRole": "",
+    "copySuccessNextHint": "Paste into ChatGPT and get a reply in seconds.",
+    "privacyComingSoonLabel": "Privacy (coming soon)",
     "onboardingSteps": [
       "Choose a mode above",
       "Fill in the key fields",
@@ -73,6 +83,7 @@
     "charCountLabel": "Characters: {{count}}",
     "operationCenterLabel": "RE Broker Center",
     "operationCenterSubLabel": "Choose a mode, fill in the fields and get a ready prompt",
+    "step1Label": "1. Choose mode",
     "whatsappUrl": "https://chat.whatsapp.com/It49fzTl1n90huRCoWWkwu?mode=gi_t",
     "whatsappLabel": "Join the WhatsApp group",
     "skipToContentLabel": "Skip to content",
@@ -102,7 +113,13 @@
     "copySuccessCtaPrefix": "Want more?",
     "outputLearnMorePrefix": "Learn more about prompts:",
     "aiToolLinksPromptAnatomyLabel": "Learn prompt anatomy →",
-    "templatesSourcePrefix": "Templates from "
+    "templatesSourcePrefix": "Templates from ",
+    "whenToUseLabel": "When to use:",
+    "modeNavAriaLabel": "Mode selection",
+    "languageGroupAriaLabel": "Language selection",
+    "localeLabelLt": "Lithuanian",
+    "localeLabelEn": "English",
+    "localeLabelEs": "Spanish"
   },
   "showDebugInFooter": false,
   "modesOrder": ["OBJEKTAS", "SKELBIMAS", "KOMUNIKACIJA", "DERYBOS", "ANALIZE"],
@@ -114,6 +131,7 @@
       "outputHint": "Copy this prompt and paste into ChatGPT – you will get a property analysis with value arguments.",
       "accentColor": "#0891b2",
       "formId": "form-objektas", "icon": "building-2",
+      "libraryPromptId": "objekto_analize",
       "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas"],
       "fieldGroups": [
         { "label": "Property details", "fields": ["objektoTipas", "lokacija", "plotas", "kambariai", "kaina", "bukle", "statybosMetai", "aukstas", "sildymas", "irengimas", "privalumai", "auditorija", "tonas"] }
@@ -204,6 +222,7 @@
     "dark": { "--primary": "#F06580", "--primary-hover": "#E84D6A", "--primary-light": "#F58DA5", "--accent-gold": "#E83E5E", "--accent-gold-hover": "#F06580", "--surface-0": "#0F1117", "--surface-1": "#1A1D27", "--text": "#F0F2F5", "--text-light": "#9CA3AF", "--border": "#2D3340", "--output-bg": "#152238", "--success": "#2dd4bf", "--error": "#f87171", "--error-bg": "#450a0a", "--shadow-sm": "0 1px 3px 0 rgba(0,0,0,0.2)", "--shadow-md": "0 4px 6px -1px rgba(0,0,0,0.2), 0 2px 4px -2px rgba(0,0,0,0.15)", "--shadow-lg": "0 25px 50px -12px rgba(0,0,0,0.4)" }
   },
   "libraryPrompts": [
+    { "id": "objekto_analize", "title": "Property analysis template", "desc": "Property value and audience", "icon": "building-2", "prompt": "Role: RE market analyst and valuer. Goal: From property data prepare a property evaluation and analysis prompt – strengths, target audience, value arguments. Tone: premium, professional. INPUT: Property, location, area/rooms, price, condition, advantages, audience, tone. OUTPUT: Structured prompt to paste into ChatGPT – get property analysis, value assessment and recommendations. Accurate language." },
     { "id": "skelbimas_nt", "title": "RE listing template", "desc": "For portals and social channels", "icon": "sparkles", "prompt": "Role: RE market analyst and top-tier RE broker (15y experience). Goal: Create listing from property data – emotional or rational angle. Tone: premium. INPUT: Property, location, price, area/rooms, advantages, audience. OUTPUT: Hook, main copy, 3-5 USP, CTA. Quality: accurate language, no sales fluff." },
     { "id": "komunikacija_pirkėjas", "title": "Client communication", "desc": "Responses to buyers and sellers", "icon": "message-square", "prompt": "Role: RE broker assistant. Prepare response to client (buyer/seller) by situation. OUTPUT: Short, professional response – value, clarity, CTA. Tone by context. Accurate language." },
     { "id": "derybu_strategija", "title": "Negotiation argumentation", "desc": "Goal, price, context", "icon": "handshake", "prompt": "Role: Negotiation strategist. Form arguments for goal: defend price / compromise / close deal. INPUT: Initial price, proposed price, market context. OUTPUT: 3-5 strong arguments. Accurate language, no aggression." },
